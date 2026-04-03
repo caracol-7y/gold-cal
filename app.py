@@ -50,7 +50,7 @@ st.sidebar.title("⚙️ メニュー")
 # ページ変更時にフラグを立てるコールバック関数を追加
 def on_page_change():
     st.session_state.close_sidebar_flag = True
-# 順序と名称を修正
+
 page = st.sidebar.radio(
     "ページ選択", 
     ["💰 地金計算機", "📝 計算メモ", "📋 最新価格一覧表"], 

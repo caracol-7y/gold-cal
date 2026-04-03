@@ -219,7 +219,7 @@ elif page == "📝 計算メモ":
 </div>
 
 <div style="flex: 1;">
-<div style="font-size: 12px; color: {buy_color}; margin-bottom: 5px;">買い歩込み({buy_rate_val})</div>
+<div style="font-size: 12px; color: {buy_color}; margin-bottom: 5px;">買い歩({buy_rate_val})</div>
 <div style="font-size: 21px; font-weight: 800; color: {buy_color};">{buy_val}</div>
 </div>
 </div>

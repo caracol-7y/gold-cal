@@ -27,8 +27,15 @@ def on_cat_change():
     st.session_state.p_cat = st.session_state.cat_w
     st.session_state.p_display = config.OPTIONS_MAP[config.METAL_CATEGORIES[st.session_state.cat_w][0]]
 
-# データ取得
-prices, utime = get_all_prices_comprehensive()
+# --------------------------------------------------
+# データ取得（キャッシュ機能を追加して高速化）
+# --------------------------------------------------
+@st.cache_data(ttl=3600) # 1時間(3600秒)はデータを保存して再利用する
+def fetch_cached_data():
+    return get_all_prices_comprehensive()
+
+# 毎回スプレッドシートを取りに行かず、保存したデータを使う
+prices, utime = fetch_cached_data()
 
 # サイドバー (巨大ボタン)
 page = st.sidebar.radio("MENU", ["💰 計算機", "📝 履歴", "📋 最新相場"], label_visibility="collapsed")

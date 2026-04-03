@@ -60,14 +60,14 @@ if page == "💰 価格計算機":
         st.warning("⚠️ 相場が取得できていません。サイドバーから「更新」してください。")
 
     metal_categories = {
-        "Gold": ["Gold_Ingot", "K24", "K22", "K21.6", "K20", "K18", "K14", "K10", "K9", "Combo"],
+        "Gold": ["Gold_Ingot", "K24", "K22", "K21.6", "K20", "K18", "K14", "K10", "K9"],
         "Platinum": ["Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850"],
         "Silver": ["Silver_Ingot", "Sv1000", "Sv925"],
         "Palladium": ["Pd_Ingot"]
     }
     
     options_map = {
-        "Gold_Ingot": "Gold Bar", "K24": "K24", "K22": "K22", "K21.6": "K21.6", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9", "Combo": "金プラコンビ",
+        "Gold_Ingot": "Gold Bar", "K24": "K24", "K22": "K22", "K21.6": "K21.6", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9",
         "Pt_Ingot": "Platinum Bar", "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850",
         "Silver_Ingot": "Silver Bar", "Sv1000": "Sv1000", "Sv925": "Sv925",
         "Pd_Ingot": "Palladium Bar"

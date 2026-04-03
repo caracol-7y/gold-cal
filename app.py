@@ -58,8 +58,8 @@ if page == "💰 計算機":
     c1, c2 = st.columns(2)
     with c1: weight = st.number_input("重量 (g)", min_value=0.0, value=st.session_state.get('p_w_v', 1.0), step=0.1, format="%.1f", key="w_v", on_change=sync)
     with c2: rsell = st.number_input("割合 (%)", min_value=0, max_value=100, value=st.session_state.get('p_r_s', 90), step=1, key="r_s", on_change=sync)
-    ubukin = st.checkbox("買い歩を適用する", value=st.session_state.get('p_b_o', False), key="b_o", on_change=sync)
-    rbuy = st.number_input("買い歩 (%)", min_value=0, value=st.session_state.get('p_r_b', 5), key="r_b", on_change=sync) if ubukin else 0
+    ubukin = st.checkbox("買い歩あり", value=st.session_state.get('p_b_o', False), key="b_o", on_change=sync)
+    rbuy = st.number_input("歩金 (%)", min_value=0, value=st.session_state.get('p_r_b', 5), key="r_b", on_change=sync) if ubukin else 0
 
     if prices and key in prices:
         m_price = prices[key]

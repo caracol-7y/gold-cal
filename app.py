@@ -22,6 +22,8 @@ if 'update_time' not in st.session_state:
     st.session_state.update_time = None
 if 'memo_list' not in st.session_state:
     st.session_state.memo_list = []
+if 'close_sidebar_flag' not in st.session_state:
+    st.session_state.close_sidebar_flag = False
 
 # ==========================================
 # 共通関数：相場データの更新
@@ -44,8 +46,16 @@ def update_market_prices():
 # サイドバー
 # ==========================================
 st.sidebar.title("⚙️ メニュー")
+
+# ページ変更時にフラグを立てるコールバック関数を追加
+def on_page_change():
+    st.session_state.close_sidebar_flag = True
 # 順序と名称を修正
-page = st.sidebar.radio("ページ選択", ["💰 地金計算機", "📝 計算メモ", "📋 最新価格一覧表"])
+page = st.sidebar.radio(
+    "ページ選択", 
+    ["💰 地金計算機", "📝 計算メモ", "📋 最新価格一覧表"], 
+    on_change=on_page_change
+)
 
 if st.sidebar.button("🔄 最新相場に更新", key="sidebar_update_btn"):
     if update_market_prices():
@@ -220,3 +230,25 @@ elif page == "📋 最新価格一覧表":
             st.write("") 
 
 st.caption("※ネットジャパンのプリントページから抽出した最新データです。")
+
+# ==========================================
+# サイドバー自動格納の裏技（JavaScriptインジェクション）
+# ==========================================
+if st.session_state.close_sidebar_flag:
+    import streamlit.components.v1 as components
+    components.html(
+        """
+        <script>
+            // Streamlitの親DOMからサイドバーのトグルボタンを探す
+            const sidebarToggle = window.parent.document.querySelector('[data-testid="collapsedControl"]');
+            // サイドバーが開いている状態（aria-expanded="true"）ならクリックして閉じる
+            if (sidebarToggle && sidebarToggle.getAttribute('aria-expanded') === 'true') {
+                sidebarToggle.click();
+            }
+        </script>
+        """,
+        height=0,
+        width=0,
+    )
+    # 実行後はフラグを戻す
+    st.session_state.close_sidebar_flag = False

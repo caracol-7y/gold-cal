@@ -1,10 +1,31 @@
-/* style.css */
+/* style.css (余白削減・最新版) */
+
+/* 1. ページ最上部のヘッダー領域(Deployボタンなどが出る場所)を消して詰める */
+[data-testid="stHeader"] {
+    display: none;
+}
+
+/* 2. メインコンテンツの上の隙間をゼロにする */
+.main .block-container {
+    max-width: 500px;
+    padding-top: 0rem !important; /* ここを0に設定 */
+    padding-bottom: 1rem !important;
+    margin-top: -30px; /* さらに上に持ち上げる */
+}
+
+/* 3. タイトル(h1)の余計なマージンをカット */
+h1 {
+    margin-top: 0 !important;
+    padding-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+/* 4. 全体フォント設定 */
 html, body, [class*="css"] {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
 }
-.main .block-container { max-width: 500px; padding-top: 1rem; }
 
-/* サイドバーのメニューを巨大ボタンにする */
+/* 5. サイドバーの巨大ボタン設定 */
 [data-testid="stSidebar"] div[role="radiogroup"] {
     gap: 15px;
     padding-top: 20px;
@@ -13,21 +34,23 @@ html, body, [class*="css"] {
     background-color: rgba(128, 128, 128, 0.1) !important;
     border: 1px solid rgba(128, 128, 128, 0.2) !important;
     border-radius: 15px !important;
-    padding: 25px 15px !important;
+    padding: 25px 10px !important;
     width: 100%;
     cursor: pointer;
+    transition: 0.2s;
 }
 [data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
-    font-size: 22px !important;
+    font-size: 20px !important;
     font-weight: 800 !important;
     text-align: center;
     width: 100%;
+    margin: 0;
 }
 [data-testid="stSidebar"] div[role="radiogroup"] label div[data-baseweb="radio"] {
     display: none;
 }
 
-/* カードデザイン */
+/* 6. iOS風カードデザイン */
 .ios-card {
     background-color: rgba(128, 128, 128, 0.08);
     border-radius: 20px;
@@ -37,21 +60,13 @@ html, body, [class*="css"] {
     text-align: center;
 }
 
-/* 入力パーツ */
+/* 7. 入力パーツのデザイン */
 .stNumberInput, .stCheckbox {
     background-color: rgba(128, 128, 128, 0.05);
     padding: 10px 15px;
     border-radius: 12px;
 }
 
-/* 保存ボタン */
+/* 8. 保存ボタン */
 .stButton>button {
-    border-radius: 18px;
-    background-color: #007AFF;
-    color: white;
-    padding: 18px;
-    font-size: 18px;
-    font-weight: 700;
-    width: 100%;
-    border: none;
-}
+    border-

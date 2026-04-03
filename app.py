@@ -179,7 +179,7 @@ if page == "💰 計算機":
                 st.toast("履歴に保存しました")
 
 # ==========================================
-# ページ2：計算履歴 (日付右寄せ・省スペース版)
+# ページ2：計算履歴 (中央品位・右端日付版)
 # ==========================================
 elif page == "📝 履歴":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>計算履歴</h1>", unsafe_allow_html=True)
@@ -191,12 +191,18 @@ elif page == "📝 履歴":
             bv = m['buy_total']
             bc = "#007AFF" if bv != "-" else "gray"
             
-            # ↓ HTMLバグ防止のため必ず左端（スペースなし）から記述
             st.markdown(f"""
 <div class="ios-card" style="text-align: left; padding: 18px 12px;">
 <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; border-bottom: 0.5px solid rgba(128, 128, 128, 0.2); padding-bottom: 8px;">
+<div style="flex: 1;"></div>
+
+<div style="flex: 2; text-align: center;">
 <span style="font-size: 18px; font-weight: 700;">{m['item']} ({m['weight']})</span>
-<span style="color: gray; font-size: 11px; white-space: nowrap; margin-left: 10px;">{m['datetime']}</span>
+</div>
+
+<div style="flex: 1; text-align: right;">
+<span style="color: gray; font-size: 10px; white-space: nowrap;">{m['datetime']}</span>
+</div>
 </div>
 
 <div style="display: flex; justify-content: space-between; text-align: center; align-items: flex-end;">

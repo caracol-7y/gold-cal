@@ -1,8 +1,8 @@
 import pandas as pd
 
 def get_all_prices_comprehensive():
-    # 「ウェブに公開」で発行したCSVのURL
-    sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-xxxxxxxxxxxx/pub?gid=435870077&single=true&output=csv"
+    # ⚠️ ここに「ウェブに公開」で取得したURLを貼り付けてください
+    sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTR6Kw8YVw_hFXgzzSxFrYRZsTjQdsHS5Wg1J6sHF8xeGLY7gOAbPTuPBwvDR7WGHFLBuMDDBQe81-V/pub?gid=435870077&single=true&output=csv"
     
     try:
         # スプレッドシートを取得
@@ -12,8 +12,7 @@ def get_all_prices_comprehensive():
         update_time_raw = df.iloc[3, 1]
         update_time = str(update_time_raw).strip() if pd.notna(update_time_raw) else "時刻不明"
         
-        # 18項目（B5〜B22）を取得する場合、iloc[4:22] となる
-        # スプレッドシートの入力がB22まであることを確認してください
+        # 18項目（B5〜B22）を取得
         prices_list = df.iloc[4:22, 1].tolist()
         
         keys = [
@@ -29,10 +28,9 @@ def get_all_prices_comprehensive():
                 continue
             
             try:
-                # 文字列処理: カンマを除去し、一度floatにしてからintへ（1200.0対策）
+                # 文字列処理: カンマを除去し数値へ
                 if isinstance(price_val, str):
                     price_val = price_val.replace(',', '').strip()
-                
                 all_prices[key] = int(float(price_val))
             except (ValueError, TypeError):
                 all_prices[key] = None
@@ -40,5 +38,4 @@ def get_all_prices_comprehensive():
         return all_prices, update_time
         
     except Exception as e:
-        # エラー詳細を投げる
         raise Exception(f"データ解析エラー: {e}")

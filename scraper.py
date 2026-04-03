@@ -1,58 +1,42 @@
+import pandas as pd
 import requests
-import json
-import re
+from datetime import datetime
+import io
 
-def get_all_prices_comprehensive(api_key):
-    target_url = "https://www.net-japan.co.jp/precious_metal/print/"
-    payload = {
-        "url": target_url, 
-        "renderType": "html", 
-        "outputAsJson": True,
-        "requestSettings": { 
-            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36", 
-            "waitInterval": 2000 
-        }
-    }
-    api_url = f"https://phantomjscloud.com/api/browser/v2/{api_key}/?request={json.dumps(payload)}"
-    
+# ★ ここにあなたのGoogleスプレッドシートの「ウェブに公開(CSV)」URLを貼り付けてください
+CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1v...あなたのURL.../pub?gid=0&single=true&output=csv"
+
+def get_all_prices_comprehensive():
+    """
+    スプレッドシートから最新の地金相場を取得する関数
+    """
     try:
-        response = requests.get(api_url, timeout=15)
-        response.raise_for_status()
-        data = response.json()
-        if "content" not in data or "data" not in data["content"]:
-            return None, None
-            
-        html_content = data["content"]["data"]
-        text_only = re.sub(r'<[^>]*>', ' ', html_content)
-        text_only = re.sub(r'\s+', ' ', text_only)
+        # 1. スプレッドシートからCSVデータを取得
+        response = requests.get(CSV_URL)
+        response.raise_for_status() # エラーがあれば例外を出す
         
-        time_match = re.search(r'(\d{4}/\d{2}/\d{2}\s+\d{2}:\d{2})', text_only)
-        update_time = time_match.group(1) if time_match else "時刻不明"
+        # 2. PandasでCSVを読み込む
+        # CSVの1列目が「項目名（Gold_Ingotなど）」、2列目が「価格」である想定
+        df = pd.read_csv(io.StringIO(response.text))
+        
+        # 3. 辞書形式に変換 { "Gold_Ingot": 13000, "K18": 9500, ... }
+        # 列名はスプレッドシートの1行目に合わせる必要があります
+        # ここでは「項目の列」と「価格の列」を辞書に変換しています
+        prices_dict = dict(zip(df.iloc[:, 0], df.iloc[:, 1]))
+        
+        # 価格を数値（int）に変換
+        for key in prices_dict:
+            try:
+                prices_dict[key] = int(str(prices_dict[key]).replace(',', '').replace('円', ''))
+            except:
+                prices_dict[key] = None
 
-        base_targets = {"Gold_Ingot": "金", "Pt_Ingot": "Pt", "Silver_Ingot": "銀", "Pd_Ingot": "Pd"}
+        # 4. 現在の更新時刻を取得
+        update_time = datetime.now().strftime("%Y/%m/%d %H:%M")
         
-        purity_targets = [
-            "K24", "K22", "K21.6", "K20", "K18", "K14", "K10", "K9", 
-            "Pt1000", "Pt950", "Pt900", "Pt850", 
-            "Sv1000", "Sv925", 
-            "Combo"
-        ]
-        
-        all_prices = {}
-        for key, label in base_targets.items():
-            regex = rf'{label}\s*([0-9,]+)\s*円'
-            match = re.search(regex, text_only)
-            all_prices[key] = int(match.group(1).replace(',', '')) if match else None
-        
-        for t in purity_targets:
-            if t == "Combo":
-                regex = r'金・プラチナコンビ[^0-9]*?([0-9,]+)\s*円'
-            else:
-                regex = rf'{t}[^0-9]*?([0-9,]+)\s*円'
-                
-            match = re.search(regex, text_only)
-            all_prices[t] = int(match.group(1).replace(',', '')) if match else None
-                
-        return all_prices, update_time
+        return prices_dict, update_time
+
     except Exception as e:
-        raise Exception(f"API通信エラー: {e}")
+        print(f"データ取得エラー: {e}")
+        # 失敗した場合は空の辞書とエラーメッセージを返す
+        return {}, "取得失敗"

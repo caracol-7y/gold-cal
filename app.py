@@ -93,7 +93,7 @@ st.sidebar.markdown(
 )
 
 # ==========================================
-# ページ1：価格計算機
+# ページ1：価格計算機 (状態保持版)
 # ==========================================
 if page == "💰 価格計算機":
     st.title("💍 地金価格計算機")
@@ -103,54 +103,83 @@ if page == "💰 価格計算機":
     else:
         st.warning("⚠️ 相場が取得できていません。サイドバーから「更新」してください。")
 
-    # --- 2段階選択システム (金属表記を英語のみに変更) ---
+    # 金属カテゴリ定義
     metal_categories = {
         "Gold": ["Gold_Ingot", "K24", "K22", "K20", "K18", "K14", "K10", "K9"],
         "Platinum": ["Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850"],
         "Silver": ["Silver_Ingot", "Sv1000", "Sv925"],
         "Palladium": ["Pd_Ingot"]
     }
-    
     options_map = {
-        "Gold_Ingot": "Gold Bar", 
-        "K24": "K24", "K22": "K22", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9",
-        "Pt_Ingot": "Platinum Bar", 
-        "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850",
-        "Silver_Ingot": "Silver Bar", 
-        "Sv1000": "Sv1000", "Sv925": "Sv925",
+        "Gold_Ingot": "Gold Bar", "K24": "K24", "K22": "K22", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9",
+        "Pt_Ingot": "Platinum Bar", "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850",
+        "Silver_Ingot": "Silver Bar", "Sv1000": "Sv1000", "Sv925": "Sv925",
         "Pd_Ingot": "Palladium Bar"
     }
 
-    # ステップ1: 金属種別を選択 (英語のみの表記)
+    # --- 入力値の保持設定 (Session State) ---
+    if 'selected_cat' not in st.session_state:
+        st.session_state.selected_cat = "Gold"
+    if 'selected_display' not in st.session_state:
+        st.session_state.selected_display = "Gold Bar"
+    if 'saved_weight' not in st.session_state:
+        st.session_state.saved_weight = 1.0
+    if 'saved_rate_sell' not in st.session_state:
+        st.session_state.saved_rate_sell = 90
+    if 'saved_use_bukin' not in st.session_state:
+        st.session_state.saved_use_bukin = True
+    if 'saved_rate_buy' not in st.session_state:
+        st.session_state.saved_rate_buy = 5
+
+    # --- 入力エリア ---
+    # 金属選択
     selected_cat = st.radio(
         "Select Metal", 
         options=list(metal_categories.keys()), 
-        horizontal=True
+        index=list(metal_categories.keys()).index(st.session_state.selected_cat),
+        horizontal=True,
+        key="cat_radio" # keyを指定することで状態が保持されやすくなる
     )
-    
-    # ステップ2: その金属に属する品位を選択
+    st.session_state.selected_cat = selected_cat # 選択値を保存
+
+    # 品位選択
     cat_keys = metal_categories[selected_cat]
     cat_options = [options_map[k] for k in cat_keys]
     
+    # 現在の選択肢に以前の保存値が含まれているか確認
+    try:
+        current_index = cat_options.index(st.session_state.selected_display)
+    except ValueError:
+        current_index = 0 # 含まれていない場合は先頭を選択
+        
     selected_display = st.radio(
         "Select Purity", 
         options=cat_options, 
+        index=current_index,
         horizontal=True
     )
-    
+    st.session_state.selected_display = selected_display # 選択値を保存
     selected_key = [k for k, v in options_map.items() if v == selected_display][0]
 
-    # --- その後の入力 (重量、割合などはそのまま) ---
-    # ... (以下、weight, rate_sell 等のコードが続きます)
+    # 重量 (valueに保存値を指定)
+    weight = st.number_input("重量 (g)", min_value=0.0, value=st.session_state.saved_weight, step=1.0, format="%.1f")
+    st.session_state.saved_weight = weight
 
-    weight = st.number_input("重量 (g)", min_value=0.0, value=1.0, step=1.0, format="%.1f")
-    rate_sell = st.number_input("割合 (%)", min_value=0, max_value=100, value=90, step=5)
+    # 割合 (valueに保存値を指定)
+    rate_sell = st.number_input("割合 (%)", min_value=0, max_value=100, value=st.session_state.saved_rate_sell, step=5)
+    st.session_state.saved_rate_sell = rate_sell
 
-    use_bukin = st.checkbox("歩金を適用する", value=True)
+    # 歩金
+    use_bukin = st.checkbox("歩金を適用する", value=st.session_state.saved_use_bukin)
+    st.session_state.saved_use_bukin = use_bukin
+    
     if use_bukin:
-        rate_buy = st.number_input("歩金 (%)", min_value=0, max_value=20, value=5, step=1)
+        rate_buy = st.number_input("歩金 (%)", min_value=0, max_value=20, value=st.session_state.saved_rate_buy, step=1)
+        st.session_state.saved_rate_buy = rate_buy
     else:
         rate_buy = 0
+
+    # --- (以下、計算ロジックと結果表示は以前と同じ) ---
 
     if st.session_state.all_prices and st.session_state.all_prices.get(selected_key):
         market_price = st.session_state.all_prices[selected_key]

@@ -177,7 +177,7 @@ if page == "💰 価格計算機":
     )
 
     use_bukin = st.checkbox(
-        "歩金を適用する", 
+        "買い歩を適用する", 
         value=st.session_state.p_use_bukin, 
         key="use_bukin_widget",
         on_change=sync_inputs

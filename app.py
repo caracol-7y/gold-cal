@@ -184,20 +184,31 @@ if page == "💰 地金計算機":
 # ==========================================
 elif page == "📝 計算メモ":
     st.markdown("<h1 style='text-align: center; font-size: 32px; font-weight: 800;'>計算メモ</h1>", unsafe_allow_html=True)
+    
     if not st.session_state.memo_list:
         st.info("保存された履歴はありません")
     else:
+        # 履歴を新しい順に表示
         for m in reversed(st.session_state.memo_list):
             st.markdown(f"""
-                <div class="ios-card" style="text-align: left; padding: 15px;">
-                    <div style="display: flex; justify-content: space-between; color: gray; font-size: 12px;">
-                        <span>{m['datetime']}</span><span>{m['item']} ({m['weight']})</span>
+                <div class="ios-card" style="text-align: left; padding: 18px;">
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+                        <span style="font-size: 18px; font-weight: 700;">{m['item']} ({m['weight']})</span>
+                        <span style="color: gray; font-size: 12px;">{m['datetime']}</span>
                     </div>
-                    <div style="font-size: 20px; font-weight: 700; margin-top: 5px; color: #ff4b4b;">{m['sell_total']} <small style="font-size: 12px; color:gray;">({m['rate']})</small></div>
-                    {f'<div style="font-size: 16px; color: #007AFF; font-weight: 600;">買い歩込: {m["buy_total"]}</div>' if m["buy_total"] != "-" else ""}
+                    
+                    <div style="font-size: 13px; color: gray; margin-bottom: 4px;">最大価格: {m['theory']}</div>
+                    
+                    <div style="font-size: 24px; font-weight: 800; color: #ff4b4b;">
+                        {m['sell_total']} <span style="font-size: 14px; color:gray; font-weight: 400;">({m['rate']})</span>
+                    </div>
+                    
+                    {f'<div style="font-size: 17px; color: #007AFF; font-weight: 700; margin-top: 6px; border-top: 0.5px solid rgba(128,128,128,0.2); padding-top: 6px;">買い歩込: {m["buy_total"]}</div>' if m["buy_total"] != "-" else ""}
                 </div>
             """, unsafe_allow_html=True)
-        if st.button("🗑️ 履歴をすべて削除"):
+            
+        st.write("") # スペース用
+        if st.button("🗑️ 履歴をすべて削除", use_container_width=True):
             st.session_state.memo_list = []
             st.rerun()
 

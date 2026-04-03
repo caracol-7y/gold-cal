@@ -191,8 +191,20 @@ elif page == "📋 最新価格一覧表":
             st.rerun()
 
     if st.session_state.all_prices:
-        categories = {"金 (Gold)": ["Gold_Ingot", "K24", "K22", "K20", "K18", "K14", "K10", "K9"], "プラチナ (Platinum)": ["Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850"], "銀 (Silver)": ["Silver_Ingot", "Sv1000", "Sv925"], "パラジウム (Palladium)": ["Pd_Ingot"]}
-        options_map = {"Gold_Ingot": "K24 インゴット", "K24": "K24", "K22": "K22", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9", "Pt_Ingot": "Pt1000 インゴット", "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850", "Silver_Ingot": "Sv1000 インゴット", "Sv1000": "Sv1000", "Sv925": "Sv925", "Pd_Ingot": "Pd インゴット"}
+        categories = {
+            "金 (Gold)": ["Gold_Ingot", "K24", "K22", "K21.6", "K20", "K18", "K14", "K10", "K9"], 
+            "プラチナ (Platinum)": ["Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850"], 
+            "銀 (Silver)": ["Silver_Ingot", "Sv1000", "Sv925"], 
+            "パラジウム (Palladium)": ["Pd_Ingot"]
+        }
+        
+        # 表示用ラベルの定義
+        list_options_map = {
+            "Gold_Ingot": "K24 インゴット", "K24": "K24", "K22": "K22", "K21.6": "K21.6", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9",
+            "Pt_Ingot": "Pt1000 インゴット", "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850",
+            "Silver_Ingot": "Sv1000 インゴット", "Sv1000": "Sv1000", "Sv925": "Sv925",
+            "Pd_Ingot": "Pd インゴット"
+        }
         for cat, keys in categories.items():
             st.markdown(f"""<div style="background-color: rgba(128, 128, 128, 0.1); padding: 8px 15px; border-radius: 5px; margin-top: 20px; margin-bottom: 10px; border-left: 5px solid #888888;"><span style="font-weight: bold; font-size: 18px;">{cat}</span></div>""", unsafe_allow_html=True)
             category_html = '<div style="display: flex; flex-direction: column;">'

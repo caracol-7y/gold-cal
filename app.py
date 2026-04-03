@@ -45,15 +45,30 @@ def get_all_prices_comprehensive():
         update_time = time_match.group(1) if time_match else "時刻不明"
 
         base_targets = {"Gold_Ingot": "金", "Pt_Ingot": "Pt", "Silver_Ingot": "銀", "Pd_Ingot": "Pd"}
-        purity_targets = ["K24", "K22", "K20", "K18", "K14", "K10", "K9", "Pt1000", "Pt950", "Pt900", "Pt850", "Sv1000", "Sv925"]
+        
+        # 【追加】K21.6 と コンビ をリストに加える
+        purity_targets = [
+            "K24", "K22", "K21.6", "K20", "K18", "K14", "K10", "K9", 
+            "Pt1000", "Pt950", "Pt900", "Pt850", 
+            "Sv1000", "Sv925", 
+            "Combo" # コンビ用キーワード
+        ]
         
         all_prices = {}
         for key, label in base_targets.items():
             regex = rf'{label}\s*([0-9,]+)\s*円'
             match = re.search(regex, text_only)
             all_prices[key] = int(match.group(1).replace(',', '')) if match else None
+        
         for t in purity_targets:
-            regex = rf'{t}[^0-9]*?([0-9,]+)\s*円'
+            # 【改良】コンビなどの日本語表記にも対応させる正規表現
+            if t == "Combo":
+                # 「金・プラチナコンビ」の後の数字を抽出
+                regex = r'金・プラチナコンビ[^0-9]*?([0-9,]+)\s*円'
+            else:
+                # 小数点を含む品位 (K21.6など) にも対応させる
+                regex = rf'{t}[^0-9]*?([0-9,]+)\s*円'
+                
             match = re.search(regex, text_only)
             all_prices[t] = int(match.group(1).replace(',', '')) if match else None
                 
@@ -93,7 +108,7 @@ st.sidebar.markdown(
 )
 
 # ==========================================
-# ページ1：価格計算機 (状態保持版)
+# ページ1：価格計算機
 # ==========================================
 if page == "💰 価格計算機":
     st.title("💍 地金価格計算機")
@@ -103,20 +118,21 @@ if page == "💰 価格計算機":
     else:
         st.warning("⚠️ 相場が取得できていません。サイドバーから「更新」してください。")
 
-    # 金属カテゴリ定義
+    # 【追加】コンビを Gold カテゴリに含める
     metal_categories = {
-        "Gold": ["Gold_Ingot", "K24", "K22", "K20", "K18", "K14", "K10", "K9"],
+        "Gold": ["Gold_Ingot", "K24", "K22", "K21.6", "K20", "K18", "K14", "K10", "K9", "Combo"],
         "Platinum": ["Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850"],
         "Silver": ["Silver_Ingot", "Sv1000", "Sv925"],
         "Palladium": ["Pd_Ingot"]
     }
+    
+    # 表示名のマッピングを更新
     options_map = {
-        "Gold_Ingot": "Gold Bar", "K24": "K24", "K22": "K22", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9",
+        "Gold_Ingot": "Gold Bar", "K24": "K24", "K22": "K22", "K21.6": "K21.6", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9", "Combo": "金プラコンビ",
         "Pt_Ingot": "Platinum Bar", "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850",
         "Silver_Ingot": "Silver Bar", "Sv1000": "Sv1000", "Sv925": "Sv925",
         "Pd_Ingot": "Palladium Bar"
     }
-
     # --- 入力値の保持設定 (Session State) ---
     if 'selected_cat' not in st.session_state:
         st.session_state.selected_cat = "Gold"

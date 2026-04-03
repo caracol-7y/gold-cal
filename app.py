@@ -112,8 +112,12 @@ if page == "💰 地金計算機":
     if st.session_state.all_prices and st.session_state.all_prices.get(selected_key):
         market_price = st.session_state.all_prices[selected_key]
         
-        # 👇 表示内容を「品位・重量・単価」に変更
-        st.info(f"品位: **{selected_display}** ｜ 重量: **{weight}g** ｜ 単価: **{market_price:,} 円/g**")
+        # 👇 センタリングした情報表示エリア
+        st.markdown(f"""
+            <div style="text-align: center; background-color: rgba(128, 128, 128, 0.1); padding: 12px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(128, 128, 128, 0.2);">
+                <span style="font-size: 16px;">品位: <b>{selected_display}</b> ｜ 重量: <b>{weight}g</b> ｜ 単価: <b>{market_price:,} 円/g</b></span>
+            </div>
+        """, unsafe_allow_html=True)
         
         if weight > 0:
             theory_total, sell_total, buy_total = calculate_prices(market_price, weight, rate_sell, use_bukin, rate_buy)

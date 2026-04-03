@@ -136,7 +136,7 @@ if page == "💰 計算機":
     with col2:
         rate_sell = st.number_input("割合 (%)", min_value=0, max_value=100, value=st.session_state.p_rate_sell, step=1, key="r_sell_val", on_change=sync_inputs)
     
-    use_bukin = st.checkbox("買い歩を適用する", value=st.session_state.p_use_bukin, key="bukin_on_off", on_change=sync_inputs)
+    use_bukin = st.checkbox("買い歩あり", value=st.session_state.p_use_bukin, key="bukin_on_off", on_change=sync_inputs)
     
     # 買い歩の数値入力も状態保持
     rate_buy = 0

@@ -30,10 +30,9 @@ if 'all_prices' not in st.session_state: st.session_state.all_prices = None
 if 'update_time' not in st.session_state: st.session_state.update_time = None
 if 'memo_list' not in st.session_state: st.session_state.memo_list = []
 if 'p_cat' not in st.session_state: st.session_state.p_cat = "Gold"
-if 'p_display' not in st.session_state: st.session_state.p_display = "Gold Bar"
+if 'p_display' not in st.session_state: st.session_state.p_display = "K18"
 if 'p_weight' not in st.session_state: st.session_state.p_weight = 1.0
 if 'p_rate_sell' not in st.session_state: st.session_state.p_rate_sell = 90
-# 👇 デフォルトを False (オフ) に変更
 if 'p_use_bukin' not in st.session_state: st.session_state.p_use_bukin = False 
 if 'p_rate_buy' not in st.session_state: st.session_state.p_rate_buy = 5
 

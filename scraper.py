@@ -12,7 +12,7 @@ def get_all_prices_comprehensive():
         update_time = str(update_time_raw) if pd.notna(update_time_raw) else "時刻不明"
         
         # B5:B21 (4〜20行目, 1列目) から価格リスト取得（計17項目）
-        prices_list = df.iloc[4:21, 1].tolist()
+        prices_list = df.iloc[4:22, 1].tolist()
         
         # スプレッドシートの並び順に完全に一致させる（17項目）
         keys = [

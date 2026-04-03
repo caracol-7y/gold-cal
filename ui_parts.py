@@ -14,7 +14,7 @@ def render_calc_results(theory, sell, rate, buy=None, buy_rate=None):
 """, unsafe_allow_html=True)
     if buy is not None:
         st.markdown(f"""
-<div class="ios-card" style="border: 2px solid #007AFF; background-color: rgba(0, 122, 255, 0.05);"><span style="font-size: 13px; color: #007AFF;">買い歩込価格 ({buy_rate})</span><br><span style="font-size: 32px; font-weight: 800; color: #007AFF;">¥{buy:,.0f}</span></div>
+<div class="ios-card" style="border: 2px solid #007AFF; background-color: rgba(0, 122, 255, 0.05);"><span style="font-size: 13px; color: #007AFF;">歩金込価格 ({buy_rate})</span><br><span style="font-size: 32px; font-weight: 800; color: #007AFF;">¥{buy:,.0f}</span></div>
 """, unsafe_allow_html=True)
 
 def render_history_card(m):
@@ -22,10 +22,9 @@ def render_history_card(m):
     bv = m['buy_total']
     bc = "#007AFF" if bv != "-" else "gray"
     
-    # 保存された金属名(Gold等)と品位(Bar等)を組み合わせる
     metal = m.get('metal', '') 
     item = m.get('item', '')
-    title = f"{metal} {item}".strip() # 例: Gold Bar
+    title = f"{metal} {item}".strip()
     
     st.markdown(f"""
 <div class="ios-card" style="text-align: left; padding: 12px 10px;">
@@ -41,7 +40,10 @@ def render_history_card(m):
 <div style="display: flex; justify-content: space-between; text-align: center; align-items: flex-end;">
 <div style="flex: 1;"><div style="font-size: 10px; color: gray; margin-bottom: 2px;">最大</div><div style="font-size: 18px; font-weight: 700; color: gray;">{m['theory']}</div></div>
 <div style="flex: 1; border-left: 0.5px solid rgba(128, 128, 128, 0.2); border-right: 0.5px solid rgba(128, 128, 128, 0.2);"><div style="font-size: 10px; color: #ff4b4b; margin-bottom: 2px;">割合({m['rate']})</div><div style="font-size: 18px; font-weight: 800; color: #ff4b4b;">{m['sell_total']}</div></div>
-<div style="flex: 1;"><div style="font-size: 10px; color: {bc}; margin-bottom: 2px;">買い歩({br})</div><div style="font-size: 18px; font-weight: 800; color: {bc};">{bv}</div></div>
+<div style="flex: 1;">
+<div style="font-size: 10px; color: {bc}; margin-bottom: 2px;">歩金({br})</div>
+<div style="font-size: 18px; font-weight: 800; color: {bc};">{bv}</div>
+</div>
 </div>
 </div>
 """, unsafe_allow_html=True)

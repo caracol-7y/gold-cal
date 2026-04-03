@@ -4,7 +4,7 @@ from datetime import datetime
 import io
 
 # ★ ここにあなたのGoogleスプレッドシートの「ウェブに公開(CSV)」URLを貼り付けてください
-CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1v...あなたのURL.../pub?gid=0&single=true&output=csv"
+CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTR6Kw8YVw_hFXgzzSxFrYRZsTjQdsHS5Wg1J6sHF8xeGLY7gOAbPTuPBwvDR7WGHFLBuMDDBQe81-V/pub?gid=435870077&single=true&output=csv"
 
 def get_all_prices_comprehensive():
     """

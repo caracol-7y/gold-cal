@@ -186,7 +186,7 @@ if page == "💰 地金計算機":
         st.warning("⚠️ 相場データを読み込めていません。")
 
 # ==========================================
-# ページ2：計算メモ
+# ページ2：計算メモ (HTML表示バグ修正版)
 # ==========================================
 elif page == "📝 計算メモ":
     st.markdown("<h1 style='text-align: center; font-size: 32px; font-weight: 800;'>計算メモ</h1>", unsafe_allow_html=True)
@@ -195,29 +195,26 @@ elif page == "📝 計算メモ":
         st.info("保存された履歴はありません")
     else:
         for m in reversed(st.session_state.memo_list):
-            # データの取得
             buy_rate_val = m.get('buy_rate', '0%')
             buy_val = m['buy_total'] if m["buy_total"] != "-" else "-"
             buy_color = "#007AFF" if m["buy_total"] != "-" else "gray"
             
+            # ↓ st.markdownの中身は必ず左端（スペースなし）から書き始める
             st.markdown(f"""
 <div class="ios-card" style="text-align: left; padding: 20px 12px;">
 <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; border-bottom: 0.5px solid rgba(128, 128, 128, 0.2); padding-bottom: 10px;">
 <span style="font-size: 19px; font-weight: 700;">{m['item']} ({m['weight']})</span>
 <span style="color: gray; font-size: 12px;">{m['datetime']}</span>
 </div>
-
 <div style="display: flex; justify-content: space-between; text-align: center; align-items: flex-end;">
 <div style="flex: 1;">
 <div style="font-size: 12px; color: gray; margin-bottom: 5px;">最大 (100%)</div>
 <div style="font-size: 21px; font-weight: 700; color: gray;">{m['theory']}</div>
 </div>
-
 <div style="flex: 1; border-left: 0.5px solid rgba(128, 128, 128, 0.2); border-right: 0.5px solid rgba(128, 128, 128, 0.2);">
 <div style="font-size: 12px; color: #ff4b4b; margin-bottom: 5px;">割合 ({m['rate']})</div>
 <div style="font-size: 21px; font-weight: 800; color: #ff4b4b;">{m['sell_total']}</div>
 </div>
-
 <div style="flex: 1;">
 <div style="font-size: 12px; color: {buy_color}; margin-bottom: 5px;">買い歩({buy_rate_val})</div>
 <div style="font-size: 21px; font-weight: 800; color: {buy_color};">{buy_val}</div>
@@ -232,7 +229,7 @@ elif page == "📝 計算メモ":
             st.rerun()
 
 # ==========================================
-# ページ3：最新価格一覧表
+# ページ3：最新価格一覧表 (HTML表示バグ修正版)
 # ==========================================
 elif page == "📋 最新価格一覧表":
     st.markdown("<h1 style='text-align: center; font-size: 32px; font-weight: 800;'>最新相場</h1>", unsafe_allow_html=True)
@@ -240,17 +237,20 @@ elif page == "📋 最新価格一覧表":
     if st.session_state.all_prices:
         for cat_label, keys in METAL_CATEGORIES.items():
             st.markdown(f"<p style='margin-left: 10px; margin-top: 20px; font-weight: 700; color: #8e8e93; font-size: 13px;'>{cat_label.upper()}</p>", unsafe_allow_html=True)
+            
+            # HTMLを1行ずつ連結して構築（インデント問題を回避）
             html = '<div style="background-color: rgba(128,128,128,0.08); border-radius: 15px; overflow: hidden;">'
             for i, k in enumerate(keys):
                 price = st.session_state.all_prices.get(k)
                 price_display = f"{price:,} 円" if price else "取得不可"
                 border = "border-bottom: 0.5px solid rgba(128,128,128,0.2);" if i < len(keys)-1 else ""
-                html += f"""
-                    <div style="display: flex; justify-content: space-between; padding: 15px; {border}">
-                        <span style="font-weight: 500;">{OPTIONS_MAP[k]}</span>
-                        <span style="font-weight: 700; color: #ff4b4b;">{price_display}</span>
-                    </div>
-                """
+                
+                # f-stringで1行ずつ結合
+                html += f'<div style="display: flex; justify-content: space-between; padding: 15px; {border}">'
+                html += f'<span style="font-weight: 500;">{OPTIONS_MAP[k]}</span>'
+                html += f'<span style="font-weight: 700; color: #ff4b4b;">{price_display}</span>'
+                html += '</div>'
+            
             st.markdown(html + '</div>', unsafe_allow_html=True)
-
-st.caption("※スプレッドシートから抽出した最新データです。")
+    else:
+        st.warning("⚠️ 相場データがありません。スプレッドシートの設定を確認してください。")

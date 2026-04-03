@@ -1,112 +1,201 @@
 import streamlit as st
+import pandas as pd
 from datetime import datetime
 from scraper import get_all_prices_comprehensive
 from calculator import calculate_prices
-import ui_parts  # 自作の表示パーツ
-import config    # 自作の設定ファイル
 
 # ==========================================
-# 1. 初期設定 & デザイン読み込み
+# 設定 (Secretsから読み込む)
 # ==========================================
-st.set_page_config(page_title="地金計算 Pro", page_icon="💰", layout="centered")
+try:
+    PHANTOM_API_KEY = st.secrets["PHANTOM_API_KEY"]
+except Exception:
+    PHANTOM_API_KEY = st.secrets.get("PHANTOM_API_KEY", "ak-b9gn3-wrv64-rxq31-n4mt7-95srr")
+# ==========================================
 
-# style.css を読み込んで適用
-with open("style.css", "r", encoding="utf-8") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+st.set_page_config(page_title="地金価格管理システム Pro", page_icon="💰", layout="centered")
 
-# セッション状態の初期化（リセット防止）
-if 'memo_list' not in st.session_state: st.session_state.memo_list = []
-if 'p_cat' not in st.session_state: st.session_state.p_cat = "Gold"
-if 'p_display' not in st.session_state: st.session_state.p_display = "K18"
-if 'p_weight' not in st.session_state: st.session_state.p_weight = config.DEFAULT_SETTINGS["weight"]
-if 'p_rate_sell' not in st.session_state: st.session_state.p_rate_sell = config.DEFAULT_SETTINGS["rate_sell"]
-if 'p_use_bukin' not in st.session_state: st.session_state.p_use_bukin = config.DEFAULT_SETTINGS["use_bukin"]
-if 'p_rate_buy' not in st.session_state: st.session_state.p_rate_buy = config.DEFAULT_SETTINGS["rate_buy"]
-
-# コールバック関数：入力値を保存
-def sync_inputs():
-    if "w_val" in st.session_state: st.session_state.p_weight = st.session_state.w_val
-    if "r_sell_val" in st.session_state: st.session_state.p_rate_sell = st.session_state.r_sell_val
-    if "bukin_on_off" in st.session_state: st.session_state.p_use_bukin = st.session_state.bukin_on_off
-    if "r_buy_val" in st.session_state: st.session_state.p_rate_buy = st.session_state.r_buy_val
-
-def on_cat_change():
-    sync_inputs()
-    st.session_state.p_cat = st.session_state.cat_widget
-    st.session_state.p_display = config.OPTIONS_MAP[config.METAL_CATEGORIES[st.session_state.cat_widget][0]]
-
-# データ取得
-@st.cache_data(ttl=3600)
-def fetch_data():
-    return get_all_prices_comprehensive()
-
-prices, update_time = fetch_data()
+# --- セッション状態の初期化 ---
+if 'all_prices' not in st.session_state:
+    st.session_state.all_prices = None
+if 'update_time' not in st.session_state:
+    st.session_state.update_time = None
+if 'memo_list' not in st.session_state:
+    st.session_state.memo_list = []
 
 # ==========================================
-# 2. サイドバー・ナビゲーション
+# サイドバー
 # ==========================================
-st.sidebar.markdown("### MENU")
-page = st.sidebar.radio("NAV", ["💰 計算機", "📝 履歴", "📋 最新相場"], label_visibility="collapsed")
+st.sidebar.title("⚙️ メニュー")
+page = st.sidebar.radio("ページ選択", ["💰 価格計算機", "📋 最新価格一覧表", "📝 計算メモ"])
+
+if st.sidebar.button("🔄 最新相場に更新"):
+    with st.spinner("クラウド解析中..."):
+        try:
+            prices, time_val = get_all_prices_comprehensive(PHANTOM_API_KEY)
+            if prices:
+                st.session_state.all_prices = prices
+                st.session_state.update_time = time_val
+                st.sidebar.success("更新完了！")
+            else:
+                st.sidebar.error("更新失敗")
+        except Exception as e:
+            st.sidebar.error(str(e))
+
+st.sidebar.markdown("---")
+st.sidebar.markdown(
+    '<a href="https://www.net-japan.co.jp/precious_metal_partner/" target="_blank" style="text-decoration: none; color: #0000EE; font-weight: bold;">🔗 公式サイトで価格を確認する</a>', 
+    unsafe_allow_html=True
+)
 
 # ==========================================
-# ページ1：地金計算機
+# ページ1：価格計算機
 # ==========================================
-if page == "💰 計算機":
-    st.markdown("<h1 style='text-align: center; font-weight: 800;'>地金計算機</h1>", unsafe_allow_html=True)
-    st.caption(f"最終更新: {update_time}")
-
-    # カテゴリ・品位選択
-    selected_cat = st.radio("金属", options=list(config.METAL_CATEGORIES.keys()), index=list(config.METAL_CATEGORIES.keys()).index(st.session_state.p_cat), horizontal=True, key="cat_widget", on_change=on_cat_change)
-    cat_opts = [config.OPTIONS_MAP[k] for k in config.METAL_CATEGORIES[selected_cat]]
-    selected_display = st.radio("品位", options=cat_opts, index=cat_opts.index(st.session_state.p_display) if st.session_state.p_display in cat_opts else 0, horizontal=True, key="display_widget", on_change=lambda: setattr(st.session_state, 'p_display', st.session_state.display_widget))
+if page == "💰 価格計算機":
+    st.title("💍 地金価格計算機")
     
-    selected_key = [k for k, v in config.OPTIONS_MAP.items() if v == selected_display][0]
+    if st.session_state.update_time:
+        st.caption(f"🕒 サイト更新時刻: {st.session_state.update_time}")
+    else:
+        st.warning("⚠️ 相場が取得できていません。サイドバーから「更新」してください。")
 
-    # 数値入力
-    col1, col2 = st.columns(2)
-    with col1: weight = st.number_input("重量 (g)", min_value=0.0, value=st.session_state.p_weight, step=0.1, format="%.1f", key="w_val", on_change=sync_inputs)
-    with col2: rate_sell = st.number_input("割合 (%)", min_value=0, max_value=100, value=st.session_state.p_rate_sell, step=1, key="r_sell_val", on_change=sync_inputs)
+    metal_categories = {
+        "Gold": ["Gold_Ingot", "K24", "K22", "K21.6", "K20", "K18", "K14", "K10", "K9", "Combo"],
+        "Platinum": ["Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850"],
+        "Silver": ["Silver_Ingot", "Sv1000", "Sv925"],
+        "Palladium": ["Pd_Ingot"]
+    }
     
-    use_bukin = st.checkbox("買い歩を適用する", value=st.session_state.p_use_bukin, key="bukin_on_off", on_change=sync_inputs)
-    rate_buy = st.number_input("買い歩 (%)", min_value=0, max_value=20, value=st.session_state.p_rate_buy, key="r_buy_val", on_change=sync_inputs) if use_bukin else 0
+    options_map = {
+        "Gold_Ingot": "Gold Bar", "K24": "K24", "K22": "K22", "K21.6": "K21.6", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9", "Combo": "金プラコンビ",
+        "Pt_Ingot": "Platinum Bar", "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850",
+        "Silver_Ingot": "Silver Bar", "Sv1000": "Sv1000", "Sv925": "Sv925",
+        "Pd_Ingot": "Palladium Bar"
+    }
 
-    # 計算と表示
-    if prices and selected_key in prices:
-        market_price = prices[selected_key]
-        ui_parts.render_market_info(selected_display, weight, market_price)
+    if 'selected_cat' not in st.session_state:
+        st.session_state.selected_cat = "Gold"
+    if 'selected_display' not in st.session_state:
+        st.session_state.selected_display = "Gold Bar"
+    if 'saved_weight' not in st.session_state:
+        st.session_state.saved_weight = 1.0
+    if 'saved_rate_sell' not in st.session_state:
+        st.session_state.saved_rate_sell = 90
+    if 'saved_use_bukin' not in st.session_state:
+        st.session_state.saved_use_bukin = True
+    if 'saved_rate_buy' not in st.session_state:
+        st.session_state.saved_rate_buy = 5
+
+    selected_cat = st.radio(
+        "金属を選択", 
+        options=list(metal_categories.keys()), 
+        index=list(metal_categories.keys()).index(st.session_state.selected_cat),
+        horizontal=True,
+        key="cat_radio"
+    )
+    st.session_state.selected_cat = selected_cat
+
+    cat_keys = metal_categories[selected_cat]
+    cat_options = [options_map[k] for k in cat_keys]
+    
+    try:
+        current_index = cat_options.index(st.session_state.selected_display)
+    except ValueError:
+        current_index = 0
+        
+    selected_display = st.radio(
+        "品位を選択", 
+        options=cat_options, 
+        index=current_index,
+        horizontal=True
+    )
+    st.session_state.selected_display = selected_display
+    selected_key = [k for k, v in options_map.items() if v == selected_display][0]
+
+    weight = st.number_input("重量 (g)", min_value=0.0, value=st.session_state.saved_weight, step=1.0, format="%.1f")
+    st.session_state.saved_weight = weight
+
+    rate_sell = st.number_input("割合 (%)", min_value=0, max_value=100, value=st.session_state.saved_rate_sell, step=5)
+    st.session_state.saved_rate_sell = rate_sell
+
+    use_bukin = st.checkbox("歩金を適用する", value=st.session_state.saved_use_bukin)
+    st.session_state.saved_use_bukin = use_bukin
+    
+    if use_bukin:
+        rate_buy = st.number_input("歩金 (%)", min_value=0, max_value=20, value=st.session_state.saved_rate_buy, step=1)
+        st.session_state.saved_rate_buy = rate_buy
+    else:
+        rate_buy = 0
+
+    if st.session_state.all_prices and st.session_state.all_prices.get(selected_key):
+        market_price = st.session_state.all_prices[selected_key]
+        st.info(f"現在の相場単価: **{market_price:,} 円/g**")
         
         if weight > 0:
             theory_total, sell_total, buy_total = calculate_prices(market_price, weight, rate_sell, use_bukin, rate_buy)
-            ui_parts.render_calc_results(theory_total, sell_total, rate_sell, buy_total if use_bukin else None, f"{rate_buy}%")
+            
+            st.markdown(f"""<div style="background-color: #ffffff; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #cccccc; margin-bottom: 10px;"><span style="font-size: 16px; color: #666;">最大価格 (100%)</span><br><span style="font-size: 32px; font-weight: bold; color: #333;">{theory_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
+            st.markdown(f"""<div style="background-color: #fff0f0; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #ff4b4b; margin-bottom: 10px;"><span style="font-size: 16px; color: #ff4b4b;">割合価格 ({rate_sell}%)</span><br><span style="font-size: 32px; font-weight: bold; color: #ff4b4b;">{sell_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
+            
+            if use_bukin and buy_total is not None:
+                st.markdown(f"""<div style="background-color: #f0f7ff; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #4b89ff; margin-bottom: 10px;"><span style="font-size: 16px; color: #4b89ff;">買い歩込価格 ({rate_buy}%)</span><br><span style="font-size: 32px; font-weight: bold; color: #4b89ff;">{buy_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
 
-            if st.button("💾 この結果を保存"):
-                memo = {
-                    "datetime": datetime.now().strftime("%m/%d %H:%M"), "item": selected_display, "weight": f"{weight}g",
-                    "theory": f"¥{theory_total:,.0f}", "rate": f"{rate_sell}%", "sell_total": f"¥{sell_total:,.0f}",
-                    "buy_rate": f"{rate_buy}%", "buy_total": f"¥{buy_total:,.0f}" if use_bukin else "-"
+            st.write("")
+            if st.button("💾 この結果をメモに保存", use_container_width=True):
+                memo_entry = {
+                    "datetime": datetime.now().strftime("%Y/%m/%d %H:%M"),
+                    "item": selected_display,
+                    "weight": f"{weight}g",
+                    "theory": f"{theory_total:,.0f}円",
+                    "rate": f"{rate_sell}%",
+                    "sell_total": f"{sell_total:,.0f}円",
+                    "buy_total": f"{buy_total:,.0f}円" if use_bukin else "-"
                 }
-                st.session_state.memo_list.append(memo)
-                st.toast("保存しました")
+                st.session_state.memo_list.append(memo_entry)
+                st.success("メモに保存しました！")
+    else:
+        st.warning("⚠️ 相場が取得できていません。サイドバーから「更新」してください。")
 
 # ==========================================
-# ページ2：計算履歴
+# ページ2：最新価格一覧表
 # ==========================================
-elif page == "📝 履歴":
-    st.markdown("<h1 style='text-align: center; font-weight: 800;'>計算履歴</h1>", unsafe_allow_html=True)
-    if not st.session_state.memo_list:
-        st.info("保存された履歴はありません")
+elif page == "📋 最新価格一覧表":
+    st.title("📋 最新価格一覧表")
+    if st.session_state.update_time:
+        st.caption(f"🕒 サイト更新時刻: {st.session_state.update_time}")
     else:
-        for m in reversed(st.session_state.memo_list):
-            ui_parts.render_history_card(m)
-        if st.button("🗑️ すべての履歴を削除"):
+        st.warning("⚠️ 相場が取得できていません。サイドバーから「更新」してください。")
+
+    if st.session_state.all_prices:
+        categories = {"金 (Gold)": ["Gold_Ingot", "K24", "K22", "K20", "K18", "K14", "K10", "K9"], "プラチナ (Platinum)": ["Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850"], "銀 (Silver)": ["Silver_Ingot", "Sv1000", "Sv925"], "パラジウム (Palladium)": ["Pd_Ingot"]}
+        options_map = {"Gold_Ingot": "K24 インゴット", "K24": "K24", "K22": "K22", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9", "Pt_Ingot": "Pt1000 インゴット", "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850", "Silver_Ingot": "Sv1000 インゴット", "Sv1000": "Sv1000", "Sv925": "Sv925", "Pd_Ingot": "Pd インゴット"}
+        for cat, keys in categories.items():
+            st.markdown(f"""<div style="background-color: #f0f2f6; padding: 8px 15px; border-radius: 5px; margin-top: 20px; margin-bottom: 10px; border-left: 5px solid #31333F;"><span style="font-weight: bold; font-size: 18px; color: #31333F;">{cat}</span></div>""", unsafe_allow_html=True)
+            category_html = '<div style="display: flex; flex-direction: column;">'
+            for k in keys:
+                price = st.session_state.all_prices.get(k)
+                price_display = f"{price:,} 円" if price else "取得不可"
+                display_name = options_map[k]
+                category_html += f"""<div style="display: flex; justify-content: space-between; align-items: center; background-color: #ffffff; padding: 12px 10px; border-bottom: 1px solid #eeeeee; font-family: sans-serif;"><span style="font-weight: bold; color: #333333; font-size: 15px;">{display_name}</span><span style="color: #ff0000; font-weight: bold; font-size: 16px;">{price_display}</span></div>"""
+            category_html += '</div>'
+            st.markdown(category_html, unsafe_allow_html=True)
+            st.write("") 
+    else:
+        st.warning("⚠️ 相場が取得できていません。サイドバーから「更新」してください。")
+
+# ==========================================
+# ページ3：計算メモ
+# ==========================================
+elif page == "📝 計算メモ":
+    st.title("📝 計算メモ")
+    if not st.session_state.memo_list:
+        st.info("保存されたメモはありません。計算機ページから保存してください。")
+    else:
+        df = pd.DataFrame(st.session_state.memo_list)
+        df.columns = ["日時", "品位", "重量", "最大価格", "割合(%)", "割合価格", "買い歩込価格"]
+        st.table(df)
+        if st.button("🗑️ すべてのメモを削除"):
             st.session_state.memo_list = []
             st.rerun()
 
-# ==========================================
-# ページ3：最新相場
-# ==========================================
-elif page == "📋 最新相場":
-    st.markdown("<h1 style='text-align: center; font-weight: 800;'>最新相場</h1>", unsafe_allow_html=True)
-    if prices:
-        for cat_label, keys in config.METAL_CATEGORIES.items():
-            ui_parts.render_price_list(cat_label, keys, prices, config.OPTIONS_MAP)
+st.caption("※ネットジャパンのプリントページから抽出した最新データです。")

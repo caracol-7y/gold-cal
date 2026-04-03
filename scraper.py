@@ -1,41 +1,58 @@
-import pandas as pd
+import requests
+import json
+import re
 
-def get_all_prices_comprehensive():
-    # ⚠️ ここに「ウェブに公開」で取得したURLを貼り付けてください
-    sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTR6Kw8YVw_hFXgzzSxFrYRZsTjQdsHS5Wg1J6sHF8xeGLY7gOAbPTuPBwvDR7WGHFLBuMDDBQe81-V/pub?gid=435870077&single=true&output=csv"
+def get_all_prices_comprehensive(api_key):
+    target_url = "https://www.net-japan.co.jp/precious_metal/print/"
+    payload = {
+        "url": target_url, 
+        "renderType": "html", 
+        "outputAsJson": True,
+        "requestSettings": { 
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36", 
+            "waitInterval": 2000 
+        }
+    }
+    api_url = f"https://phantomjscloud.com/api/browser/v2/{api_key}/?request={json.dumps(payload)}"
     
     try:
-        # スプレッドシートを取得
-        df = pd.read_csv(sheet_url, header=None)
+        response = requests.get(api_url, timeout=15)
+        response.raise_for_status()
+        data = response.json()
+        if "content" not in data or "data" not in data["content"]:
+            return None, None
+            
+        html_content = data["content"]["data"]
+        text_only = re.sub(r'<[^>]*>', ' ', html_content)
+        text_only = re.sub(r'\s+', ' ', text_only)
         
-        # B4 (インデックス3) から更新時刻取得
-        update_time_raw = df.iloc[3, 1]
-        update_time = str(update_time_raw).strip() if pd.notna(update_time_raw) else "時刻不明"
+        time_match = re.search(r'(\d{4}/\d{2}/\d{2}\s+\d{2}:\d{2})', text_only)
+        update_time = time_match.group(1) if time_match else "時刻不明"
+
+        base_targets = {"Gold_Ingot": "金", "Pt_Ingot": "Pt", "Silver_Ingot": "銀", "Pd_Ingot": "Pd"}
         
-        # 18項目（B5〜B22）を取得
-        prices_list = df.iloc[4:22, 1].tolist()
-        
-        keys = [
-            "Gold_Ingot", "K24", "K22", "K21.6", "K20", "K18", "K14", "K10", "K9",
-            "Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850",
-            "Silver_Ingot", "Sv1000", "Sv925", "Pd_Ingot"
+        purity_targets = [
+            "K24", "K22", "K21.6", "K20", "K18", "K14", "K10", "K9", 
+            "Pt1000", "Pt950", "Pt900", "Pt850", 
+            "Sv1000", "Sv925", 
+            "Combo"
         ]
         
         all_prices = {}
-        for key, price_val in zip(keys, prices_list):
-            if pd.isna(price_val) or str(price_val).strip() == "":
-                all_prices[key] = None
-                continue
-            
-            try:
-                # 文字列処理: カンマを除去し数値へ
-                if isinstance(price_val, str):
-                    price_val = price_val.replace(',', '').strip()
-                all_prices[key] = int(float(price_val))
-            except (ValueError, TypeError):
-                all_prices[key] = None
+        for key, label in base_targets.items():
+            regex = rf'{label}\s*([0-9,]+)\s*円'
+            match = re.search(regex, text_only)
+            all_prices[key] = int(match.group(1).replace(',', '')) if match else None
+        
+        for t in purity_targets:
+            if t == "Combo":
+                regex = r'金・プラチナコンビ[^0-9]*?([0-9,]+)\s*円'
+            else:
+                regex = rf'{t}[^0-9]*?([0-9,]+)\s*円'
+                
+            match = re.search(regex, text_only)
+            all_prices[t] = int(match.group(1).replace(',', '')) if match else None
                 
         return all_prices, update_time
-        
     except Exception as e:
-        raise Exception(f"データ解析エラー: {e}")
+        raise Exception(f"API通信エラー: {e}")

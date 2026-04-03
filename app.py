@@ -14,7 +14,7 @@ if 'update_time' not in st.session_state:
 if 'memo_list' not in st.session_state:
     st.session_state.memo_list = []
 
-# 👇 この2行を追加してください 👇
+# 👇この2行を追加👇
 if 'close_sidebar_flag' not in st.session_state:
     st.session_state.close_sidebar_flag = False
 

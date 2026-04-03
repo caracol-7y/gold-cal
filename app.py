@@ -80,9 +80,13 @@ if page == "💰 計算機":
             if st.button("💾 この結果を保存"):
                 st.session_state.memo_list.append({
                     "datetime": datetime.now().strftime("%m/%d %H:%M"),
-                    "item": disp, "weight": f"{weight:.1f}g",
-                    "theory": f"¥{th:,.0f}", "rate": f"{rsell}%",
-                    "sell_total": f"¥{sl:,.0f}", "buy_rate": f"{rbuy}%",
+                    "metal": cat,   # ★ 金属の種類 (Gold, Platinum等) を追加
+                    "item": disp, 
+                    "weight": f"{weight:.1f}g",
+                    "theory": f"¥{th:,.0f}", 
+                    "rate": f"{rsell}%", 
+                    "sell_total": f"¥{sl:,.0f}", 
+                    "buy_rate": f"{rbuy}%", 
                     "buy_total": f"¥{by:,.0f}" if ubukin else "-"
                 })
                 st.toast("保存しました")

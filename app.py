@@ -112,10 +112,13 @@ if page == "💰 価格計算機":
     }
     
     options_map = {
-        "Gold_Ingot": "K24 インゴット", "K24": "K24", "K22": "K22", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9",
-        "Pt_Ingot": "Pt1000 インゴット", "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850",
-        "Silver_Ingot": "Sv1000 インゴット", "Sv1000": "Sv1000", "Sv925": "Sv925",
-        "Pd_Ingot": "Pd インゴット"
+        "Gold_Ingot": "Gold Bar", 
+        "K24": "K24", "K22": "K22", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9",
+        "Pt_Ingot": "Platinum Bar", 
+        "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850",
+        "Silver_Ingot": "Silver Bar", 
+        "Sv1000": "Sv1000", "Sv925": "Sv925",
+        "Pd_Ingot": "Palladium Bar"
     }
 
     # ステップ1: 金属種別を選択 (英語のみの表記)

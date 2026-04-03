@@ -5,76 +5,61 @@ from scraper import get_all_prices_comprehensive
 from calculator import calculate_prices
 
 # ==========================================
-# 1. iOS風 デザイン設定 (ナビゲーション強化)
+# 1. iOS風 デザイン設定 (バグ防止版)
 # ==========================================
 st.set_page_config(page_title="地金計算 Pro", page_icon="💰", layout="centered")
 
+# CSSのインデントを詰めてバグを回避
 st.markdown("""
-    <style>
-    /* 全体フォント */
-    html, body, [class*="css"] {
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
-    }
-    
-    /* メインコンテナ */
-    .main .block-container {
-        padding-top: 1.5rem;
-        max-width: 500px;
-    }
-
-    /* iOS風カード */
-    .ios-card {
-        background-color: rgba(128, 128, 128, 0.08);
-        border-radius: 20px;
-        padding: 20px;
-        border: 1px solid rgba(128, 128, 128, 0.1);
-        margin-bottom: 15px;
-        text-align: center;
-    }
-
-    /* 大きなナビゲーション（ラジオボタンをタブ風に改造） */
-    div[data-testid="stRadio"] > div {
-        background-color: rgba(128, 128, 128, 0.1);
-        padding: 5px;
-        border-radius: 15px;
-        gap: 5px;
-    }
-    div[data-testid="stRadio"] label {
-        background-color: transparent;
-        border-radius: 10px;
-        padding: 10px 0 !important;
-        font-weight: 600 !important;
-        font-size: 16px !important;
-        flex: 1;
-        text-align: center;
-        justify-content: center;
-    }
-    /* 選択中のタブ（Streamlitの仕様に合わせた色調整） */
-    div[data-testid="stRadio"] label[data-baseweb="radio"] div:first-child {
-        display: none; /* ラジオボタンの丸を消す */
-    }
-    
-    /* 入力エリアの装飾 */
-    .stNumberInput, .stCheckbox {
-        background-color: rgba(128, 128, 128, 0.05);
-        padding: 10px 15px;
-        border-radius: 12px;
-        margin-bottom: 10px;
-    }
-    
-    /* 保存ボタン */
-    .stButton>button {
-        border-radius: 15px;
-        background-color: #007AFF;
-        color: white;
-        border: none;
-        padding: 15px;
-        font-size: 18px;
-        font-weight: 700;
-        width: 100%;
-        margin-top: 10px;
-    }
-    </style>
+<style>
+html, body, [class*="css"] {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
+}
+.main .block-container {
+    padding-top: 1.5rem;
+    max-width: 500px;
+}
+.ios-card {
+    background-color: rgba(128, 128, 128, 0.08);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid rgba(128, 128, 128, 0.1);
+    margin-bottom: 15px;
+    text-align: center;
+}
+/* ナビゲーションタブの装飾 */
+div[data-testid="stRadio"] > div {
+    background-color: rgba(128, 128, 128, 0.1);
+    padding: 5px;
+    border-radius: 15px;
+}
+div[data-testid="stRadio"] label {
+    border-radius: 10px;
+    padding: 10px 0 !important;
+    font-weight: 600 !important;
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+}
+div[data-testid="stRadio"] label[data-baseweb="radio"] div:first-child {
+    display: none;
+}
+.stNumberInput, .stCheckbox {
+    background-color: rgba(128, 128, 128, 0.05);
+    padding: 10px 15px;
+    border-radius: 12px;
+}
+.stButton>button {
+    border-radius: 15px;
+    background-color: #007AFF;
+    color: white;
+    border: none;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: 700;
+    width: 100%;
+}
+</style>
 """, unsafe_allow_html=True)
 
 # 定数
@@ -91,9 +76,7 @@ OPTIONS_MAP = {
     "Pd_Ingot": "Pd Bar"
 }
 
-# ==========================================
 # 2. セッション状態
-# ==========================================
 if 'all_prices' not in st.session_state: st.session_state.all_prices = None
 if 'update_time' not in st.session_state: st.session_state.update_time = None
 if 'memo_list' not in st.session_state: st.session_state.memo_list = []
@@ -104,36 +87,26 @@ if 'p_rate_sell' not in st.session_state: st.session_state.p_rate_sell = 90
 if 'p_use_bukin' not in st.session_state: st.session_state.p_use_bukin = False
 if 'p_rate_buy' not in st.session_state: st.session_state.p_rate_buy = 5
 
-# ==========================================
 # 3. データ取得
-# ==========================================
 @st.cache_data(ttl=3600)
 def fetch_prices_cached():
-    return get_all_prices_comprehensive()
+    try:
+        return get_all_prices_comprehensive()
+    except:
+        return None, "取得失敗"
 
-try:
-    prices, time_val = fetch_prices_cached()
-    st.session_state.all_prices, st.session_state.update_time = prices, time_val
-except Exception as e:
-    st.error(f"データ取得エラー: {e}")
+prices, time_val = fetch_prices_cached()
+st.session_state.all_prices, st.session_state.update_time = prices, time_val
 
-# ==========================================
-# 4. メインナビゲーション (大きく表示)
-# ==========================================
-# サイドバーではなく、メイン画面最上部に配置
-page = st.radio(
-    "NAVIGATION", # ラベルはCSSで隠れますが識別用に必要
-    ["💰 計算機", "📝 メモ", "📋 相場"],
-    horizontal=True,
-    label_visibility="collapsed" # ラベルを隠してタブのように見せる
-)
+# 4. メインナビゲーション
+page = st.radio("NAV", ["💰 計算機", "📝 メモ", "📋 相場"], horizontal=True, label_visibility="collapsed")
+st.markdown("---")
 
-st.markdown("---") # 区切り線
-
-# 共通関数
 def sync_inputs():
-    for w, p in [("weight_widget", "p_weight"), ("rate_sell_widget", "p_rate_sell"), ("use_bukin_widget", "p_use_bukin"), ("rate_buy_widget", "p_rate_buy")]:
-        if w in st.session_state: st.session_state[p] = st.session_state[w]
+    if "weight_widget" in st.session_state: st.session_state.p_weight = st.session_state.weight_widget
+    if "rate_sell_widget" in st.session_state: st.session_state.p_rate_sell = st.session_state.rate_sell_widget
+    if "use_bukin_widget" in st.session_state: st.session_state.p_use_bukin = st.session_state.use_bukin_widget
+    if "rate_buy_widget" in st.session_state: st.session_state.p_rate_buy = st.session_state.rate_buy_widget
 
 def on_cat_change():
     sync_inputs()
@@ -145,8 +118,7 @@ def on_cat_change():
 # ==========================================
 if page == "💰 計算機":
     st.markdown("<h1 style='text-align: center; font-size: 32px; font-weight: 800; margin-bottom: 0;'>地金計算機</h1>", unsafe_allow_html=True)
-    if st.session_state.update_time:
-        st.markdown(f"<p style='text-align: center; color: gray; font-size: 13px; margin-bottom: 20px;'>更新: {st.session_state.update_time}</p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align: center; color: gray; font-size: 13px; margin-bottom: 20px;'>更新: {st.session_state.update_time}</p>", unsafe_allow_html=True)
 
     selected_cat = st.radio("金属", options=list(METAL_CATEGORIES.keys()), index=list(METAL_CATEGORIES.keys()).index(st.session_state.p_cat), horizontal=True, key="cat_widget", on_change=on_cat_change)
     cat_options = [OPTIONS_MAP[k] for k in METAL_CATEGORIES[selected_cat]]
@@ -173,12 +145,14 @@ if page == "💰 計算機":
                 st.markdown(f'<div class="ios-card" style="border: 2px solid #007AFF; background-color: rgba(0, 122, 255, 0.05);"><span style="font-size: 13px; color: #007AFF;">買い歩込価格 ({rate_buy}%)</span><br><span style="font-size: 32px; font-weight: 800; color: #007AFF;">¥{buy_total:,.0f}</span></div>', unsafe_allow_html=True)
 
             if st.button("💾 計算結果をメモに保存"):
-                memo_entry = {"datetime": datetime.now().strftime("%H:%M"), "item": selected_display, "weight": f"{weight}g", "theory": f"¥{theory_total:,.0f}", "rate": f"{rate_sell}%", "sell_total": f"¥{sell_total:,.0f}", "buy_rate": f"{rate_buy}%", "buy_total": f"¥{buy_total:,.0f}" if use_bukin else "-"}
+                memo_entry = {"datetime": datetime.now().strftime("%Y/%m/%d %H:%M"), "item": selected_display, "weight": f"{weight}g", "theory": f"¥{theory_total:,.0f}", "rate": f"{rate_sell}%", "sell_total": f"¥{sell_total:,.0f}", "buy_rate": f"{rate_buy}%", "buy_total": f"¥{buy_total:,.0f}" if use_bukin else "-"}
                 st.session_state.memo_list.append(memo_entry)
                 st.toast("保存しました")
+    else:
+        st.error("⚠️ 相場データが読み込めません。スプレッドシートの公開URLを確認してください。")
 
 # ==========================================
-# ページ2：計算メモ
+# ページ2：計算メモ (インデントバグ修正版)
 # ==========================================
 elif page == "📝 メモ":
     st.markdown("<h1 style='text-align: center; font-size: 32px; font-weight: 800;'>計算メモ</h1>", unsafe_allow_html=True)
@@ -186,9 +160,10 @@ elif page == "📝 メモ":
         st.info("履歴はありません")
     else:
         for m in reversed(st.session_state.memo_list):
-            buy_rate_val = m.get('buy_rate', '0%')
-            buy_val = m['buy_total'] if m["buy_total"] != "-" else "-"
-            buy_color = "#007AFF" if m["buy_total"] != "-" else "gray"
+            br = m.get('buy_rate', '0%')
+            bv = m['buy_total'] if m["buy_total"] != "-" else "-"
+            bc = "#007AFF" if m["buy_total"] != "-" else "gray"
+            # ↓ HTMLの行頭スペースを完全に排除
             st.markdown(f"""
 <div class="ios-card" style="text-align: left; padding: 20px 12px;">
 <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; border-bottom: 0.5px solid rgba(128, 128, 128, 0.2); padding-bottom: 10px;">
@@ -198,7 +173,7 @@ elif page == "📝 メモ":
 <div style="display: flex; justify-content: space-between; text-align: center; align-items: flex-end;">
 <div style="flex: 1;"><div style="font-size: 12px; color: gray; margin-bottom: 5px;">最大</div><div style="font-size: 20px; font-weight: 700; color: gray;">{m['theory']}</div></div>
 <div style="flex: 1; border-left: 0.5px solid rgba(128, 128, 128, 0.2); border-right: 0.5px solid rgba(128, 128, 128, 0.2);"><div style="font-size: 12px; color: #ff4b4b; margin-bottom: 5px;">割合({m['rate']})</div><div style="font-size: 20px; font-weight: 800; color: #ff4b4b;">{m['sell_total']}</div></div>
-<div style="flex: 1;"><div style="font-size: 12px; color: {buy_color}; margin-bottom: 5px;">買い歩({buy_rate_val})</div><div style="font-size: 20px; font-weight: 800; color: {buy_color};">{buy_val}</div></div>
+<div style="flex: 1;"><div style="font-size: 12px; color: {bc}; margin-bottom: 5px;">買い歩({br})</div><div style="font-size: 20px; font-weight: 800; color: {bc};">{bv}</div></div>
 </div>
 </div>
 """, unsafe_allow_html=True)
@@ -207,7 +182,7 @@ elif page == "📝 メモ":
             st.rerun()
 
 # ==========================================
-# ページ3：最新価格一覧表
+# ページ3：最新価格一覧表 (インデントバグ修正版)
 # ==========================================
 elif page == "📋 相場":
     st.markdown("<h1 style='text-align: center; font-size: 32px; font-weight: 800;'>最新相場</h1>", unsafe_allow_html=True)
@@ -216,10 +191,10 @@ elif page == "📋 相場":
             st.markdown(f"<p style='margin-left: 10px; margin-top: 20px; font-weight: 700; color: #8e8e93; font-size: 13px;'>{cat_label.upper()}</p>", unsafe_allow_html=True)
             html = '<div style="background-color: rgba(128,128,128,0.08); border-radius: 15px; overflow: hidden;">'
             for i, k in enumerate(keys):
-                price = st.session_state.all_prices.get(k)
-                price_display = f"{price:,} 円" if price else "取得不可"
-                border = "border-bottom: 0.5px solid rgba(128,128,128,0.2);" if i < len(keys)-1 else ""
-                html += f'<div style="display: flex; justify-content: space-between; padding: 15px; {border}"><span style="font-weight: 500;">{OPTIONS_MAP[k]}</span><span style="font-weight: 700; color: #ff4b4b;">{price_display}</span></div>'
+                p = st.session_state.all_prices.get(k)
+                pd_disp = f"{p:,} 円" if p else "取得不可"
+                bb = "border-bottom: 0.5px solid rgba(128,128,128,0.2);" if i < len(keys)-1 else ""
+                html += f'<div style="display: flex; justify-content: space-between; padding: 15px; {bb}"><span style="font-weight: 500;">{OPTIONS_MAP[k]}</span><span style="font-weight: 700; color: #ff4b4b;">{pd_disp}</span></div>'
             st.markdown(html + '</div>', unsafe_allow_html=True)
 
 st.caption("※スプレッドシート参照")

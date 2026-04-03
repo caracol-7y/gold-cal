@@ -2,7 +2,7 @@ import pandas as pd
 
 def get_all_prices_comprehensive():
     # スプレッドシートのCSVエクスポートURL（gid=435870077 が Dataシート）
-    sheet_url = "https://docs.google.com/spreadsheets/d/1oi78z7eqyIZI6Jh_eRuwUXXVgK_V_xsYaenXSeu7eK4/export?format=csv&gid=435870077"
+    sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTR6Kw8YVw_hFXgzzSxFrYRZsTjQdsHS5Wg1J6sHF8xeGLY7gOAbPTuPBwvDR7WGHFLBuMDDBQe81-V/pub?gid=435870077&single=true&output=csv"
     
     try:
         # PandasでCSVを読み込む

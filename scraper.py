@@ -4,38 +4,45 @@ from datetime import datetime
 import io
 import config
 
-# 提供された正しいURL
+# 提供されたURL（gid=435870077 は Dataシートを指している前提です）
 CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTR6Kw8YVw_hFXgzzSxFrYRZsTjQdsHS5Wg1J6sHF8xeGLY7gOAbPTuPBwvDR7WGHFLBuMDDBQe81-V/pub?gid=435870077&single=true&output=csv"
 
 def get_all_prices_comprehensive():
     try:
-        # 1. データの取得
         response = requests.get(CSV_URL, timeout=10)
         response.raise_for_status()
         csv_data = response.content.decode('utf-8')
         
-        # 2. Pandasで読み込み（全列・全行を対象にするためheaderなし）
+        # header=None で読み込み
         df = pd.read_csv(io.StringIO(csv_data), header=None)
         
-        # 3. シート内の「数字だけ」をリストに抽出
-        # 行・列を問わず、上から順に数字が入っているセルを探します
-        all_numbers = []
-        for _, row in df.iterrows():
-            for cell_val in row:
-                s_val = str(cell_val).strip()
-                # カンマや「円」を消して数字だけにする
-                clean_num = "".join(filter(str.isdigit, s_val))
-                if clean_num:
-                    all_numbers.append(int(clean_num))
-                    break # その行で数字が見つかったら次の行へ
+        # --------------------------------------------------
+        # B5:B22 を抽出する
+        # 行: 5行目〜22行目 → インデックスは 4〜21 (Pythonでは 4:22)
+        # 列: B列 → インデックス 1
+        # --------------------------------------------------
+        # iloc[行の範囲, 列のインデックス]
+        target_data = df.iloc[4:22, 1] 
         
-        # 4. config.ALL_METAL_KEYS の順番通りに割り当て
         prices_dict = {}
+        
+        # 抽出したデータを config.ALL_METAL_KEYS の順番に割り当て
         for i, key in enumerate(config.ALL_METAL_KEYS):
-            if i < len(all_numbers):
-                prices_dict[key] = all_numbers[i]
+            if i < len(target_data):
+                # セルの値を取得
+                val = str(target_data.iloc[i]).strip()
+                
+                # 数字だけを抽出して数値化
+                try:
+                    clean_val = "".join(filter(str.isdigit, val))
+                    if clean_val:
+                        prices_dict[key] = int(clean_val)
+                    else:
+                        prices_dict[key] = None
+                except:
+                    prices_dict[key] = None
             else:
-                prices_dict[key] = None # 数字が足りない場合
+                prices_dict[key] = None
 
         update_time = datetime.now().strftime("%Y/%m/%d %H:%M")
         return prices_dict, update_time

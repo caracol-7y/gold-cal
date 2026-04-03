@@ -13,7 +13,7 @@ except Exception:
     PHANTOM_API_KEY = st.secrets.get("PHANTOM_API_KEY", "ak-b9gn3-wrv64-rxq31-n4mt7-95srr")
 # ==========================================
 
-st.set_page_config(page_title="地金価格管理システム Pro", page_icon="💰", layout="centered")
+st.set_page_config(page_title="地金計算システム Pro", page_icon="💰", layout="centered")
 
 # --- セッション状態の初期化 ---
 if 'all_prices' not in st.session_state:
@@ -44,7 +44,8 @@ def update_market_prices():
 # サイドバー
 # ==========================================
 st.sidebar.title("⚙️ メニュー")
-page = st.sidebar.radio("ページ選択", ["💰 価格計算機", "📋 最新価格一覧表", "📝 計算メモ"])
+# 順序と名称を修正
+page = st.sidebar.radio("ページ選択", ["💰 地金計算機", "📝 計算メモ", "📋 最新価格一覧表"])
 
 if st.sidebar.button("🔄 最新相場に更新", key="sidebar_update_btn"):
     if update_market_prices():
@@ -60,10 +61,10 @@ st.sidebar.markdown(
 )
 
 # ==========================================
-# ページ1：価格計算機
+# ページ1：地金計算機
 # ==========================================
-if page == "💰 価格計算機":
-    st.title("💍 地金価格計算機")
+if page == "💰 地金計算機":
+    st.title("💍 地金計算機")
     
     if st.session_state.update_time:
         st.caption(f"🕒 サイト更新時刻: {st.session_state.update_time}")
@@ -90,9 +91,7 @@ if page == "💰 価格計算機":
         "Pd_Ingot": "Palladium Bar"
     }
 
-    # ==========================================
-    # 入力値の永続化設定（ページ移動で消えない「影の変数」）
-    # ==========================================
+    # 入力保持用設定
     if 'p_cat' not in st.session_state:
         st.session_state.p_cat = "Gold"
     if 'p_display' not in st.session_state:
@@ -106,7 +105,6 @@ if page == "💰 価格計算機":
     if 'p_rate_buy' not in st.session_state:
         st.session_state.p_rate_buy = 5
 
-    # --- コールバック関数（入力された瞬間に「影の変数」へ退避） ---
     def sync_inputs():
         if "weight_widget" in st.session_state:
             st.session_state.p_weight = st.session_state.weight_widget
@@ -126,18 +124,8 @@ if page == "💰 価格計算機":
     def on_display_change():
         st.session_state.p_display = st.session_state.display_widget
 
-    # ==========================================
-    # 入力エリア
-    # ==========================================
     cat_index = list(metal_categories.keys()).index(st.session_state.p_cat)
-    selected_cat = st.radio(
-        "金属を選択", 
-        options=list(metal_categories.keys()), 
-        index=cat_index,
-        horizontal=True,
-        key="cat_widget",
-        on_change=on_cat_change
-    )
+    selected_cat = st.radio("金属を選択", options=list(metal_categories.keys()), index=cat_index, horizontal=True, key="cat_widget", on_change=on_cat_change)
 
     cat_keys = metal_categories[selected_cat]
     cat_options = [options_map[k] for k in cat_keys]
@@ -147,53 +135,14 @@ if page == "💰 価格計算機":
     except ValueError:
         display_index = 0
         
-    selected_display = st.radio(
-        "品位を選択", 
-        options=cat_options, 
-        index=display_index,
-        horizontal=True,
-        key="display_widget",
-        on_change=on_display_change
-    )
+    selected_display = st.radio("品位を選択", options=cat_options, index=display_index, horizontal=True, key="display_widget", on_change=on_display_change)
     selected_key = [k for k, v in options_map.items() if v == selected_display][0]
 
-    weight = st.number_input(
-        "重量 (g)", 
-        min_value=0.0, 
-        value=st.session_state.p_weight, 
-        step=1.0, 
-        format="%.1f", 
-        key="weight_widget",
-        on_change=sync_inputs
-    )
-
-    rate_sell = st.number_input(
-        "割合 (%)", 
-        min_value=0, max_value=100, 
-        value=st.session_state.p_rate_sell, 
-        step=5, 
-        key="rate_sell_widget",
-        on_change=sync_inputs
-    )
-
-    use_bukin = st.checkbox(
-        "買い歩を適用する", 
-        value=st.session_state.p_use_bukin, 
-        key="use_bukin_widget",
-        on_change=sync_inputs
-    )
+    weight = st.number_input("重量 (g)", min_value=0.0, value=st.session_state.p_weight, step=1.0, format="%.1f", key="weight_widget", on_change=sync_inputs)
+    rate_sell = st.number_input("割合 (%)", min_value=0, max_value=100, value=st.session_state.p_rate_sell, step=5, key="rate_sell_widget", on_change=sync_inputs)
+    use_bukin = st.checkbox("歩金を適用する", value=st.session_state.p_use_bukin, key="use_bukin_widget", on_change=sync_inputs)
     
-    if use_bukin:
-        rate_buy = st.number_input(
-            "歩金 (%)", 
-            min_value=0, max_value=20, 
-            value=st.session_state.p_rate_buy, 
-            step=1, 
-            key="rate_buy_widget",
-            on_change=sync_inputs
-        )
-    else:
-        rate_buy = 0
+    rate_buy = st.number_input("歩金 (%)", min_value=0, max_value=20, value=st.session_state.p_rate_buy, step=1, key="rate_buy_widget", on_change=sync_inputs) if use_bukin else 0
 
     if st.session_state.all_prices and st.session_state.all_prices.get(selected_key):
         market_price = st.session_state.all_prices[selected_key]
@@ -225,7 +174,22 @@ if page == "💰 価格計算機":
         st.warning("⚠️ 相場が取得できていません。上のボタンから最新相場を取得してください。")
 
 # ==========================================
-# ページ2：最新価格一覧表
+# ページ2：計算メモ (移動)
+# ==========================================
+elif page == "📝 計算メモ":
+    st.title("📝 計算メモ")
+    if not st.session_state.memo_list:
+        st.info("保存されたメモはありません。計算機ページから保存してください。")
+    else:
+        df = pd.DataFrame(st.session_state.memo_list)
+        df.columns = ["日時", "品位", "重量", "最大価格", "割合(%)", "割合価格", "買い歩込価格"]
+        st.table(df)
+        if st.button("🗑️ すべてのメモを削除"):
+            st.session_state.memo_list = []
+            st.rerun()
+
+# ==========================================
+# ページ3：最新価格一覧表 (移動)
 # ==========================================
 elif page == "📋 最新価格一覧表":
     st.title("📋 最新価格一覧表")
@@ -254,20 +218,5 @@ elif page == "📋 最新価格一覧表":
             category_html += '</div>'
             st.markdown(category_html, unsafe_allow_html=True)
             st.write("") 
-
-# ==========================================
-# ページ3：計算メモ
-# ==========================================
-elif page == "📝 計算メモ":
-    st.title("📝 計算メモ")
-    if not st.session_state.memo_list:
-        st.info("保存されたメモはありません。計算機ページから保存してください。")
-    else:
-        df = pd.DataFrame(st.session_state.memo_list)
-        df.columns = ["日時", "品位", "重量", "最大価格", "割合(%)", "割合価格", "買い歩込価格"]
-        st.table(df)
-        if st.button("🗑️ すべてのメモを削除"):
-            st.session_state.memo_list = []
-            st.rerun()
 
 st.caption("※ネットジャパンのプリントページから抽出した最新データです。")

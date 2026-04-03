@@ -3,11 +3,10 @@ import streamlit as st
 def render_market_info(display_name, weight, market_price):
     st.markdown(f"""
 <div class="ios-card" style="background-color: rgba(0, 122, 255, 0.05); border: 1px solid rgba(0, 122, 255, 0.2);">
-<span style="font-size: 14px; color: #8e8e93;">{display_name} | {weight}g</span><br>
+<span style="font-size: 14px; color: #8e8e93;">{display_name} | {weight:.1f}g</span><br>
 <span style="font-size: 22px; font-weight: 700;">{market_price:,} 円/g</span>
 </div>
 """, unsafe_allow_html=True)
-
 def render_calc_results(theory, sell, rate, buy=None, buy_rate=None):
     st.markdown(f"""
 <div class="ios-card"><span style="font-size: 13px; color: gray;">最大価格 (100%)</span><br><span style="font-size: 28px; font-weight: 700;">¥{theory:,.0f}</span></div>

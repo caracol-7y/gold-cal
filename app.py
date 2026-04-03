@@ -179,7 +179,7 @@ if page == "💰 計算機":
                 st.toast("履歴に保存しました")
 
 # ==========================================
-# ページ2：計算履歴 (中央品位・右端日付版)
+# ページ2：計算履歴 (余白削減・コンパクト版)
 # ==========================================
 elif page == "📝 履歴":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>計算履歴</h1>", unsafe_allow_html=True)
@@ -192,14 +192,12 @@ elif page == "📝 履歴":
             bc = "#007AFF" if bv != "-" else "gray"
             
             st.markdown(f"""
-<div class="ios-card" style="text-align: left; padding: 18px 12px;">
-<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; border-bottom: 0.5px solid rgba(128, 128, 128, 0.2); padding-bottom: 8px;">
+<div class="ios-card" style="text-align: left; padding: 12px 10px;">
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; border-bottom: 0.5px solid rgba(128, 128, 128, 0.2); padding-bottom: 6px;">
 <div style="flex: 1;"></div>
-
 <div style="flex: 2; text-align: center;">
-<span style="font-size: 18px; font-weight: 700;">{m['item']} ({m['weight']})</span>
+<span style="font-size: 17px; font-weight: 700;">{m['item']} ({m['weight']})</span>
 </div>
-
 <div style="flex: 1; text-align: right;">
 <span style="color: gray; font-size: 10px; white-space: nowrap;">{m['datetime']}</span>
 </div>
@@ -207,16 +205,16 @@ elif page == "📝 履歴":
 
 <div style="display: flex; justify-content: space-between; text-align: center; align-items: flex-end;">
 <div style="flex: 1;">
-<div style="font-size: 11px; color: gray; margin-bottom: 4px;">最大</div>
-<div style="font-size: 19px; font-weight: 700; color: gray;">{m['theory']}</div>
+<div style="font-size: 10px; color: gray; margin-bottom: 2px;">最大</div>
+<div style="font-size: 18px; font-weight: 700; color: gray;">{m['theory']}</div>
 </div>
 <div style="flex: 1; border-left: 0.5px solid rgba(128, 128, 128, 0.2); border-right: 0.5px solid rgba(128, 128, 128, 0.2);">
-<div style="font-size: 11px; color: #ff4b4b; margin-bottom: 4px;">割合({m['rate']})</div>
-<div style="font-size: 19px; font-weight: 800; color: #ff4b4b;">{m['sell_total']}</div>
+<div style="font-size: 10px; color: #ff4b4b; margin-bottom: 2px;">割合({m['rate']})</div>
+<div style="font-size: 18px; font-weight: 800; color: #ff4b4b;">{m['sell_total']}</div>
 </div>
 <div style="flex: 1;">
-<div style="font-size: 11px; color: {bc}; margin-bottom: 4px;">買い歩({br})</div>
-<div style="font-size: 19px; font-weight: 800; color: {bc};">{bv}</div>
+<div style="font-size: 10px; color: {bc}; margin-bottom: 2px;">買い歩({br})</div>
+<div style="font-size: 18px; font-weight: 800; color: {bc};">{bv}</div>
 </div>
 </div>
 </div>

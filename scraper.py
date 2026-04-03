@@ -34,8 +34,7 @@ def get_all_prices_comprehensive(api_key):
         purity_targets = [
             "K24", "K22", "K21.6", "K20", "K18", "K14", "K10", "K9", 
             "Pt1000", "Pt950", "Pt900", "Pt850", 
-            "Sv1000", "Sv925", 
-            "Combo"
+            "Sv1000", "Sv925"
         ]
         
         all_prices = {}
@@ -45,11 +44,7 @@ def get_all_prices_comprehensive(api_key):
             all_prices[key] = int(match.group(1).replace(',', '')) if match else None
         
         for t in purity_targets:
-            if t == "Combo":
-                regex = r'金・プラチナコンビ[^0-9]*?([0-9,]+)\s*円'
-            else:
-                regex = rf'{t}[^0-9]*?([0-9,]+)\s*円'
-                
+            regex = rf'{t}[^0-9]*?([0-9,]+)\s*円'
             match = re.search(regex, text_only)
             all_prices[t] = int(match.group(1).replace(',', '')) if match else None
                 

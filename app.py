@@ -24,23 +24,34 @@ if 'memo_list' not in st.session_state:
     st.session_state.memo_list = []
 
 # ==========================================
-# サイドバー
+# 共通関数：相場データの更新
 # ==========================================
-st.sidebar.title("⚙️ メニュー")
-page = st.sidebar.radio("ページ選択", ["💰 価格計算機", "📋 最新価格一覧表", "📝 計算メモ"])
-
-if st.sidebar.button("🔄 最新相場に更新"):
+def update_market_prices():
     with st.spinner("クラウド解析中..."):
         try:
             prices, time_val = get_all_prices_comprehensive(PHANTOM_API_KEY)
             if prices:
                 st.session_state.all_prices = prices
                 st.session_state.update_time = time_val
-                st.sidebar.success("更新完了！")
+                return True
             else:
-                st.sidebar.error("更新失敗")
+                return False
         except Exception as e:
-            st.sidebar.error(str(e))
+            st.error(str(e))
+            return False
+
+# ==========================================
+# サイドバー
+# ==========================================
+st.sidebar.title("⚙️ メニュー")
+page = st.sidebar.radio("ページ選択", ["💰 価格計算機", "📋 最新価格一覧表", "📝 計算メモ"])
+
+if st.sidebar.button("🔄 最新相場に更新", key="sidebar_update_btn"):
+    if update_market_prices():
+        st.sidebar.success("更新完了！")
+        st.rerun()
+    else:
+        st.sidebar.error("更新失敗")
 
 st.sidebar.markdown("---")
 st.sidebar.markdown(
@@ -57,7 +68,13 @@ if page == "💰 価格計算機":
     if st.session_state.update_time:
         st.caption(f"🕒 サイト更新時刻: {st.session_state.update_time}")
     else:
-        st.warning("⚠️ 相場が取得できていません。サイドバーから「更新」してください。")
+        st.warning("⚠️ 相場が取得できていません。下のボタンから最新相場を取得してください。")
+        if st.button("🔄 相場データを取得する", key="main_top_update_btn"):
+            if update_market_prices():
+                st.success("更新完了！")
+                st.rerun()
+            else:
+                st.error("更新失敗")
 
     metal_categories = {
         "Gold": ["Gold_Ingot", "K24", "K22", "K21.6", "K20", "K18", "K14", "K10", "K9"],
@@ -73,7 +90,7 @@ if page == "💰 価格計算機":
         "Pd_Ingot": "Palladium Bar"
     }
 
-# ==========================================
+    # ==========================================
     # 入力値の永続化設定（ページ移動で消えない「影の変数」）
     # ==========================================
     if 'p_cat' not in st.session_state:
@@ -103,7 +120,6 @@ if page == "💰 価格計算機":
     def on_cat_change():
         sync_inputs()
         st.session_state.p_cat = st.session_state.cat_widget
-        # 金属が変わったら、品位もその金属の先頭にリセット
         first_key = metal_categories[st.session_state.cat_widget][0]
         st.session_state.p_display = options_map[first_key]
 
@@ -178,6 +194,7 @@ if page == "💰 価格計算機":
         )
     else:
         rate_buy = 0
+
     if st.session_state.all_prices and st.session_state.all_prices.get(selected_key):
         market_price = st.session_state.all_prices[selected_key]
         st.info(f"現在の相場単価: **{market_price:,} 円/g**")
@@ -205,7 +222,7 @@ if page == "💰 価格計算機":
                 st.session_state.memo_list.append(memo_entry)
                 st.success("メモに保存しました！")
     else:
-        st.warning("⚠️ 相場が取得できていません。サイドバーから「更新」してください。")
+        st.warning("⚠️ 相場が取得できていません。上のボタンから最新相場を取得してください。")
 
 # ==========================================
 # ページ2：最新価格一覧表
@@ -215,7 +232,13 @@ elif page == "📋 最新価格一覧表":
     if st.session_state.update_time:
         st.caption(f"🕒 サイト更新時刻: {st.session_state.update_time}")
     else:
-        st.warning("⚠️ 相場が取得できていません。サイドバーから「更新」してください。")
+        st.warning("⚠️ 相場が取得できていません。")
+        if st.button("🔄 相場データを取得する", key="list_update_btn"):
+            if update_market_prices():
+                st.success("更新完了！")
+                st.rerun()
+            else:
+                st.error("更新失敗")
 
     if st.session_state.all_prices:
         categories = {"金 (Gold)": ["Gold_Ingot", "K24", "K22", "K20", "K18", "K14", "K10", "K9"], "プラチナ (Platinum)": ["Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850"], "銀 (Silver)": ["Silver_Ingot", "Sv1000", "Sv925"], "パラジウム (Palladium)": ["Pd_Ingot"]}
@@ -231,8 +254,6 @@ elif page == "📋 最新価格一覧表":
             category_html += '</div>'
             st.markdown(category_html, unsafe_allow_html=True)
             st.write("") 
-    else:
-        st.warning("⚠️ 相場が取得できていません。サイドバーから「更新」してください。")
 
 # ==========================================
 # ページ3：計算メモ
@@ -243,7 +264,7 @@ elif page == "📝 計算メモ":
         st.info("保存されたメモはありません。計算機ページから保存してください。")
     else:
         df = pd.DataFrame(st.session_state.memo_list)
-        df.columns = ["日時", "品位", "重量", "最大価格", "割合(%)", "割合価格", "買い歩込"]
+        df.columns = ["日時", "品位", "重量", "最大価格", "割合(%)", "割合価格", "買い歩込価格"]
         st.table(df)
         if st.button("🗑️ すべてのメモを削除"):
             st.session_state.memo_list = []

@@ -96,7 +96,7 @@ st.sidebar.markdown(
 )
 
 # ==========================================
-# ページ1：価格計算機 (Androidキーボード対策版)
+# ページ1：価格計算機 (品位も横並びボタン版)
 # ==========================================
 if page == "💰 価格計算機":
     st.title("💍 地金価格計算機")
@@ -106,9 +106,7 @@ if page == "💰 価格計算機":
     else:
         st.warning("⚠️ 相場が取得できていません。サイドバーから「更新」してください。")
 
-    # --- 2段階選択システム (キーボードを出さないための工夫) ---
-    
-    # 1. まずは金属の種類を分ける
+    # --- 2段階選択システム (すべて横並びボタン形式) ---
     metal_categories = {
         "金 (Gold)": ["Gold_Ingot", "K24", "K22", "K20", "K18", "K14", "K10", "K9"],
         "プラチナ (Platinum)": ["Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850"],
@@ -116,7 +114,6 @@ if page == "💰 価格計算機":
         "パラジウム (Palladium)": ["Pd_Ingot"]
     }
     
-    # 表示名マップ (再利用)
     options_map = {
         "Gold_Ingot": "K24 インゴット", "K24": "K24", "K22": "K22", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9",
         "Pt_Ingot": "Pt1000 インゴット", "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850",
@@ -124,24 +121,28 @@ if page == "💰 価格計算機":
         "Pd_Ingot": "Pd インゴット"
     }
 
-    # ステップ1: 金属種別を選択 (ラジオボタンにしてキーボードを排除)
-    # horizontal=True にして横並びのボタン風にする
+    # ステップ1: 金属種別を選択 (横並び)
     selected_cat = st.radio(
         "金属を選択", 
         options=list(metal_categories.keys()), 
         horizontal=True
     )
     
-    # ステップ2: その金属に属する品位だけを提示 (ここもラジオボタン)
+    # ステップ2: その金属に属する品位を選択 (ここも横並び)
     cat_keys = metal_categories[selected_cat]
-    # 表示名に変換
     cat_options = [options_map[k] for k in cat_keys]
     
-    # 品位を選択 (ラジオボタン形式にすることで、Androidでキーボードが出ない)
-    selected_display = st.radio("品位を選択", options=cat_options)
-    # 選択された表示名から内部キーを逆引き
+    # horizontal=True にすることで、品位もボタン形式で横に並びます
+    selected_display = st.radio(
+        "品位を選択", 
+        options=cat_options, 
+        horizontal=True
+    )
+    
     selected_key = [k for k, v in options_map.items() if v == selected_display][0]
 
+    # --- その後の入力 (重量、割合などはそのまま) ---
+    # (以下、weight, rate_sell などの入力欄と計算ロジックが続きます)
     # --- その後の入力 (重量、割合などはそのまま) ---
     weight = st.number_input("重量 (g)", min_value=0.0, value=1.0, step=1.0, format="%.1f")
     rate_sell = st.number_input("割合 (%)", min_value=0, max_value=100, value=90, step=5)

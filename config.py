@@ -1,5 +1,14 @@
 # config.py
-# カテゴリ定義
+
+# ★重要：スプレッドシートの上から順に並べてください
+ALL_METAL_KEYS = [
+    "Gold_Ingot", "K24", "K22", "K21.6", "K20", "K18", "K14", "K10", "K9",
+    "Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850",
+    "Silver_Ingot", "Sv1000", "Sv925",
+    "Pd_Ingot"
+]
+
+# カテゴリ分け（表示用）
 METAL_CATEGORIES = {
     "Gold": ["Gold_Ingot", "K24", "K22", "K21.6", "K20", "K18", "K14", "K10", "K9"],
     "Platinum": ["Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850"],
@@ -7,7 +16,7 @@ METAL_CATEGORIES = {
     "Palladium": ["Pd_Ingot"]
 }
 
-# 表示名マップ (スプレッドシートの1列目の名前に正確に合わせてください)
+# 画面に表示する名前
 OPTIONS_MAP = {
     "Gold_Ingot": "Gold Bar", "K24": "K24", "K22": "K22", "K21.6": "K21.6", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9",
     "Pt_Ingot": "Platinum Bar", "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850",

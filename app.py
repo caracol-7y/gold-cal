@@ -87,13 +87,12 @@ if page == "💰 価格計算機":
         st.session_state.saved_rate_buy = 5
 
     selected_cat = st.radio(
-    "金属を選択", 
-    options=list(metal_categories.keys()), 
-    index=list(metal_categories.keys()).index(st.session_state.selected_cat),
-    horizontal=True
-    # key="cat_radio" を削除
-)
-st.session_state.selected_cat = selected_cat
+        "金属を選択", 
+        options=list(metal_categories.keys()), 
+        index=list(metal_categories.keys()).index(st.session_state.selected_cat),
+        horizontal=True
+    )
+    st.session_state.selected_cat = selected_cat
 
     cat_keys = metal_categories[selected_cat]
     cat_options = [options_map[k] for k in cat_keys]

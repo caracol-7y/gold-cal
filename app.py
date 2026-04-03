@@ -134,7 +134,7 @@ if page == "💰 価格計算機":
     # --- 入力エリア ---
     # 金属選択
     selected_cat = st.radio(
-        "Select Metal", 
+        "金属を選択", 
         options=list(metal_categories.keys()), 
         index=list(metal_categories.keys()).index(st.session_state.selected_cat),
         horizontal=True,
@@ -153,7 +153,7 @@ if page == "💰 価格計算機":
         current_index = 0 # 含まれていない場合は先頭を選択
         
     selected_display = st.radio(
-        "Select Purity", 
+        "品位を選択", 
         options=cat_options, 
         index=current_index,
         horizontal=True

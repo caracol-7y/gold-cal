@@ -11,6 +11,9 @@ from datetime import datetime
 try:
     # Streamlit Cloud上のSecretsから取得
     PHANTOM_API_KEY = st.secrets["PHANTOM_API_KEY"]
+except Exception:
+    # ローカル環境用。ここを空にするか、ダミーを入れておく
+    PHANTOM_API_KEY = st.secrets.get("PHANTOM_API_KEY", "YOUR_API_KEY_HERE")
 # ==========================================
 
 st.set_page_config(page_title="地金価格管理システム Pro", page_icon="💰", layout="centered")

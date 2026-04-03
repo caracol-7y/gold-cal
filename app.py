@@ -73,60 +73,111 @@ if page == "💰 価格計算機":
         "Pd_Ingot": "Palladium Bar"
     }
 
-# --- 入力値の保持設定 (Session State) ---
-    if 'selected_cat' not in st.session_state:
-        st.session_state.selected_cat = "Gold"
-    if 'selected_display' not in st.session_state:
-        st.session_state.selected_display = "Gold Bar"
-    if 'saved_weight' not in st.session_state:
-        st.session_state.saved_weight = 1.0
-    if 'saved_rate_sell' not in st.session_state:
-        st.session_state.saved_rate_sell = 90
-    if 'saved_use_bukin' not in st.session_state:
-        st.session_state.saved_use_bukin = True
-    if 'saved_rate_buy' not in st.session_state:
-        st.session_state.saved_rate_buy = 5
+# ==========================================
+    # 入力値の永続化設定（ページ移動で消えない「影の変数」）
+    # ==========================================
+    if 'p_cat' not in st.session_state:
+        st.session_state.p_cat = "Gold"
+    if 'p_display' not in st.session_state:
+        st.session_state.p_display = "Gold Bar"
+    if 'p_weight' not in st.session_state:
+        st.session_state.p_weight = 1.0
+    if 'p_rate_sell' not in st.session_state:
+        st.session_state.p_rate_sell = 90
+    if 'p_use_bukin' not in st.session_state:
+        st.session_state.p_use_bukin = True
+    if 'p_rate_buy' not in st.session_state:
+        st.session_state.p_rate_buy = 5
 
-    # --- 入力エリア ---
-    
-    # コールバック関数：金属が変わったら、品位の選択をその金属の先頭にリセットする
-    def on_category_change():
-        new_cat = st.session_state.selected_cat
-        first_item_key = metal_categories[new_cat][0]
-        st.session_state.selected_display = options_map[first_item_key]
+    # --- コールバック関数（入力された瞬間に「影の変数」へ退避） ---
+    def sync_inputs():
+        if "weight_widget" in st.session_state:
+            st.session_state.p_weight = st.session_state.weight_widget
+        if "rate_sell_widget" in st.session_state:
+            st.session_state.p_rate_sell = st.session_state.rate_sell_widget
+        if "use_bukin_widget" in st.session_state:
+            st.session_state.p_use_bukin = st.session_state.use_bukin_widget
+        if "rate_buy_widget" in st.session_state:
+            st.session_state.p_rate_buy = st.session_state.rate_buy_widget
 
-    # 金属選択 (keyのみで状態管理し、変更時にコールバックを呼ぶ)
+    def on_cat_change():
+        sync_inputs()
+        st.session_state.p_cat = st.session_state.cat_widget
+        # 金属が変わったら、品位もその金属の先頭にリセット
+        first_key = metal_categories[st.session_state.cat_widget][0]
+        st.session_state.p_display = options_map[first_key]
+
+    def on_display_change():
+        st.session_state.p_display = st.session_state.display_widget
+
+    # ==========================================
+    # 入力エリア
+    # ==========================================
+    cat_index = list(metal_categories.keys()).index(st.session_state.p_cat)
     selected_cat = st.radio(
         "金属を選択", 
         options=list(metal_categories.keys()), 
+        index=cat_index,
         horizontal=True,
-        key="selected_cat",
-        on_change=on_category_change
+        key="cat_widget",
+        on_change=on_cat_change
     )
 
-    # 品位選択 (keyのみで状態管理)
     cat_keys = metal_categories[selected_cat]
     cat_options = [options_map[k] for k in cat_keys]
     
+    try:
+        display_index = cat_options.index(st.session_state.p_display)
+    except ValueError:
+        display_index = 0
+        
     selected_display = st.radio(
         "品位を選択", 
         options=cat_options, 
+        index=display_index,
         horizontal=True,
-        key="selected_display"
+        key="display_widget",
+        on_change=on_display_change
     )
     selected_key = [k for k, v in options_map.items() if v == selected_display][0]
 
-    # 重量、割合、歩金もすべて key だけで管理する（value や手動代入を削除）
-    weight = st.number_input("重量 (g)", min_value=0.0, step=1.0, format="%.1f", key="saved_weight")
-    rate_sell = st.number_input("割合 (%)", min_value=0, max_value=100, step=5, key="saved_rate_sell")
+    weight = st.number_input(
+        "重量 (g)", 
+        min_value=0.0, 
+        value=st.session_state.p_weight, 
+        step=1.0, 
+        format="%.1f", 
+        key="weight_widget",
+        on_change=sync_inputs
+    )
 
-    use_bukin = st.checkbox("歩金を適用する", key="saved_use_bukin")
+    rate_sell = st.number_input(
+        "割合 (%)", 
+        min_value=0, max_value=100, 
+        value=st.session_state.p_rate_sell, 
+        step=5, 
+        key="rate_sell_widget",
+        on_change=sync_inputs
+    )
+
+    use_bukin = st.checkbox(
+        "歩金を適用する", 
+        value=st.session_state.p_use_bukin, 
+        key="use_bukin_widget",
+        on_change=sync_inputs
+    )
     
     if use_bukin:
-        rate_buy = st.number_input("歩金 (%)", min_value=0, max_value=20, step=1, key="saved_rate_buy")
+        rate_buy = st.number_input(
+            "歩金 (%)", 
+            min_value=0, max_value=20, 
+            value=st.session_state.p_rate_buy, 
+            step=1, 
+            key="rate_buy_widget",
+            on_change=sync_inputs
+        )
     else:
         rate_buy = 0
-
     if st.session_state.all_prices and st.session_state.all_prices.get(selected_key):
         market_price = st.session_state.all_prices[selected_key]
         st.info(f"現在の相場単価: **{market_price:,} 円/g**")

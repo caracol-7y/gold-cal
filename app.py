@@ -4,15 +4,6 @@ from datetime import datetime
 from scraper import get_all_prices_comprehensive
 from calculator import calculate_prices
 
-# ==========================================
-# 設定 (Secretsから読み込む)
-# ==========================================
-try:
-    PHANTOM_API_KEY = st.secrets["PHANTOM_API_KEY"]
-except Exception:
-    PHANTOM_API_KEY = st.secrets.get("PHANTOM_API_KEY", "ak-b9gn3-wrv64-rxq31-n4mt7-95srr")
-# ==========================================
-
 st.set_page_config(page_title="地金計算システム Pro", page_icon="💰", layout="centered")
 
 # --- セッション状態の初期化 ---
@@ -22,53 +13,43 @@ if 'update_time' not in st.session_state:
     st.session_state.update_time = None
 if 'memo_list' not in st.session_state:
     st.session_state.memo_list = []
-if 'close_sidebar_flag' not in st.session_state:
-    st.session_state.close_sidebar_flag = False
 
 # ==========================================
-# 共通関数：相場データの更新
+# 💡 共通関数：相場データの自動取得（キャッシュ付き）
 # ==========================================
-def update_market_prices():
-    with st.spinner("クラウド解析中..."):
-        try:
-            prices, time_val = get_all_prices_comprehensive(PHANTOM_API_KEY)
-            if prices:
-                st.session_state.all_prices = prices
-                st.session_state.update_time = time_val
-                return True
-            else:
-                return False
-        except Exception as e:
-            st.error(str(e))
-            return False
+# api_keyの引数を削除しました
+@st.cache_data(ttl=3600) 
+def fetch_prices_auto():
+    return get_all_prices_comprehensive()
+
+try:
+    if st.session_state.all_prices is None:
+        with st.spinner("最新相場を自動取得しています..."):
+            prices, time_val = fetch_prices_auto()
+    else:
+        prices, time_val = fetch_prices_auto()
+
+    if prices:
+        st.session_state.all_prices = prices
+        st.session_state.update_time = time_val
+except Exception as e:
+    st.error(f"自動取得エラー: {e}")
+
+def force_update():
+    fetch_prices_auto.clear()
 
 # ==========================================
 # サイドバー
 # ==========================================
 st.sidebar.title("⚙️ メニュー")
+page = st.sidebar.radio("ページ選択", ["💰 地金計算機", "📝 計算メモ", "📋 最新価格一覧表"])
 
-# ページ変更時にフラグを立てるコールバック関数を追加
-def on_page_change():
-    st.session_state.close_sidebar_flag = True
-
-page = st.sidebar.radio(
-    "ページ選択", 
-    ["💰 地金計算機", "📝 計算メモ", "📋 最新価格一覧表"], 
-    on_change=on_page_change
-)
-
-if st.sidebar.button("🔄 最新相場に更新", key="sidebar_update_btn"):
-    if update_market_prices():
-        st.sidebar.success("更新完了！")
-        st.rerun()
-    else:
-        st.sidebar.error("更新失敗")
+if st.sidebar.button("🔄 最新相場に強制更新", key="sidebar_update_btn"):
+    force_update()
+    st.sidebar.success("最新相場を取得しました！")
+    st.rerun()
 
 st.sidebar.markdown("---")
-st.sidebar.markdown(
-    '<a href="https://www.net-japan.co.jp/precious_metal_partner/" target="_blank" style="text-decoration: none; color: #0000EE; font-weight: bold;">🔗 公式サイトで価格を確認する</a>', 
-    unsafe_allow_html=True
-)
 
 # ==========================================
 # ページ1：地金計算機
@@ -77,29 +58,31 @@ if page == "💰 地金計算機":
     st.title("💍 地金計算機")
     
     if st.session_state.update_time:
-        st.caption(f"🕒 サイト更新時刻: {st.session_state.update_time}")
+        st.caption(f"🕒 スプレッドシート更新時刻: {st.session_state.update_time}")
     else:
         st.warning("⚠️ 相場が取得できていません。下のボタンから最新相場を取得してください。")
         if st.button("🔄 相場データを取得する", key="main_top_update_btn"):
-            if update_market_prices():
-                st.success("更新完了！")
-                st.rerun()
-            else:
-                st.error("更新失敗")
+            force_update()
+            st.success("更新完了！")
+            st.rerun()
 
+    # K21.6 を削除しました
     metal_categories = {
-        "Gold": ["Gold_Ingot", "K24", "K22", "K21.6", "K20", "K18", "K14", "K10", "K9"],
+        "Gold": ["Gold_Ingot", "K24", "K22", "K20", "K18", "K14", "K10", "K9"],
         "Platinum": ["Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850"],
         "Silver": ["Silver_Ingot", "Sv1000", "Sv925"],
         "Palladium": ["Pd_Ingot"]
     }
     
+    # K21.6 を削除しました
     options_map = {
-        "Gold_Ingot": "Gold Bar", "K24": "K24", "K22": "K22", "K21.6": "K21.6", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9",
+        "Gold_Ingot": "Gold Bar", "K24": "K24", "K22": "K22", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9",
         "Pt_Ingot": "Platinum Bar", "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850",
         "Silver_Ingot": "Silver Bar", "Sv1000": "Sv1000", "Sv925": "Sv925",
         "Pd_Ingot": "Palladium Bar"
     }
+
+# （以降は元のコードのまま変更ありません）
 
     # 入力保持用設定
     if 'p_cat' not in st.session_state:

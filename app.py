@@ -79,7 +79,16 @@ if page == "💰 計算機":
     
     # 数値入力
     c1, c2 = st.columns(2)
-    with c1: weight = st.number_input("重量 (g)", min_value=0.0, value=st.session_state.p_w_v, step=0.1, key="w_v", on_change=sync)
+    with c1: 
+    weight = st.number_input(
+        "重量 (g)", 
+        min_value=0.0, 
+        value=st.session_state.p_w_v, 
+        step=0.1,      # 0.1単位で動くように
+        format="%.1f", # 画面表示を小数第一位に固定
+        key="w_v", 
+        on_change=sync
+    )
     with c2: rsell = st.number_input("割合 (%)", min_value=0, max_value=100, value=st.session_state.p_r_s, key="r_s", on_change=sync)
     
     ubukin = st.checkbox("買い歩を適用する", value=st.session_state.p_b_o, key="b_o", on_change=sync)
@@ -96,9 +105,12 @@ if page == "💰 計算機":
             if st.button("💾 この結果を保存"):
                 st.session_state.memo_list.append({
                     "datetime": datetime.now().strftime("%m/%d %H:%M"),
-                    "item": disp, "weight": f"{weight}g",
-                    "theory": f"¥{th:,.0f}", "rate": f"{rsell}%",
-                    "sell_total": f"¥{sl:,.0f}", "buy_rate": f"{rbuy}%",
+                    "item": disp, 
+                    "weight": f"{weight:.1f}g", # ここで小数第一位にフォーマットして保存
+                    "theory": f"¥{th:,.0f}", 
+                    "rate": f"{rsell}%", 
+                    "sell_total": f"¥{sl:,.0f}", 
+                    "buy_rate": f"{rbuy}%", 
                     "buy_total": f"¥{by:,.0f}" if ubukin else "-"
                 })
                 st.toast("保存しました")

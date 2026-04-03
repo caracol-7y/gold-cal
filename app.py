@@ -8,7 +8,13 @@ import config
 # ==========================================
 # 1. 初期設定 & デザイン読み込み
 # ==========================================
-st.set_page_config(page_title="地金計算 Pro", page_icon="💰", layout="centered")
+# app.py の冒頭部分
+st.set_page_config(
+    page_title="地金計算 Pro", 
+    page_icon="💰", 
+    layout="centered",
+    initial_sidebar_state="expanded" # 最初からサイドバーを開いておく設定
+)
 
 # CSSの読み込み
 try:

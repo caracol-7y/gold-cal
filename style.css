@@ -1,69 +1,50 @@
 /* style.css */
-
-/* 全体フォント設定 */
 html, body, [class*="css"] {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
 }
+.main .block-container { max-width: 500px; padding-top: 1rem; }
 
-/* メイン画面の横幅制限 */
-.main .block-container {
-    max-width: 500px;
-    padding-top: 1rem;
-}
-
-/* ★ サイドバーのメニューを巨大ボタンにするスタイル ★ */
+/* サイドバーのメニューを巨大ボタンにする */
 [data-testid="stSidebar"] div[role="radiogroup"] {
     gap: 15px;
     padding-top: 20px;
 }
-
 [data-testid="stSidebar"] div[role="radiogroup"] label {
     background-color: rgba(128, 128, 128, 0.1) !important;
     border: 1px solid rgba(128, 128, 128, 0.2) !important;
     border-radius: 15px !important;
-    padding: 25px 15px !important; /* ボタンの高さを巨大化 */
+    padding: 25px 15px !important;
     width: 100%;
     cursor: pointer;
-    transition: 0.2s;
 }
-
-[data-testid="stSidebar"] div[role="radiogroup"] label:hover {
-    background-color: rgba(0, 122, 255, 0.1) !important;
-    border-color: #007AFF !important;
-}
-
-/* ラジオボタンの丸を消して文字を中央・巨大化 */
 [data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
     font-size: 22px !important;
     font-weight: 800 !important;
     text-align: center;
     width: 100%;
-    margin-bottom: 0;
 }
-
 [data-testid="stSidebar"] div[role="radiogroup"] label div[data-baseweb="radio"] {
-    display: none; /* 丸を隠す */
+    display: none;
 }
 
-/* ★ iOS風カード（計算結果・履歴用） ★ */
+/* カードデザイン */
 .ios-card {
     background-color: rgba(128, 128, 128, 0.08);
     border-radius: 20px;
-    padding: 12px 10px; /* 上下余白を詰めた最新版 */
+    padding: 12px 10px;
     border: 1px solid rgba(128, 128, 128, 0.1);
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     text-align: center;
 }
 
-/* 入力パーツ（数値入力・チェックボックス）の背景 */
+/* 入力パーツ */
 .stNumberInput, .stCheckbox {
     background-color: rgba(128, 128, 128, 0.05);
     padding: 10px 15px;
     border-radius: 12px;
-    margin-bottom: 5px;
 }
 
-/* ★ 青い保存ボタン ★ */
+/* 保存ボタン */
 .stButton>button {
     border-radius: 18px;
     background-color: #007AFF;
@@ -72,11 +53,5 @@ html, body, [class*="css"] {
     font-size: 18px;
     font-weight: 700;
     width: 100%;
-    border: none;
-    transition: 0.2s;
-}
-
-.stButton>button:hover {
-    background-color: #0063D1;
     border: none;
 }

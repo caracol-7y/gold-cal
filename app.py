@@ -161,11 +161,12 @@ if page == "💰 地金計算機":
         if weight > 0:
             theory_total, sell_total, buy_total = calculate_prices(market_price, weight, rate_sell, use_bukin, rate_buy)
             
-            st.markdown(f"""<div style="background-color: #ffffff; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #cccccc; margin-bottom: 10px;"><span style="font-size: 16px; color: #666;">最大価格 (100%)</span><br><span style="font-size: 32px; font-weight: bold; color: #333;">{theory_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
-            st.markdown(f"""<div style="background-color: #fff0f0; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #ff4b4b; margin-bottom: 10px;"><span style="font-size: 16px; color: #ff4b4b;">割合価格 ({rate_sell}%)</span><br><span style="font-size: 32px; font-weight: bold; color: #ff4b4b;">{sell_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
+            # 背景色をベタ塗りではなく、rgba() を使って「色付きの半透明」にすることでダークモードに馴染ませる
+            st.markdown(f"""<div style="background-color: rgba(128, 128, 128, 0.05); padding: 15px; border-radius: 10px; text-align: center; border: 2px solid rgba(128, 128, 128, 0.3); margin-bottom: 10px;"><span style="font-size: 16px;">最大価格 (100%)</span><br><span style="font-size: 32px; font-weight: bold;">{theory_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
+            st.markdown(f"""<div style="background-color: rgba(255, 75, 75, 0.1); padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #ff4b4b; margin-bottom: 10px;"><span style="font-size: 16px; color: #ff4b4b;">割合価格 ({rate_sell}%)</span><br><span style="font-size: 32px; font-weight: bold; color: #ff4b4b;">{sell_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
             
             if use_bukin and buy_total is not None:
-                st.markdown(f"""<div style="background-color: #f0f7ff; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #4b89ff; margin-bottom: 10px;"><span style="font-size: 16px; color: #4b89ff;">買い歩込価格 ({rate_buy}%)</span><br><span style="font-size: 32px; font-weight: bold; color: #4b89ff;">{buy_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
+                st.markdown(f"""<div style="background-color: rgba(75, 137, 255, 0.1); padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #4b89ff; margin-bottom: 10px;"><span style="font-size: 16px; color: #4b89ff;">買い歩込価格 ({rate_buy}%)</span><br><span style="font-size: 32px; font-weight: bold; color: #4b89ff;">{buy_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
 
             st.write("")
             if st.button("💾 この結果をメモに保存", use_container_width=True):
@@ -218,16 +219,21 @@ elif page == "📋 最新価格一覧表":
         categories = {"金 (Gold)": ["Gold_Ingot", "K24", "K22", "K20", "K18", "K14", "K10", "K9"], "プラチナ (Platinum)": ["Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850"], "銀 (Silver)": ["Silver_Ingot", "Sv1000", "Sv925"], "パラジウム (Palladium)": ["Pd_Ingot"]}
         options_map = {"Gold_Ingot": "K24 インゴット", "K24": "K24", "K22": "K22", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9", "Pt_Ingot": "Pt1000 インゴット", "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850", "Silver_Ingot": "Sv1000 インゴット", "Sv1000": "Sv1000", "Sv925": "Sv925", "Pd_Ingot": "Pd インゴット"}
         for cat, keys in categories.items():
-            st.markdown(f"""<div style="background-color: #f0f2f6; padding: 8px 15px; border-radius: 5px; margin-top: 20px; margin-bottom: 10px; border-left: 5px solid #31333F;"><span style="font-weight: bold; font-size: 18px; color: #31333F;">{cat}</span></div>""", unsafe_allow_html=True)
+            # ヘッダー部分（背景を半透明のグレーにし、文字色指定を削除してテーマに自動追従させる）
+            st.markdown(f"""<div style="background-color: rgba(128, 128, 128, 0.1); padding: 8px 15px; border-radius: 5px; margin-top: 20px; margin-bottom: 10px; border-left: 5px solid #888888;"><span style="font-weight: bold; font-size: 18px;">{cat}</span></div>""", unsafe_allow_html=True)
+            
             category_html = '<div style="display: flex; flex-direction: column;">'
             for k in keys:
                 price = st.session_state.all_prices.get(k)
                 price_display = f"{price:,} 円" if price else "取得不可"
                 display_name = options_map[k]
-                category_html += f"""<div style="display: flex; justify-content: space-between; align-items: center; background-color: #ffffff; padding: 12px 10px; border-bottom: 1px solid #eeeeee; font-family: sans-serif;"><span style="font-weight: bold; color: #333333; font-size: 15px;">{display_name}</span><span style="color: #ff0000; font-weight: bold; font-size: 16px;">{price_display}</span></div>"""
+                
+                # 行部分（背景を透明に、文字色指定を削除、境界線を半透明のグレーに）
+                category_html += f"""<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; border-bottom: 1px solid rgba(128, 128, 128, 0.2); font-family: sans-serif;"><span style="font-weight: bold; font-size: 15px;">{display_name}</span><span style="color: #ff4b4b; font-weight: bold; font-size: 16px;">{price_display}</span></div>"""
+            
             category_html += '</div>'
             st.markdown(category_html, unsafe_allow_html=True)
-            st.write("") 
+            st.write("")
 
 st.caption("※ネットジャパンのプリントページから抽出した最新データです。")
 

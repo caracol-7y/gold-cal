@@ -57,7 +57,7 @@ if page == "💰 地金計算機":
     st.title("💍 地金計算機")
     
     if st.session_state.update_time:
-        st.caption(f"🕒 スプレッドシート更新時刻: {st.session_state.update_time}")
+        st.caption(f"🕒 ネットジャパン価格更新時刻: {st.session_state.update_time}")
     else:
         st.warning("⚠️ 相場が取得できていません。下のボタンから最新相場を取得してください。")
         if st.button("🔄 相場データを取得する", key="main_top_update_btn"):

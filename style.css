@@ -69,4 +69,12 @@ html, body, [class*="css"] {
 
 /* 8. 保存ボタン */
 .stButton>button {
-    border-
+    border-radius: 18px;
+    background-color: #007AFF;
+    color: white;
+    padding: 18px;
+    font-size: 18px;
+    font-weight: 700;
+    width: 100%;
+    border: none;
+}

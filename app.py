@@ -107,11 +107,13 @@ if page == "💰 地金計算機":
     use_bukin = st.checkbox("買い歩を適用する", value=st.session_state.p_use_bukin, key="use_bukin_widget", on_change=sync_inputs)
     
     # 👇 表記を「買い歩 (%)」に変更
-    rate_buy = st.number_input("買い歩 (%)", min_value=0, max_value=20, value=st.session_state.p_rate_buy, step=1, key="rate_buy_widget", on_change=sync_inputs) if use_bukin else 0
+    rate_buy = st.number_input("歩金 (%)", min_value=0, max_value=20, value=st.session_state.p_rate_buy, step=1, key="rate_buy_widget", on_change=sync_inputs) if use_bukin else 0
 
     if st.session_state.all_prices and st.session_state.all_prices.get(selected_key):
         market_price = st.session_state.all_prices[selected_key]
-        st.info(f"現在の相場単価: **{market_price:,} 円/g**")
+        
+        # 👇 表示内容を「品位・重量・単価」に変更
+        st.info(f"品位: **{selected_display}** ｜ 重量: **{weight}g** ｜ 単価: **{market_price:,} 円/g**")
         
         if weight > 0:
             theory_total, sell_total, buy_total = calculate_prices(market_price, weight, rate_sell, use_bukin, rate_buy)

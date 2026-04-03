@@ -232,18 +232,30 @@ elif page == "📋 最新価格一覧表":
 st.caption("※ネットジャパンのプリントページから抽出した最新データです。")
 
 # ==========================================
-# サイドバー自動格納の裏技（JavaScriptインジェクション）
+# サイドバー自動格納の裏技（スマホ対応版 JSインジェクション）
 # ==========================================
 if st.session_state.close_sidebar_flag:
     import streamlit.components.v1 as components
     components.html(
         """
         <script>
-            // Streamlitの親DOMからサイドバーのトグルボタンを探す
-            const sidebarToggle = window.parent.document.querySelector('[data-testid="collapsedControl"]');
-            // サイドバーが開いている状態（aria-expanded="true"）ならクリックして閉じる
-            if (sidebarToggle && sidebarToggle.getAttribute('aria-expanded') === 'true') {
-                sidebarToggle.click();
+            try {
+                const parentDoc = window.parent.document;
+                
+                // スマホ版のサイドバー内にある「×（閉じる）」ボタン
+                const mobileCloseBtn = parentDoc.querySelector('[data-testid="stSidebarCollapseButton"]');
+                // PC版のトグルボタン
+                const pcToggleBtn = parentDoc.querySelector('[data-testid="collapsedControl"]');
+
+                if (mobileCloseBtn) {
+                    // スマホの場合はこちらをクリック
+                    mobileCloseBtn.click();
+                } else if (pcToggleBtn && pcToggleBtn.getAttribute('aria-expanded') === 'true') {
+                    // PCの場合はこちらをクリック
+                    pcToggleBtn.click();
+                }
+            } catch (e) {
+                console.error("サイドバーを閉じる処理がブロックされました:", e);
             }
         </script>
         """,

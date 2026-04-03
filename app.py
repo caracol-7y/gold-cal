@@ -73,6 +73,7 @@ if page == "💰 価格計算機":
         "Pd_Ingot": "Palladium Bar"
     }
 
+# --- 入力値の保持設定 (Session State) ---
     if 'selected_cat' not in st.session_state:
         st.session_state.selected_cat = "Gold"
     if 'selected_display' not in st.session_state:
@@ -86,43 +87,43 @@ if page == "💰 価格計算機":
     if 'saved_rate_buy' not in st.session_state:
         st.session_state.saved_rate_buy = 5
 
+    # --- 入力エリア ---
+    
+    # コールバック関数：金属が変わったら、品位の選択をその金属の先頭にリセットする
+    def on_category_change():
+        new_cat = st.session_state.selected_cat
+        first_item_key = metal_categories[new_cat][0]
+        st.session_state.selected_display = options_map[first_item_key]
+
+    # 金属選択 (keyのみで状態管理し、変更時にコールバックを呼ぶ)
     selected_cat = st.radio(
         "金属を選択", 
         options=list(metal_categories.keys()), 
-        index=list(metal_categories.keys()).index(st.session_state.selected_cat),
-        horizontal=True
+        horizontal=True,
+        key="selected_cat",
+        on_change=on_category_change
     )
-    st.session_state.selected_cat = selected_cat
 
+    # 品位選択 (keyのみで状態管理)
     cat_keys = metal_categories[selected_cat]
     cat_options = [options_map[k] for k in cat_keys]
     
-    try:
-        current_index = cat_options.index(st.session_state.selected_display)
-    except ValueError:
-        current_index = 0
-        
     selected_display = st.radio(
         "品位を選択", 
         options=cat_options, 
-        index=current_index,
-        horizontal=True
+        horizontal=True,
+        key="selected_display"
     )
-    st.session_state.selected_display = selected_display
     selected_key = [k for k, v in options_map.items() if v == selected_display][0]
 
-    weight = st.number_input("重量 (g)", min_value=0.0, value=st.session_state.saved_weight, step=1.0, format="%.1f")
-    st.session_state.saved_weight = weight
+    # 重量、割合、歩金もすべて key だけで管理する（value や手動代入を削除）
+    weight = st.number_input("重量 (g)", min_value=0.0, step=1.0, format="%.1f", key="saved_weight")
+    rate_sell = st.number_input("割合 (%)", min_value=0, max_value=100, step=5, key="saved_rate_sell")
 
-    rate_sell = st.number_input("割合 (%)", min_value=0, max_value=100, value=st.session_state.saved_rate_sell, step=5)
-    st.session_state.saved_rate_sell = rate_sell
-
-    use_bukin = st.checkbox("歩金を適用する", value=st.session_state.saved_use_bukin)
-    st.session_state.saved_use_bukin = use_bukin
+    use_bukin = st.checkbox("歩金を適用する", key="saved_use_bukin")
     
     if use_bukin:
-        rate_buy = st.number_input("歩金 (%)", min_value=0, max_value=20, value=st.session_state.saved_rate_buy, step=1)
-        st.session_state.saved_rate_buy = rate_buy
+        rate_buy = st.number_input("歩金 (%)", min_value=0, max_value=20, step=1, key="saved_rate_buy")
     else:
         rate_buy = 0
 

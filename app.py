@@ -34,6 +34,7 @@ def sync():
 def cat_change():
     sync()
     st.session_state.p_cat = st.session_state.cat_w
+    # カテゴリを切り替えた時、そのカテゴリの1番目（Bar）をデフォルトにする
     st.session_state.p_display = config.OPTIONS_MAP[config.METAL_CATEGORIES[st.session_state.cat_w][0]]
 
 @st.cache_data(ttl=3600)

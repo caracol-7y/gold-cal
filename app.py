@@ -11,13 +11,12 @@ st.set_page_config(page_title="地金計算 Pro", page_icon="💰", layout="cent
 
 st.markdown("""
 <style>
-    /* 全体フォント */
     html, body, [class*="css"] {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
     }
     .main .block-container { max-width: 500px; padding-top: 1rem; }
 
-    /* ★ サイドバーのメニューを巨大ボタンにする ★ */
+    /* サイドバーのメニューを巨大ボタンにする */
     [data-testid="stSidebar"] div[role="radiogroup"] {
         gap: 15px;
         padding-top: 20px;
@@ -26,27 +25,21 @@ st.markdown("""
         background-color: rgba(128, 128, 128, 0.1) !important;
         border: 1px solid rgba(128, 128, 128, 0.2) !important;
         border-radius: 15px !important;
-        padding: 25px 15px !important; /* ボタンの高さを巨大化 */
+        padding: 25px 15px !important;
         width: 100%;
         cursor: pointer;
-        transition: 0.2s;
     }
-    [data-testid="stSidebar"] div[role="radiogroup"] label:hover {
-        background-color: rgba(0, 122, 255, 0.1) !important;
-        border-color: #007AFF !important;
-    }
-    /* ラジオボタンの丸を消して文字を中央に */
     [data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
-        font-size: 22px !important; /* メニューの文字を巨大化 */
+        font-size: 22px !important;
         font-weight: 800 !important;
         text-align: center;
         width: 100%;
     }
     [data-testid="stSidebar"] div[role="radiogroup"] label div[data-baseweb="radio"] {
-        display: none; /* 丸を隠す */
+        display: none;
     }
 
-    /* メイン画面のカードデザイン */
+    /* カードデザイン */
     .ios-card {
         background-color: rgba(128, 128, 128, 0.08);
         border-radius: 20px;
@@ -84,9 +77,26 @@ OPTIONS_MAP = {
     "Pd_Ingot": "Pd Bar"
 }
 
+# 2. セッション状態の初期化
 if 'memo_list' not in st.session_state: st.session_state.memo_list = []
 if 'p_cat' not in st.session_state: st.session_state.p_cat = "Gold"
 if 'p_display' not in st.session_state: st.session_state.p_display = "K18"
+if 'p_weight' not in st.session_state: st.session_state.p_weight = 1.0
+if 'p_rate_sell' not in st.session_state: st.session_state.p_rate_sell = 90
+if 'p_use_bukin' not in st.session_state: st.session_state.p_use_bukin = False
+if 'p_rate_buy' not in st.session_state: st.session_state.p_rate_buy = 5
+
+# コールバック関数：入力値をセッションに同期
+def sync_inputs():
+    if "w_val" in st.session_state: st.session_state.p_weight = st.session_state.w_val
+    if "r_sell_val" in st.session_state: st.session_state.p_rate_sell = st.session_state.r_sell_val
+    if "bukin_on_off" in st.session_state: st.session_state.p_use_bukin = st.session_state.bukin_on_off
+    if "r_buy_val" in st.session_state: st.session_state.p_rate_buy = st.session_state.r_buy_val
+
+def on_cat_change():
+    sync_inputs()
+    st.session_state.p_cat = st.session_state.cat_widget
+    st.session_state.p_display = OPTIONS_MAP[METAL_CATEGORIES[st.session_state.cat_widget][0]]
 
 @st.cache_data(ttl=3600)
 def fetch_data():
@@ -97,16 +107,9 @@ def fetch_data():
 
 prices, update_time = fetch_data()
 
-# ==========================================
-# 2. サイドバーナビゲーション (巨大ボタン)
-# ==========================================
+# サイドバーナビゲーション
 st.sidebar.markdown("### MENU")
 page = st.sidebar.radio("PAGE_SELECT", ["💰 計算機", "📝 履歴", "📋 最新相場"], label_visibility="collapsed")
-
-# コールバック
-def on_cat_change():
-    st.session_state.p_cat = st.session_state.cat_widget
-    st.session_state.p_display = OPTIONS_MAP[METAL_CATEGORIES[st.session_state.cat_widget][0]]
 
 # ==========================================
 # ページ1：地金計算機
@@ -116,22 +119,33 @@ if page == "💰 計算機":
     st.caption(f"最終更新: {update_time}")
 
     selected_cat = st.radio("金属", options=list(METAL_CATEGORIES.keys()), index=list(METAL_CATEGORIES.keys()).index(st.session_state.p_cat), horizontal=True, key="cat_widget", on_change=on_cat_change)
+    
     cat_options = [OPTIONS_MAP[k] for k in METAL_CATEGORIES[selected_cat]]
-    selected_display = st.radio("品位", options=cat_options, index=cat_options.index(st.session_state.p_display) if st.session_state.p_display in cat_options else 0, horizontal=True, key="display_widget", on_change=lambda: setattr(st.session_state, 'p_display', st.session_state.display_widget))
+    try:
+        display_idx = cat_options.index(st.session_state.p_display)
+    except:
+        display_idx = 0
+
+    selected_display = st.radio("品位", options=cat_options, index=display_idx, horizontal=True, key="display_widget", on_change=lambda: setattr(st.session_state, 'p_display', st.session_state.display_widget))
     
     selected_key = [k for k, v in OPTIONS_MAP.items() if v == selected_display][0]
 
     col1, col2 = st.columns(2)
-    with col1: weight = st.number_input("重量 (g)", min_value=0.0, value=1.0, step=0.1, format="%.1f")
-    with col2: rate_sell = st.number_input("割合 (%)", min_value=0, max_value=100, value=90, step=1)
+    with col1:
+        weight = st.number_input("重量 (g)", min_value=0.0, value=st.session_state.p_weight, step=0.1, format="%.1f", key="w_val", on_change=sync_inputs)
+    with col2:
+        rate_sell = st.number_input("割合 (%)", min_value=0, max_value=100, value=st.session_state.p_rate_sell, step=1, key="r_sell_val", on_change=sync_inputs)
     
-    use_bukin = st.checkbox("買い歩を適用する", value=False)
-    rate_buy = st.number_input("買い歩 (%)", min_value=0, max_value=20, value=5) if use_bukin else 0
+    use_bukin = st.checkbox("買い歩を適用する", value=st.session_state.p_use_bukin, key="bukin_on_off", on_change=sync_inputs)
+    
+    # 買い歩の数値入力も状態保持
+    rate_buy = 0
+    if use_bukin:
+        rate_buy = st.number_input("買い歩 (%)", min_value=0, max_value=20, value=st.session_state.p_rate_buy, key="r_buy_val", on_change=sync_inputs)
 
     if prices and selected_key in prices:
         market_price = prices[selected_key]
         
-        # HTMLバグ防止のため必ず左端に詰める
         info_html = f"""
 <div class="ios-card" style="background-color: rgba(0, 122, 255, 0.05); border: 1px solid rgba(0, 122, 255, 0.2);">
 <span style="font-size: 14px; color: #8e8e93;">{selected_display} | {weight}g</span><br>
@@ -150,7 +164,7 @@ if page == "💰 計算機":
             st.markdown(res_html, unsafe_allow_html=True)
             
             if use_bukin:
-                buy_html = f'<div class="ios-card" style="border: 2px solid #007AFF;"><span style="font-size: 13px; color: #007AFF;">買い歩 ({rate_buy}%)</span><br><span style="font-size: 32px; font-weight: 800; color: #007AFF;">¥{buy_total:,.0f}</span></div>'
+                buy_html = f'<div class="ios-card" style="border: 2px solid #007AFF; background-color: rgba(0, 122, 255, 0.05);"><span style="font-size: 13px; color: #007AFF;">買い歩 ({rate_buy}%)</span><br><span style="font-size: 32px; font-weight: 800; color: #007AFF;">¥{buy_total:,.0f}</span></div>'
                 st.markdown(buy_html, unsafe_allow_html=True)
 
             if st.button("💾 この結果を保存"):

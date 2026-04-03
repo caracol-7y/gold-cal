@@ -103,12 +103,14 @@ if page == "💰 価格計算機":
     else:
         st.warning("⚠️ 相場が取得できていません。サイドバーから「更新」してください。")
 
+    # --- 2段階選択システム (金属表記を英語のみに変更) ---
     metal_categories = {
-        "金 (Gold)": ["Gold_Ingot", "K24", "K22", "K20", "K18", "K14", "K10", "K9"],
-        "プラチナ (Platinum)": ["Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850"],
-        "銀 (Silver)": ["Silver_Ingot", "Sv1000", "Sv925"],
-        "パラジウム (Palladium)": ["Pd_Ingot"]
+        "Gold": ["Gold_Ingot", "K24", "K22", "K20", "K18", "K14", "K10", "K9"],
+        "Platinum": ["Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850"],
+        "Silver": ["Silver_Ingot", "Sv1000", "Sv925"],
+        "Palladium": ["Pd_Ingot"]
     }
+    
     options_map = {
         "Gold_Ingot": "K24 インゴット", "K24": "K24", "K22": "K22", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9",
         "Pt_Ingot": "Pt1000 インゴット", "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850",
@@ -116,11 +118,27 @@ if page == "💰 価格計算機":
         "Pd_Ingot": "Pd インゴット"
     }
 
-    selected_cat = st.radio("金属を選択", options=list(metal_categories.keys()), horizontal=True)
+    # ステップ1: 金属種別を選択 (英語のみの表記)
+    selected_cat = st.radio(
+        "Select Metal", 
+        options=list(metal_categories.keys()), 
+        horizontal=True
+    )
+    
+    # ステップ2: その金属に属する品位を選択
     cat_keys = metal_categories[selected_cat]
     cat_options = [options_map[k] for k in cat_keys]
-    selected_display = st.radio("品位を選択", options=cat_options, horizontal=True)
+    
+    selected_display = st.radio(
+        "Select Purity", 
+        options=cat_options, 
+        horizontal=True
+    )
+    
     selected_key = [k for k, v in options_map.items() if v == selected_display][0]
+
+    # --- その後の入力 (重量、割合などはそのまま) ---
+    # ... (以下、weight, rate_sell 等のコードが続きます)
 
     weight = st.number_input("重量 (g)", min_value=0.0, value=1.0, step=1.0, format="%.1f")
     rate_sell = st.number_input("割合 (%)", min_value=0, max_value=100, value=90, step=5)

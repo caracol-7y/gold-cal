@@ -179,7 +179,7 @@ if page == "💰 計算機":
                 st.toast("履歴に保存しました")
 
 # ==========================================
-# ページ2：計算履歴
+# ページ2：計算履歴 (センタリング修正版)
 # ==========================================
 elif page == "📝 履歴":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>計算履歴</h1>", unsafe_allow_html=True)
@@ -190,19 +190,32 @@ elif page == "📝 履歴":
             br = m.get('buy_rate', '0%')
             bv = m['buy_total']
             bc = "#007AFF" if bv != "-" else "gray"
+            
+            # ↓ st.markdown内のHTMLは必ず左端（スペースなし）から記述
             st.markdown(f"""
 <div class="ios-card" style="text-align: left; padding: 20px 12px;">
-<div style="display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid rgba(128, 128, 128, 0.2); padding-bottom: 10px;">
-<span style="font-size: 18px; font-weight: 700;">{m['item']} ({m['weight']})</span>
-<span style="color: gray; font-size: 12px;">{m['datetime']}</span>
+<div style="text-align: center; margin-bottom: 15px; border-bottom: 0.5px solid rgba(128, 128, 128, 0.2); padding-bottom: 10px;">
+<div style="font-size: 20px; font-weight: 700; margin-bottom: 2px;">{m['item']} ({m['weight']})</div>
+<div style="color: gray; font-size: 11px;">{m['datetime']}</div>
 </div>
-<div style="display: flex; justify-content: space-between; text-align: center;">
-<div style="flex: 1;"><div style="font-size: 11px; color: gray;">最大</div><div style="font-size: 18px; font-weight: 700;">{m['theory']}</div></div>
-<div style="flex: 1; border-left: 1px solid rgba(128,128,128,0.2); border-right: 1px solid rgba(128,128,128,0.2);"><div style="font-size: 11px; color: #ff4b4b;">割合({m['rate']})</div><div style="font-size: 18px; font-weight: 800; color: #ff4b4b;">{m['sell_total']}</div></div>
-<div style="flex: 1;"><div style="font-size: 11px; color: {bc};">買い歩({br})</div><div style="font-size: 18px; font-weight: 800; color: {bc};">{bv}</div></div>
+
+<div style="display: flex; justify-content: space-between; text-align: center; align-items: flex-end;">
+<div style="flex: 1;">
+<div style="font-size: 12px; color: gray; margin-bottom: 5px;">最大</div>
+<div style="font-size: 21px; font-weight: 700; color: gray;">{m['theory']}</div>
+</div>
+<div style="flex: 1; border-left: 0.5px solid rgba(128, 128, 128, 0.2); border-right: 0.5px solid rgba(128, 128, 128, 0.2);">
+<div style="font-size: 12px; color: #ff4b4b; margin-bottom: 5px;">割合({m['rate']})</div>
+<div style="font-size: 21px; font-weight: 800; color: #ff4b4b;">{m['sell_total']}</div>
+</div>
+<div style="flex: 1;">
+<div style="font-size: 12px; color: {bc}; margin-bottom: 5px;">買い歩({br})</div>
+<div style="font-size: 21px; font-weight: 800; color: {bc};">{bv}</div>
+</div>
 </div>
 </div>
 """, unsafe_allow_html=True)
+
         if st.button("🗑️ すべての履歴を削除"):
             st.session_state.memo_list = []
             st.rerun()

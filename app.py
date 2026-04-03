@@ -9,11 +9,9 @@ from datetime import datetime
 # 設定 (Secretsから読み込む)
 # ==========================================
 try:
-    # Streamlit Cloud上のSecretsから取得
     PHANTOM_API_KEY = st.secrets["PHANTOM_API_KEY"]
 except Exception:
-    # ローカル環境用。ここを空にするか、ダミーを入れておく
-    PHANTOM_API_KEY = st.secrets.get("PHANTOM_API_KEY", "YOUR_API_KEY_HERE")
+    PHANTOM_API_KEY = st.secrets.get("PHANTOM_API_KEY", "ak-b9gn3-wrv64-rxq31-n4mt7-95srr")
 # ==========================================
 
 st.set_page_config(page_title="地金価格管理システム Pro", page_icon="💰", layout="centered")
@@ -69,7 +67,6 @@ if 'all_prices' not in st.session_state:
     st.session_state.all_prices = None
 if 'update_time' not in st.session_state:
     st.session_state.update_time = None
-# メモ保存用のリストを初期化
 if 'memo_list' not in st.session_state:
     st.session_state.memo_list = []
 
@@ -96,7 +93,7 @@ st.sidebar.markdown(
 )
 
 # ==========================================
-# ページ1：価格計算機 (品位も横並びボタン版)
+# ページ1：価格計算機
 # ==========================================
 if page == "💰 価格計算機":
     st.title("💍 地金価格計算機")
@@ -106,14 +103,12 @@ if page == "💰 価格計算機":
     else:
         st.warning("⚠️ 相場が取得できていません。サイドバーから「更新」してください。")
 
-    # --- 2段階選択システム (すべて横並びボタン形式) ---
     metal_categories = {
         "金 (Gold)": ["Gold_Ingot", "K24", "K22", "K20", "K18", "K14", "K10", "K9"],
         "プラチナ (Platinum)": ["Pt_Ingot", "Pt1000", "Pt950", "Pt900", "Pt850"],
         "銀 (Silver)": ["Silver_Ingot", "Sv1000", "Sv925"],
         "パラジウム (Palladium)": ["Pd_Ingot"]
     }
-    
     options_map = {
         "Gold_Ingot": "K24 インゴット", "K24": "K24", "K22": "K22", "K20": "K20", "K18": "K18", "K14": "K14", "K10": "K10", "K9": "K9",
         "Pt_Ingot": "Pt1000 インゴット", "Pt1000": "Pt1000", "Pt950": "Pt950", "Pt900": "Pt900", "Pt850": "Pt850",
@@ -121,29 +116,12 @@ if page == "💰 価格計算機":
         "Pd_Ingot": "Pd インゴット"
     }
 
-    # ステップ1: 金属種別を選択 (横並び)
-    selected_cat = st.radio(
-        "金属を選択", 
-        options=list(metal_categories.keys()), 
-        horizontal=True
-    )
-    
-    # ステップ2: その金属に属する品位を選択 (ここも横並び)
+    selected_cat = st.radio("金属を選択", options=list(metal_categories.keys()), horizontal=True)
     cat_keys = metal_categories[selected_cat]
     cat_options = [options_map[k] for k in cat_keys]
-    
-    # horizontal=True にすることで、品位もボタン形式で横に並びます
-    selected_display = st.radio(
-        "品位を選択", 
-        options=cat_options, 
-        horizontal=True
-    )
-    
+    selected_display = st.radio("品位を選択", options=cat_options, horizontal=True)
     selected_key = [k for k, v in options_map.items() if v == selected_display][0]
 
-    # --- その後の入力 (重量、割合などはそのまま) ---
-    # (以下、weight, rate_sell などの入力欄と計算ロジックが続きます)
-    # --- その後の入力 (重量、割合などはそのまま) ---
     weight = st.number_input("重量 (g)", min_value=0.0, value=1.0, step=1.0, format="%.1f")
     rate_sell = st.number_input("割合 (%)", min_value=0, max_value=100, value=90, step=5)
 
@@ -152,8 +130,6 @@ if page == "💰 価格計算機":
         rate_buy = st.number_input("歩金 (%)", min_value=0, max_value=20, value=5, step=1)
     else:
         rate_buy = 0
-
-    # (以下、計算ロジックと結果表示は変更なし)
 
     if st.session_state.all_prices and st.session_state.all_prices.get(selected_key):
         market_price = st.session_state.all_prices[selected_key]
@@ -166,25 +142,14 @@ if page == "💰 価格計算機":
             buy_unit = sell_unit / (1 + (rate_buy / 100))
             buy_total = buy_unit * weight
             
-            # 結果表示
+            st.markdown(f"""<div style="background-color: #ffffff; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #cccccc; margin-bottom: 10px;"><span style="font-size: 16px; color: #666;">最大価格 (100%)</span><br><span style="font-size: 32px; font-weight: bold; color: #333;">{theory_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
+            st.markdown(f"""<div style="background-color: #fff0f0; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #ff4b4b; margin-bottom: 10px;"><span style="font-size: 16px; color: #ff4b4b;">割合価格 ({rate_sell}%)</span><br><span style="font-size: 32px; font-weight: bold; color: #ff4b4b;">{sell_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
+            
             if use_bukin:
-                res_col1, res_col2, res_col3 = st.columns(3)
-                with res_col1:
-                    st.markdown(f"""<div style="background-color: #ffffff; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #cccccc;"><span style="font-size: 16px; color: #666;">最大価格 (100%)</span><br><span style="font-size: 28px; font-weight: bold; color: #333;">{theory_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
-                with res_col2:
-                    st.markdown(f"""<div style="background-color: #fff0f0; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #ff4b4b;"><span style="font-size: 16px; color: #ff4b4b;">割合価格 ({rate_sell}%)</span><br><span style="font-size: 28px; font-weight: bold; color: #ff4b4b;">{sell_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
-                with res_col3:
-                    st.markdown(f"""<div style="background-color: #f0f7ff; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #4b89ff;"><span style="font-size: 16px; color: #4b89ff;">買い歩込価格 ({rate_buy}%)</span><br><span style="font-size: 28px; font-weight: bold; color: #4b89ff;">{buy_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
-            else:
-                res_col1, res_col2 = st.columns(2)
-                with res_col1:
-                    st.markdown(f"""<div style="background-color: #ffffff; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #cccccc;"><span style="font-size: 16px; color: #666;">最大価格 (100%)</span><br><span style="font-size: 28px; font-weight: bold; color: #333;">{theory_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
-                with res_col2:
-                    st.markdown(f"""<div style="background-color: #fff0f0; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #ff4b4b;"><span style="font-size: 16px; color: #ff4b4b;">割合価格 ({rate_sell}%)</span><br><span style="font-size: 28px; font-weight: bold; color: #ff4b4b;">{sell_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
+                st.markdown(f"""<div style="background-color: #f0f7ff; padding: 15px; border-radius: 10px; text-align: center; border: 2px solid #4b89ff; margin-bottom: 10px;"><span style="font-size: 16px; color: #4b89ff;">買い歩込価格 ({rate_buy}%)</span><br><span style="font-size: 32px; font-weight: bold; color: #4b89ff;">{buy_total:,.0f} 円</span></div>""", unsafe_allow_html=True)
 
-            # --- メモ保存ボタン ---
             st.write("")
-            if st.button("💾 この結果をメモに保存"):
+            if st.button("💾 この結果をメモに保存", use_container_width=True):
                 memo_entry = {
                     "datetime": datetime.now().strftime("%Y/%m/%d %H:%M"),
                     "item": selected_display,
@@ -231,19 +196,13 @@ elif page == "📋 最新価格一覧表":
 # ==========================================
 elif page == "📝 計算メモ":
     st.title("📝 計算メモ")
-    
     if not st.session_state.memo_list:
         st.info("保存されたメモはありません。計算機ページから保存してください。")
     else:
-        # メモ一覧をDataFrameに変換して表示
         df = pd.DataFrame(st.session_state.memo_list)
-        # 列名をわかりやすく変更
         df.columns = ["日時", "品位", "重量", "最大価格", "割合(%)", "割合価格", "買い歩込価格"]
-        
         st.table(df)
-        
-        # メモ消去ボタン
-        if st.button("🗑️ すべてのメモを消去"):
+        if st.button("🗑️ すべてのメモを消消"):
             st.session_state.memo_list = []
             st.rerun()
 

@@ -14,6 +14,10 @@ if 'update_time' not in st.session_state:
 if 'memo_list' not in st.session_state:
     st.session_state.memo_list = []
 
+# 👇 この2行を追加してください 👇
+if 'close_sidebar_flag' not in st.session_state:
+    st.session_state.close_sidebar_flag = False
+
 # ==========================================
 # 💡 共通関数：相場データの自動取得（キャッシュ付き）
 # ==========================================

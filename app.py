@@ -168,10 +168,16 @@ if page == "💰 地金計算機":
             if use_bukin:
                 st.markdown(f"""<div class="ios-card" style="border: 2px solid #007AFF; background-color: rgba(0, 122, 255, 0.05);"><span style="font-size: 13px; color: #007AFF;">買い歩込価格 ({rate_buy}%)</span><br><span style="font-size: 32px; font-weight: 800; color: #007AFF;">¥{buy_total:,.0f}</span></div>""", unsafe_allow_html=True)
 
+            # 「💾 計算結果をメモに保存」ボタンの中の memo_entry を以下に書き換え
             if st.button("💾 計算結果をメモに保存"):
                 memo_entry = {
-                    "datetime": datetime.now().strftime("%H:%M"), "item": selected_display, "weight": f"{weight}g",
-                    "theory": f"¥{theory_total:,.0f}", "rate": f"{rate_sell}%", "sell_total": f"¥{sell_total:,.0f}",
+                    "datetime": datetime.now().strftime("%H:%M"), 
+                    "item": selected_display, 
+                    "weight": f"{weight}g",
+                    "theory": f"¥{theory_total:,.0f}", 
+                    "rate": f"{rate_sell}%", 
+                    "sell_total": f"¥{sell_total:,.0f}",
+                    "buy_rate": f"{rate_buy}%", # ← ここを追加
                     "buy_total": f"¥{buy_total:,.0f}" if use_bukin else "-"
                 }
                 st.session_state.memo_list.append(memo_entry)
@@ -189,14 +195,14 @@ elif page == "📝 計算メモ":
         st.info("保存された履歴はありません")
     else:
         for m in reversed(st.session_state.memo_list):
-            # 買い歩込の表示判定（なしの場合は「-」を表示して列を維持）
+            # 買い歩の割合を取得（古いデータへの対策としてgetを使用）
+            buy_rate_val = m.get('buy_rate', '0%')
             buy_val = m['buy_total'] if m["buy_total"] != "-" else "-"
             buy_color = "#007AFF" if m["buy_total"] != "-" else "gray"
             
-            # メインのカード描画（バグ防止のため左詰め）
             st.markdown(f"""
 <div class="ios-card" style="text-align: left; padding: 15px 12px;">
-<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; border-bottom: 0.5px solid rgba(128,128,128,0.2); padding-bottom: 8px;">
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; border-bottom: 0.5px solid rgba(128, 128, 128, 0.2); padding-bottom: 8px;">
 <span style="font-size: 17px; font-weight: 700;">{m['item']} ({m['weight']})</span>
 <span style="color: gray; font-size: 11px;">{m['datetime']}</span>
 </div>
@@ -207,13 +213,13 @@ elif page == "📝 計算メモ":
 <div style="font-size: 16px; font-weight: 600;">{m['theory']}</div>
 </div>
 
-<div style="flex: 1; border-left: 0.5px solid rgba(128,128,128,0.2); border-right: 0.5px solid rgba(128,128,128,0.2);">
+<div style="flex: 1; border-left: 0.5px solid rgba(128, 128, 128, 0.2); border-right: 0.5px solid rgba(128, 128, 128, 0.2);">
 <div style="font-size: 10px; color: #ff4b4b; margin-bottom: 2px;">割合 ({m['rate']})</div>
 <div style="font-size: 18px; font-weight: 800; color: #ff4b4b;">{m['sell_total']}</div>
 </div>
 
 <div style="flex: 1;">
-<div style="font-size: 10px; color: {buy_color}; margin-bottom: 2px;">買い歩込</div>
+<div style="font-size: 10px; color: {buy_color}; margin-bottom: 2px;">買い歩込み({buy_rate_val})</div>
 <div style="font-size: 18px; font-weight: 800; color: {buy_color};">{buy_val}</div>
 </div>
 </div>

@@ -140,7 +140,7 @@ if page == "💰 地金計算機":
 
     weight = st.number_input("重量 (g)", min_value=0.0, value=st.session_state.p_weight, step=1.0, format="%.1f", key="weight_widget", on_change=sync_inputs)
     rate_sell = st.number_input("割合 (%)", min_value=0, max_value=100, value=st.session_state.p_rate_sell, step=5, key="rate_sell_widget", on_change=sync_inputs)
-    use_bukin = st.checkbox("歩金を適用する", value=st.session_state.p_use_bukin, key="use_bukin_widget", on_change=sync_inputs)
+    use_bukin = st.checkbox("買い歩を適用する", value=st.session_state.p_use_bukin, key="use_bukin_widget", on_change=sync_inputs)
     
     rate_buy = st.number_input("歩金 (%)", min_value=0, max_value=20, value=st.session_state.p_rate_buy, step=1, key="rate_buy_widget", on_change=sync_inputs) if use_bukin else 0
 

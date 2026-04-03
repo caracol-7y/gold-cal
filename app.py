@@ -243,7 +243,7 @@ elif page == "📝 計算メモ":
         st.info("保存されたメモはありません。計算機ページから保存してください。")
     else:
         df = pd.DataFrame(st.session_state.memo_list)
-        df.columns = ["日時", "品位", "重量", "最大価格", "割合(%)", "割合価格", "買い歩込価格"]
+        df.columns = ["日時", "品位", "重量", "最大価格", "割合(%)", "割合価格", "買い歩込"]
         st.table(df)
         if st.button("🗑️ すべてのメモを削除"):
             st.session_state.memo_list = []

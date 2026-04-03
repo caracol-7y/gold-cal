@@ -5,7 +5,7 @@ from scraper import get_all_prices_comprehensive
 from calculator import calculate_prices
 
 # ==========================================
-# 1. 共通設定・定数（どこからでも参照できるように冒頭に置く）
+# 1. 共通設定・定数
 # ==========================================
 st.set_page_config(page_title="地金計算システム Pro", page_icon="💰", layout="centered")
 
@@ -29,7 +29,6 @@ OPTIONS_MAP = {
 if 'all_prices' not in st.session_state: st.session_state.all_prices = None
 if 'update_time' not in st.session_state: st.session_state.update_time = None
 if 'memo_list' not in st.session_state: st.session_state.memo_list = []
-# 入力保持用（影の変数）
 if 'p_cat' not in st.session_state: st.session_state.p_cat = "Gold"
 if 'p_display' not in st.session_state: st.session_state.p_display = "Gold Bar"
 if 'p_weight' not in st.session_state: st.session_state.p_weight = 1.0
@@ -44,17 +43,16 @@ if 'p_rate_buy' not in st.session_state: st.session_state.p_rate_buy = 5
 def fetch_prices_cached():
     return get_all_prices_comprehensive()
 
-def force_update():
-    fetch_prices_cached.clear()
-    st.session_state.all_prices = None # クリアして再取得を促す
-
-# 自動取得の実行
 try:
     prices, time_val = fetch_prices_cached()
     st.session_state.all_prices = prices
     st.session_state.update_time = time_val
 except Exception as e:
     st.error(f"データ取得エラー: {e}")
+
+def force_update():
+    fetch_prices_cached.clear()
+    st.rerun()
 
 # ==========================================
 # 4. サイドバー
@@ -64,7 +62,6 @@ page = st.sidebar.radio("ページ選択", ["💰 地金計算機", "📝 計算
 
 if st.sidebar.button("🔄 最新相場に強制更新"):
     force_update()
-    st.rerun()
 
 st.sidebar.markdown("---")
 
@@ -89,7 +86,7 @@ def on_cat_change():
 if page == "💰 地金計算機":
     st.title("💍 地金計算機")
     if st.session_state.update_time:
-        st.caption(f"🕒 ネットジャパン価格更新時刻: {st.session_state.update_time}")
+        st.caption(f"🕒 価格更新時刻: {st.session_state.update_time}")
 
     cat_index = list(METAL_CATEGORIES.keys()).index(st.session_state.p_cat)
     selected_cat = st.radio("金属を選択", options=list(METAL_CATEGORIES.keys()), index=cat_index, horizontal=True, key="cat_widget", on_change=on_cat_change)
@@ -127,6 +124,8 @@ if page == "💰 地金計算機":
                 }
                 st.session_state.memo_list.append(memo_entry)
                 st.success("メモに保存しました！")
+    else:
+        st.warning("⚠️ 相場データが読み込めていません。スプレッドシートのURLと公開設定を確認してください。")
 
 # ==========================================
 # ページ2：計算メモ
@@ -149,7 +148,7 @@ elif page == "📝 計算メモ":
 elif page == "📋 最新価格一覧表":
     st.title("📋 最新価格一覧表")
     if st.session_state.update_time:
-        st.caption(f"🕒 スプレッドシート更新時刻: {st.session_state.update_time}")
+        st.caption(f"🕒 価格更新時刻: {st.session_state.update_time}")
 
     if st.session_state.all_prices:
         for cat_label, keys in METAL_CATEGORIES.items():
@@ -164,4 +163,4 @@ elif page == "📋 最新価格一覧表":
     else:
         st.warning("⚠️ 相場データがありません。")
 
-st.caption("※ネットジャパンのプリントページから抽出した最新データです。")
+st.caption("※スプレッドシートから抽出した最新データです。")

@@ -87,4 +87,51 @@ div[data-testid="stSegmentedControl"] button[aria-selected="false"] {
     margin-bottom: 12px;
 }
 
-/* 入力欄
+/* 入力欄（重量、割合） */
+.stNumberInput, .stCheckbox {
+    background-color: #1C1C1E !important;
+    border-radius: 12px;
+    margin-bottom: 5px;
+}
+
+/* チェックボックスのチェック色を青に（configで効かない場合の予備） */
+input[type="checkbox"]:checked {
+    background-color: #007AFF !important;
+}
+
+/* 保存・削除ボタン (青色) */
+.stButton>button {
+    border-radius: 18px;
+    background-color: #007AFF !important;
+    color: #FFFFFF !important;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    width: 100%;
+    display: block;
+    border: none;
+}
+
+/* =========================================
+   5. 金属カラー・テキスト視認性
+   ========================================= */
+.metal-gold { color: #FFD700 !important; }
+.metal-platinum { color: #87CEEB !important; }
+.metal-silver { color: #C0C0C0 !important; }
+
+/* パラジウムと重量(1.0g)：ダークモードでハッキリ白にする */
+.metal-palladium, .history-weight {
+    color: #FFFFFF !important;
+    opacity: 1.0 !important;
+    font-weight: 700 !important;
+}
+
+.history-weight {
+    font-size: 14px;
+    font-weight: 500 !important;
+}
+
+/* 更新日時などのキャプション */
+div[style*="text-align: right"] {
+    color: #8E8E93 !important;
+}

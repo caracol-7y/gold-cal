@@ -85,7 +85,7 @@ elif page == "📋 最新相場":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>最新相場</h1>", unsafe_allow_html=True)
     
     # ★ ここに更新日時を表示
-    st.caption(f"スプレッドシート更新日時: {utime}")
+    st.caption(f"ネットジャパン更新日時: {utime}")
     st.markdown("---")
     
     if prices:

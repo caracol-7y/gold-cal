@@ -1,103 +1,124 @@
-/* style.css */
-
-/* 全体フォント設定 */
+/* ==========================================
+   1. 全体レイアウト・フォント
+   ========================================== */
 html, body, [class*="css"] {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif !important;
 }
 
-/* メイン画面の横幅制限と標準的な余白 */
+/* メインコンテンツの幅と余白の適正化 */
 .main .block-container {
     max-width: 500px;
-    padding-top: 2rem !important;
+    padding-top: 2.5rem !important;
+    padding-bottom: 2rem !important;
 }
 
-/* サイドバーのメニューを巨大ボタンにする */
-[data-testid="stSidebar"] div[role="radiogroup"] {
-    gap: 15px;
-    padding-top: 20px;
+/* 不要なツールバー（Deployボタン等）を隠す（サイドバーボタンは残す） */
+.stAppDeployButton, [data-testid="stToolbar"] {
+    display: none !important;
 }
+
+/* ==========================================
+   2. サイドバー（巨大メニューボタン）
+   ========================================== */
+[data-testid="stSidebar"] div[role="radiogroup"] {
+    gap: 12px;
+    padding-top: 10px;
+}
+
 [data-testid="stSidebar"] div[role="radiogroup"] label {
     background-color: rgba(128, 128, 128, 0.1) !important;
-    border: 1px solid rgba(128, 128, 128, 0.2) !important;
-    border-radius: 15px !important;
-    padding: 25px 10px !important;
+    border: 1px solid rgba(128, 128, 128, 0.15) !important;
+    border-radius: 14px !important;
+    padding: 20px 10px !important;
     width: 100%;
-    cursor: pointer;
-    transition: 0.2s;
+    transition: 0.2s ease;
 }
+
+/* 選択時のハイライト */
+[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] {
+    background-color: rgba(0, 122, 255, 0.15) !important;
+    border-color: #007AFF !important;
+}
+
 [data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
-    font-size: 20px !important;
-    font-weight: 800 !important;
+    font-size: 19px !important;
+    font-weight: 700 !important;
     text-align: center;
-    width: 100%;
     margin: 0;
 }
+
+/* ラジオボタンの丸を非表示 */
 [data-testid="stSidebar"] div[role="radiogroup"] label div[data-baseweb="radio"] {
-    display: none; /* ラジオボタンの丸を隠す */
+    display: none;
 }
 
-/* iOS風カードデザイン */
+/* ==========================================
+   3. iOS風カード・パーツ
+   ========================================== */
 .ios-card {
     background-color: rgba(128, 128, 128, 0.08);
-    border-radius: 20px;
-    padding: 12px 10px;
+    border-radius: 18px;
+    padding: 15px;
     border: 1px solid rgba(128, 128, 128, 0.1);
-    margin-bottom: 12px;
-    text-align: center;
+    margin-bottom: 10px;
 }
 
-/* 入力パーツのデザイン */
-.stNumberInput, .stCheckbox {
+/* 入力フィールドの背景を馴染ませる */
+.stNumberInput, .stCheckbox, .stSelectbox {
     background-color: rgba(128, 128, 128, 0.05);
-    padding: 10px 15px;
     border-radius: 12px;
 }
 
-/* 保存ボタン */
-.stButton>button {
-    border-radius: 18px;
-    background-color: #007AFF;
-    color: white;
-    padding: 18px;
-    font-size: 18px;
-    font-weight: 700;
-    width: 100%;
-    border: none;
+/* ==========================================
+   4. 金属別の文字色（履歴用）
+   ========================================== */
+.metal-gold { color: #FFD700 !important; }      /* 金：黄色 */
+.metal-platinum { color: #87CEEB !important; }  /* プラチナ：水色 */
+.metal-silver { color: #C0C0C0 !important; }    /* 銀：灰色 */
+
+/* パラジウム：システム標準の色を強制適用（ライトなら黒、ダークなら白） */
+.metal-palladium { 
+    color: var(--text-color) !important; 
 }
 
-/* 2. 金属ごとの色 */
-.metal-gold { color: #FFD700 !important; }
-.metal-platinum { color: #87CEEB !important; }
-.metal-silver { color: #C0C0C0 !important; }
-/* パラジウムはシステムの色（白/黒）に従う */
-.metal-palladium { color: var(--text-color) !important; }
-
-/* 3. 重量（1.0g）の色 */
+/* 重量 (1.0g) の色：常に標準テキスト色かつ少し透過 */
 .history-weight {
     color: var(--text-color) !important;
     font-weight: 400;
     font-size: 14px;
-    opacity: 0.6;
+    opacity: 0.7;
 }
 
+/* ==========================================
+   5. ボタン（保存・削除）
+   ========================================== */
+/* 保存ボタン（プライマリ） */
+.stButton > button[kind="primary"], 
+div.stButton > button:first-child:not([kind="secondary"]) {
+    border-radius: 16px;
+    background-color: #007AFF;
+    color: white;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 700;
+    width: 100%;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+}
 
-/* 1. 履歴の削除ボタン（×）をシンプルにする */
+/* 履歴の個別削除ボタン（×ボタン：セカンダリ） */
 .stButton > button[kind="secondary"] {
     background-color: transparent !important;
     border: none !important;
     color: #8e8e93 !important;
-    font-size: 16px !important;
+    font-size: 18px !important;
+    width: 30px !important;
+    height: 30px !important;
     padding: 0 !important;
     margin: 0 !important;
-    height: auto !important;
-    width: 24px !important;
-}
-.stButton > button[kind="secondary"]:hover {
-    color: #ff4b4b !important;
-    background-color: rgba(255, 75, 75, 0.1) !important;
+    transition: 0.2s;
 }
 
-/* ホバーした時だけ赤くする */
 .stButton > button[kind="secondary"]:hover {
     color: #ff4b4b !important;
     background-color: rgba(255, 75, 75, 0.1) !important;

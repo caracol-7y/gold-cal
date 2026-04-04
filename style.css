@@ -64,3 +64,24 @@ html, body, [class*="css"] {
     width: 100%;
     border: none;
 }
+
+/* style.css の最後の方に追加、または上書き */
+
+/* 金属名の色設定 */
+.metal-gold { color: #FFD700; }     /* 黄色 */
+.metal-platinum { color: #87CEEB; } /* 水色 */
+.metal-silver { color: #C0C0C0; }   /* 灰色 */
+.metal-palladium { color: #808080; } /* 標準は濃い灰色 */
+
+/* 端末がダークモードの時のパラジウム設定 */
+@media (prefers-color-scheme: dark) {
+    .metal-palladium { color: #FFFFFF !important; }
+}
+
+/* 重量 (1.0g) の設定：システム標準の色に従う */
+.history-weight {
+    color: var(--text-color) !important;
+    font-weight: 400;
+    font-size: 15px;
+    opacity: 0.9;
+}

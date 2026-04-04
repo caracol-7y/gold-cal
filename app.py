@@ -93,12 +93,12 @@ elif page == "📝 履歴":
         for i, m in enumerate(reversed(st.session_state.memo_list)):
             real_index = len(st.session_state.memo_list) - 1 - i
             
-            # ★ ここが最大の改善点：システム標準の枠を使い、絶対に崩れないカードを生成
+            # --- 1つのカード（ここが重要） ---
             with st.container(border=True):
-                c1, c2, c3 = st.columns([1.5, 6.5, 3], gap="small")
+                # 1行目: [×] [品位(重量)] [日付]
+                c1, c2, c3 = st.columns([1, 7, 3])
                 
                 with c1:
-                    # このボタンは左端に配置され、CSSで小さく装飾されます
                     if st.button("×", key=f"del_{real_index}"):
                         st.session_state.memo_list.pop(real_index)
                         st.rerun()
@@ -106,22 +106,25 @@ elif page == "📝 履歴":
                 with c2:
                     m_class = f"metal-{m.get('metal','').lower()}"
                     title = f"{m.get('metal','')} {m.get('item','')}"
-                    st.markdown(f'''
-                        <div style="text-align: left; margin-top: 5px;">
-                            <span class="{m_class}" style="font-size: 17px; font-weight: 700;">{title}</span>
+                    st.markdown(f"""
+                        <div style="text-align: center; line-height: 1.4; margin-top: 2px;">
+                            <span class="{m_class}" style="font-size: 16px; font-weight: 700;">{title}</span>
                             <span class="history-weight">({m['weight']})</span>
                         </div>
-                    ''', unsafe_allow_html=True)
+                    """, unsafe_allow_html=True)
                 
                 with c3:
-                    st.markdown(f'<div style="text-align: right; font-size: 10px; color: gray; margin-top: 10px;">{m["datetime"]}</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div style="text-align: right; font-size: 10px; color: gray; margin-top: 6px;">{m["datetime"]}</div>', unsafe_allow_html=True)
                 
-                # 区切り線と価格の描画
-                st.markdown('<div style="border-bottom: 0.5px solid rgba(128,128,128,0.2); margin: 0px 0 10px 0;"></div>', unsafe_allow_html=True)
+                # 2行目: 線
+                st.markdown('<div style="border-bottom: 0.5px solid rgba(128,128,128,0.2); margin: 6px 0;"></div>', unsafe_allow_html=True)
+                
+                # 3行目: 価格情報の数字（ui_partsから呼び出し）
                 ui_parts.render_history_prices_only(m)
-        
+            # --- カード終了 ---
+            
         st.markdown("---")
-        st.markdown('<div class="clear-all-btn">', unsafe_allow_html=True)
+        st.markdown('<div class="clear-all-area">', unsafe_allow_html=True)
         if st.button("🗑️ すべての履歴を削除", key="clear_all"):
             st.session_state.memo_list = []
             st.rerun()

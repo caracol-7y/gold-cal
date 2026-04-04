@@ -34,15 +34,28 @@ def render_history_card(m):
 </div>
 """, unsafe_allow_html=True)
 
-def render_history_prices(m):
+# ui_parts.py
+
+def render_history_prices_only(m):
     br = m.get('buy_rate', '0%')
     bv = m['buy_total']
     bc = "#007AFF" if bv != "-" else "gray"
     
     st.markdown(f"""
     <div style="display: flex; justify-content: space-between; text-align: center; align-items: flex-end;">
-        <div style="flex: 1;"><div style="font-size: 10px; color: gray;">最大</div><div style="font-size: 17px; font-weight: 700;">{m['theory']}</div></div>
-        <div style="flex: 1; border-left: 0.5px solid rgba(128,128,128,0.2); border-right: 0.5px solid rgba(128, 128, 128, 0.2);"><div style="font-size: 10px; color: #ff4b4b;">割合({m['rate']})</div><div style="font-size: 17px; font-weight: 800; color: #ff4b4b;">{m['sell_total']}</div></div>
-        <div style="flex: 1;"><div style="font-size: 10px; color: {bc};">歩金({br})</div><div style="font-size: 17px; font-weight: 800; color: {bc};">{bv}</div></div>
+        <div style="flex: 1;">
+            <div style="font-size: 10px; color: gray; margin-bottom: 2px;">最大</div>
+            <div style="font-size: 17px; font-weight: 700; color: gray;">{m['theory']}</div>
+        </div>
+        <div style="flex: 1; border-left: 0.5px solid rgba(128, 128, 128, 0.2); border-right: 0.5px solid rgba(128, 128, 128, 0.2);">
+            <div style="font-size: 10px; color: #ff4b4b; margin-bottom: 2px;">割合({m['rate']})</div>
+            <div style="font-size: 17px; font-weight: 800; color: #ff4b4b;">{m['sell_total']}</div>
+        </div>
+        <div style="flex: 1;">
+            <div style="font-size: 10px; color: {bc}; margin-bottom: 2px;">歩金({br})</div>
+            <div style="font-size: 17px; font-weight: 800; color: {bc};">{bv}</div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
+
+# 他の関数はそのまま

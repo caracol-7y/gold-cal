@@ -72,7 +72,6 @@ if page == "💰 計算機":
     with c1:
         weight = st.number_input("重量(g)", value=st.session_state.p_weight, step=0.1, format="%.1f", key="weight_key", on_change=update_state)
     with c2:
-        # 初期値 90
         rsell = st.number_input("割合(%)", value=st.session_state.p_rsell, step=1, key="rsell_key", on_change=update_state)
     
     ubukin = st.checkbox("買い歩あり", value=st.session_state.p_ubukin, key="ubukin_key", on_change=update_state)
@@ -111,6 +110,9 @@ elif page == "📝 履歴":
 
 elif page == "📋 最新相場":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>最新相場</h1>", unsafe_allow_html=True)
+    # --- 計算機ページと同じデザインの更新日時を追加 ---
+    st.markdown(f'<div style="text-align: right; color: gray; font-size: 0.8rem; margin-bottom: 10px;">更新日時: {utime}</div>', unsafe_allow_html=True)
+    
     if prices:
         for l, ks in config.METAL_CATEGORIES.items():
             ui_parts.render_price_list(l, ks, prices, config.OPTIONS_MAP)

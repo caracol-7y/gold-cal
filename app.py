@@ -85,27 +85,14 @@ if page == "💰 計算機":
     key = [k for k in cat_keys if config.OPTIONS_MAP[k] == disp][0]
     
     # --- 入力エリア ---
+# お手元の c1, c2 に合わせた書き方です
     c1, c2 = st.columns(2)
     with c1:
-        weight = st.number_input(
-            "重量 (g)", 
-            min_value=0.0, 
-            value=st.session_state.get('p_w_v', 1.0), 
-            step=0.1, 
-            format="%.1f", 
-            key="w_v", 
-            on_change=sync
-        )
+        # ラベルを消して、入力欄の中に「重量(g)」と表示させます
+        weight = st.number_input("重量", value=1.0, step=0.1, format="%.1f", label_visibility="collapsed", placeholder="重量(g)")
     with c2:
-        rsell = st.number_input(
-            "割合 (%)", 
-            min_value=0, 
-            max_value=100, 
-            value=st.session_state.get('p_r_s', 90), 
-            step=1, 
-            key="r_s", 
-            on_change=sync
-        )
+        # 同様に割合もスッキリさせます
+        rate = st.number_input("割合", value=100, step=1, label_visibility="collapsed", placeholder="割合(%)")
     
     ubukin = st.checkbox("買い歩あり", value=st.session_state.get('p_b_o', False), key="b_o", on_change=sync)
     

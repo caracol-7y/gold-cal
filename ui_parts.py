@@ -1,3 +1,6 @@
+# =========================================
+# ui_parts.py
+# =========================================
 import streamlit as st
 
 def render_market_info(display_name, weight, market_price):
@@ -18,13 +21,12 @@ def render_calc_results(theory, sell, rate, buy=None, buy_rate=None):
 <div class="ios-card" style="border: 2px solid #007AFF; background-color: rgba(0, 122, 255, 0.05);"><span style="font-size: 13px; color: #007AFF;">歩金込価格 ({buy_rate})</span><br><span style="font-size: 32px; font-weight: 800; color: #007AFF;">¥{buy:,.0f}</span></div>
 """, unsafe_allow_html=True)
 
-# ui_parts.py
-
 def render_history_prices_only(m):
     br = m.get('buy_rate', '0%')
     bv = m['buy_total']
     bc = "#007AFF" if bv != "-" else "gray"
     
+    # 履歴カード内の「価格表示」だけを担当（枠はapp.pyで作成）
     st.markdown(f"""
     <div style="display: flex; justify-content: space-between; text-align: center; align-items: flex-end;">
         <div style="flex: 1;">
@@ -42,4 +44,13 @@ def render_history_prices_only(m):
     </div>
     """, unsafe_allow_html=True)
 
-# 他の関数はそのまま
+def render_price_list(category, keys, prices, options_map):
+    st.markdown(f"<h3 style='font-weight: 700;'>{category}</h3>", unsafe_allow_html=True)
+    for k in keys:
+        if k in prices:
+            st.markdown(f"""
+<div style="display: flex; justify-content: space-between; padding: 12px 10px; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
+<span style="font-size: 16px; font-weight: 500;">{options_map[k]}</span>
+<span style="font-size: 16px; font-weight: 700;">{prices[k]:,} 円</span>
+</div>
+""", unsafe_allow_html=True)

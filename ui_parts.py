@@ -20,6 +20,8 @@ def render_calc_results(theory, sell, rate, buy=None, buy_rate=None):
 
 # ui_parts.py の render_history_card 関数を修正
 
+# ui_parts.py の render_history_card 関数
+
 def render_history_card(m):
     br = m.get('buy_rate', '0%')
     bv = m['buy_total']
@@ -30,26 +32,13 @@ def render_history_card(m):
     title = f"{metal} {item}".strip()
     m_class = f"metal-{metal.lower()}"
     
+    # カードの枠だけを作り、中身（タイトルと価格）を分離
     st.markdown(f"""
-<div class="ios-card" style="text-align: left; padding: 12px 10px; margin-bottom: 0px;">
-    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; border-bottom: 0.5px solid rgba(128, 128, 128, 0.2); padding-bottom: 6px;">
-        <div style="flex: 0.5;"></div>
-        
-        <div style="flex: 3; text-align: center;">
-            <span style="font-size: 17px; font-weight: 700;">
-                <span class="{m_class}">{title}</span>
-                <span class="history-weight"> ({m['weight']})</span>
-            </span>
-        </div>
-        
-        <div style="flex: 1; text-align: right;">
-            <span style="color: gray; font-size: 10px; white-space: nowrap;">{m['datetime']}</span>
-        </div>
-    </div>
-    <div style="display: flex; justify-content: space-between; text-align: center; align-items: flex-end;">
-        <div style="flex: 1;"><div style="font-size: 10px; color: gray; margin-bottom: 2px;">最大</div><div style="font-size: 18px; font-weight: 700; color: gray;">{m['theory']}</div></div>
-        <div style="flex: 1; border-left: 0.5px solid rgba(128, 128, 128, 0.2); border-right: 0.5px solid rgba(128, 128, 128, 0.2);"><div style="font-size: 10px; color: #ff4b4b; margin-bottom: 2px;">割合({m['rate']})</div><div style="font-size: 18px; font-weight: 800; color: #ff4b4b;">{m['sell_total']}</div></div>
-        <div style="flex: 1;"><div style="font-size: 10px; color: {bc}; margin-bottom: 2px;">歩金({br})</div><div style="font-size: 18px; font-weight: 800; color: {bc};">{bv}</div></div>
+<div class="ios-card" style="text-align: left; padding: 10px; margin-bottom: 5px;">
+    <div style="display: flex; justify-content: space-between; text-align: center; align-items: flex-end; margin-top: 5px;">
+        <div style="flex: 1;"><div style="font-size: 10px; color: gray;">最大</div><div style="font-size: 17px; font-weight: 700;">{m['theory']}</div></div>
+        <div style="flex: 1; border-left: 0.5px solid rgba(128, 128, 128, 0.2); border-right: 0.5px solid rgba(128, 128, 128, 0.2);"><div style="font-size: 10px; color: #ff4b4b;">割合({m['rate']})</div><div style="font-size: 17px; font-weight: 800; color: #ff4b4b;">{m['sell_total']}</div></div>
+        <div style="flex: 1;"><div style="font-size: 10px; color: {bc};">歩金({br})</div><div style="font-size: 17px; font-weight: 800; color: {bc};">{bv}</div></div>
     </div>
 </div>
 """, unsafe_allow_html=True)

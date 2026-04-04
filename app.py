@@ -83,7 +83,14 @@ elif page == "📝 履歴":
 
 elif page == "📋 最新相場":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>最新相場</h1>", unsafe_allow_html=True)
-    st.caption(f"更新日時: {utime}")
+    
+    # ★ st.caption の代わりに HTML で右詰めにする
+    st.markdown(f"""
+        <div style="text-align: right; color: gray; font-size: 0.8rem; margin-bottom: 10px;">
+            更新日時: {utime}
+        </div>
+    """, unsafe_allow_html=True)
+
     if prices:
         for l, ks in config.METAL_CATEGORIES.items():
             ui_parts.render_price_list(l, ks, prices, config.OPTIONS_MAP)

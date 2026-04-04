@@ -90,7 +90,7 @@ if page == "💰 計算機":
     with c1:
         weight = st.number_input("重量(g)", value=1.0, step=0.1, format="%.1f")
     with c2:
-        rate = st.number_input("割合(%)", value=100, step=1)
+        rsell = st.number_input("割合(%)", value=100, step=1)
     
     ubukin = st.checkbox("買い歩あり", value=st.session_state.get('p_b_o', False), key="b_o", on_change=sync)
     

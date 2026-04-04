@@ -1,5 +1,6 @@
+# =========================================
 # app.py
-
+# =========================================
 import streamlit as st
 from datetime import datetime
 from scraper import get_all_prices_comprehensive
@@ -9,14 +10,12 @@ import config
 
 st.set_page_config(page_title="地金計算 Pro", page_icon="💰", layout="centered")
 
-# CSS読み込み
 try:
     with open("style.css", "r", encoding="utf-8") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 except:
     pass
 
-# 状態管理
 if 'memo_list' not in st.session_state: st.session_state.memo_list = []
 if 'p_cat' not in st.session_state: st.session_state.p_cat = "Gold"
 if 'p_display' not in st.session_state: st.session_state.p_display = "K18"
@@ -26,22 +25,14 @@ def sync():
         if k in st.session_state: st.session_state[f"p_{k}"] = st.session_state[k]
 
 def cat_change():
-    sync() # 現在の入力値を保持
+    sync()
     new_cat = st.session_state.cat_w
     st.session_state.p_cat = new_cat
-    
-    # 金属ごとにデフォルトの表示名（config.OPTIONS_MAPの右側の値）を指定
-    if new_cat == "Gold":
-        st.session_state.p_display = "K18"
-    elif new_cat == "Platinum":
-        st.session_state.p_display = "Pt900"
-    elif new_cat == "Silver":
-        st.session_state.p_display = "Sv1000"
-    elif new_cat == "Palladium":
-        st.session_state.p_display = "Bar"
-    else:
-        # 万が一設定がない場合はリストの先頭にする
-        st.session_state.p_display = config.OPTIONS_MAP[config.METAL_CATEGORIES[new_cat][0]]
+    if new_cat == "Gold": st.session_state.p_display = "K18"
+    elif new_cat == "Platinum": st.session_state.p_display = "Pt900"
+    elif new_cat == "Silver": st.session_state.p_display = "Sv1000"
+    elif new_cat == "Palladium": st.session_state.p_display = "Bar"
+    else: st.session_state.p_display = config.OPTIONS_MAP[config.METAL_CATEGORIES[new_cat][0]]
 
 @st.cache_data(ttl=3600)
 def fetch(): return get_all_prices_comprehensive()
@@ -53,27 +44,22 @@ if page == "💰 計算機":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>地金計算機</h1>", unsafe_allow_html=True)
     st.caption(f"最終更新: {utime}")
     
-    cat = st.radio("金属", options=list(config.METAL_CATEGORIES.keys()), 
-               index=list(config.METAL_CATEGORIES.keys()).index(st.session_state.p_cat), 
-               horizontal=True, key="cat_w", on_change=cat_change)
-
-    opts = [config.OPTIONS_MAP[k] for k in config.METAL_CATEGORIES[cat]]
-    try:
-        # 現在のセッション状態にある品位を選択状態にする
-        d_idx = opts.index(st.session_state.p_display)
-    except ValueError:
-        d_idx = 0
+    cat = st.radio("金属", options=list(config.METAL_CATEGORIES.keys()), index=list(config.METAL_CATEGORIES.keys()).index(st.session_state.p_cat), horizontal=True, key="cat_w", on_change=cat_change)
     
+    opts = [config.OPTIONS_MAP[k] for k in config.METAL_CATEGORIES[cat]]
+    try: d_idx = opts.index(st.session_state.p_display)
+    except ValueError: d_idx = 0
+        
     disp = st.radio("品位", options=opts, index=d_idx, horizontal=True, key="disp_w")
-    st.session_state.p_display = disp # 選択された値を即座にセッションへ保存
-
-    # ★修正ポイント：今選んでいるカテゴリ(cat)のキーの中から、表示名(disp)に一致するものを探す
+    st.session_state.p_display = disp
+    
     cat_keys = config.METAL_CATEGORIES[cat]
     key = [k for k in cat_keys if config.OPTIONS_MAP[k] == disp][0]
     
     c1, c2 = st.columns(2)
     with c1: weight = st.number_input("重量 (g)", min_value=0.0, value=st.session_state.get('p_w_v', 1.0), step=0.1, format="%.1f", key="w_v", on_change=sync)
     with c2: rsell = st.number_input("割合 (%)", min_value=0, max_value=100, value=st.session_state.get('p_r_s', 90), step=1, key="r_s", on_change=sync)
+    
     ubukin = st.checkbox("買い歩あり", value=st.session_state.get('p_b_o', False), key="b_o", on_change=sync)
     rbuy = st.number_input("歩金 (%)", min_value=0, value=st.session_state.get('p_r_b', 5), key="r_b", on_change=sync) if ubukin else 0
 
@@ -87,15 +73,16 @@ if page == "💰 計算機":
             if st.button("💾 この結果を保存", type="primary"):
                 st.session_state.memo_list.append({
                     "datetime": datetime.now().strftime("%m/%d %H:%M"),
-                    "metal": cat, # ★金属名(Gold等)を保存
-                    "item": disp, # ★Bar等を保存
+                    "metal": cat,
+                    "item": disp,
                     "weight": f"{weight:.1f}g",
-                    "theory": f"¥{th:,.0f}", "rate": f"{rsell}%", "sell_total": f"¥{sl:,.0f}",
-                    "buy_rate": f"{rbuy}%", "buy_total": f"¥{by:,.0f}" if ubukin else "-"
+                    "theory": f"¥{th:,.0f}", 
+                    "rate": f"{rsell}%", 
+                    "sell_total": f"¥{sl:,.0f}",
+                    "buy_rate": f"{rbuy}%", 
+                    "buy_total": f"¥{by:,.0f}" if ubukin else "-"
                 })
                 st.toast("保存しました")
-
-# app.py の「📝 履歴」セクション
 
 elif page == "📝 履歴":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>計算履歴</h1>", unsafe_allow_html=True)
@@ -106,49 +93,42 @@ elif page == "📝 履歴":
         for i, m in enumerate(reversed(st.session_state.memo_list)):
             real_index = len(st.session_state.memo_list) - 1 - i
             
-            # --- 1つのカードの開始 ---
-            # 枠となるdivを開始
-            st.markdown('<div class="history-card-container">', unsafe_allow_html=True)
-            
-            # 1行目: ×ボタン, 品位, 日付 を横並びにする
-            c1, c2, c3 = st.columns([1, 6, 3])
-            
-            with c1:
-                st.markdown('<div class="del-btn-wrap">', unsafe_allow_html=True)
-                if st.button("×", key=f"del_{real_index}"):
-                    st.session_state.memo_list.pop(real_index)
-                    st.rerun()
-                st.markdown('</div>', unsafe_allow_html=True)
+            # ★ ここが最大の改善点：システム標準の枠を使い、絶対に崩れないカードを生成
+            with st.container(border=True):
+                c1, c2, c3 = st.columns([1.5, 6.5, 3], gap="small")
                 
-            with c2:
-                m_class = f"metal-{m.get('metal','').lower()}"
-                title = f"{m.get('metal','')} {m.get('item','')}"
-                st.markdown(f"""
-                    <div style="text-align: center; line-height: 1.5;">
-                        <span class="{m_class}" style="font-size: 17px; font-weight: 700;">{title}</span>
-                        <span class="history-weight">({m['weight']})</span>
-                    </div>
-                """, unsafe_allow_html=True)
+                with c1:
+                    # このボタンは左端に配置され、CSSで小さく装飾されます
+                    if st.button("×", key=f"del_{real_index}"):
+                        st.session_state.memo_list.pop(real_index)
+                        st.rerun()
                 
-            with c3:
-                st.markdown(f'<div style="text-align: right; font-size: 10px; color: gray; line-height: 2.5;">{m["datetime"]}</div>', unsafe_allow_html=True)
-            
-            # 区切り線
-            st.markdown('<div style="border-bottom: 1px solid rgba(128,128,128,0.15); margin: 8px 0;"></div>', unsafe_allow_html=True)
-            
-            # 2行目: 価格情報の数字のみを表示
-            ui_parts.render_history_prices_only(m)
-            
-            # 枠となるdivを終了
-            st.markdown('</div>', unsafe_allow_html=True)
-            # --- 1つのカードの終了 ---
-            
+                with c2:
+                    m_class = f"metal-{m.get('metal','').lower()}"
+                    title = f"{m.get('metal','')} {m.get('item','')}"
+                    st.markdown(f'''
+                        <div style="text-align: left; margin-top: 5px;">
+                            <span class="{m_class}" style="font-size: 17px; font-weight: 700;">{title}</span>
+                            <span class="history-weight">({m['weight']})</span>
+                        </div>
+                    ''', unsafe_allow_html=True)
+                
+                with c3:
+                    st.markdown(f'<div style="text-align: right; font-size: 10px; color: gray; margin-top: 10px;">{m["datetime"]}</div>', unsafe_allow_html=True)
+                
+                # 区切り線と価格の描画
+                st.markdown('<div style="border-bottom: 0.5px solid rgba(128,128,128,0.2); margin: 0px 0 10px 0;"></div>', unsafe_allow_html=True)
+                ui_parts.render_history_prices_only(m)
+        
         st.markdown("---")
+        st.markdown('<div class="clear-all-btn">', unsafe_allow_html=True)
         if st.button("🗑️ すべての履歴を削除", key="clear_all"):
             st.session_state.memo_list = []
             st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
 elif page == "📋 最新相場":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>最新相場</h1>", unsafe_allow_html=True)
     if prices:
-        for l, ks in config.METAL_CATEGORIES.items(): ui_parts.render_price_list(l, ks, prices, config.OPTIONS_MAP)
+        for l, ks in config.METAL_CATEGORIES.items():
+            ui_parts.render_price_list(l, ks, prices, config.OPTIONS_MAP)

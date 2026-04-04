@@ -19,53 +19,20 @@ def render_market_info(display_name, weight, market_price):
 """, unsafe_allow_html=True)
 
 def render_calc_results(theory, sell, rate, buy=None, buy_rate=None):
-    # 歩金（buy）があるかどうかでカラム数を分ける
+    # スマホでも強制的に横並びにするHTML（改行なし・min-width:0指定）
+    html = '<div style="display: flex; flex-direction: row; gap: 6px; align-items: stretch; margin-bottom: 12px;">'
+    
+    # 🌟マークが画面に出れば、更新は成功しています
+    html += f'<div class="ios-card" style="flex: 1; text-align: center; padding: 8px 2px; margin: 0; min-width: 0;"><div style="font-size: 10px; color: gray; margin-bottom: 2px;">🌟最大(100%)</div><div style="font-size: 15px; font-weight: 800; letter-spacing: -0.5px;">¥{theory:,.0f}</div></div>'
+    
+    html += f'<div class="ios-card" style="flex: 1; border: 2px solid #ff4b4b; background-color: rgba(255, 75, 75, 0.05); text-align: center; padding: 8px 2px; margin: 0; min-width: 0;"><div style="font-size: 10px; color: #ff4b4b; margin-bottom: 2px;">割合({rate}%)</div><div style="font-size: 15px; font-weight: 800; color: #ff4b4b; letter-spacing: -0.5px;">¥{sell:,.0f}</div></div>'
+    
     if buy is not None:
-        c1, c2, c3 = st.columns(3)
+        html += f'<div class="ios-card" style="flex: 1; border: 2px solid #007AFF; background-color: rgba(0, 122, 255, 0.05); text-align: center; padding: 8px 2px; margin: 0; min-width: 0;"><div style="font-size: 10px; color: #007AFF; margin-bottom: 2px;">歩金({buy_rate})</div><div style="font-size: 15px; font-weight: 800; color: #007AFF; letter-spacing: -0.5px;">¥{buy:,.0f}</div></div>'
         
-        with c1:
-            st.markdown(f"""
-            <div class="ios-card" style="text-align: center; padding: 10px 2px; margin-bottom: 0;">
-                <div style="font-size: 11px; color: gray; margin-bottom: 2px;">最大(100%)</div>
-                <div style="font-size: 16px; font-weight: 800; letter-spacing: -0.5px;">¥{theory:,.0f}</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-        with c2:
-            st.markdown(f"""
-            <div class="ios-card" style="border: 2px solid #ff4b4b; background-color: rgba(255, 75, 75, 0.05); text-align: center; padding: 10px 2px; margin-bottom: 0;">
-                <div style="font-size: 11px; color: #ff4b4b; margin-bottom: 2px;">割合({rate}%)</div>
-                <div style="font-size: 16px; font-weight: 800; color: #ff4b4b; letter-spacing: -0.5px;">¥{sell:,.0f}</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-        with c3:
-            st.markdown(f"""
-            <div class="ios-card" style="border: 2px solid #007AFF; background-color: rgba(0, 122, 255, 0.05); text-align: center; padding: 10px 2px; margin-bottom: 0;">
-                <div style="font-size: 11px; color: #007AFF; margin-bottom: 2px;">歩金({buy_rate})</div>
-                <div style="font-size: 16px; font-weight: 800; color: #007AFF; letter-spacing: -0.5px;">¥{buy:,.0f}</div>
-            </div>
-            """, unsafe_allow_html=True)
-
-    else:
-        # 歩金がない場合は2カラム
-        c1, c2 = st.columns(2)
-        
-        with c1:
-            st.markdown(f"""
-            <div class="ios-card" style="text-align: center; padding: 10px 2px; margin-bottom: 0;">
-                <div style="font-size: 11px; color: gray; margin-bottom: 2px;">最大(100%)</div>
-                <div style="font-size: 18px; font-weight: 800; letter-spacing: -0.5px;">¥{theory:,.0f}</div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-        with c2:
-            st.markdown(f"""
-            <div class="ios-card" style="border: 2px solid #ff4b4b; background-color: rgba(255, 75, 75, 0.05); text-align: center; padding: 10px 2px; margin-bottom: 0;">
-                <div style="font-size: 11px; color: #ff4b4b; margin-bottom: 2px;">割合({rate}%)</div>
-                <div style="font-size: 18px; font-weight: 800; color: #ff4b4b; letter-spacing: -0.5px;">¥{sell:,.0f}</div>
-            </div>
-            """, unsafe_allow_html=True)
+    html += '</div>'
+    
+    st.markdown(html, unsafe_allow_html=True)
 
 def render_history_card(m):
     br = m.get('buy_rate', '0%')

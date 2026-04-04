@@ -13,16 +13,26 @@ try:
 except:
     pass
 
+# --- セッション状態の初期化 ---
 if 'memo_list' not in st.session_state: st.session_state.memo_list = []
 if 'p_cat' not in st.session_state: st.session_state.p_cat = "Gold"
 if 'p_display' not in st.session_state: st.session_state.p_display = "K18"
 
-def sync():
-    for k in ["w_v", "r_s", "b_o", "r_b"]:
-        if f"p_{k}" in st.session_state: st.session_state[f"p_{k}"] = st.session_state[k]
+# 各入力値の保持用（初期値）
+if 'p_weight' not in st.session_state: st.session_state.p_weight = 1.0
+if 'p_rsell' not in st.session_state: st.session_state.p_rsell = 100
+if 'p_ubukin' not in st.session_state: st.session_state.p_ubukin = False
+if 'p_rbuy' not in st.session_state: st.session_state.p_rbuy = 5
+
+# 値が変更された時に保持用変数へコピーする関数
+def update_state():
+    st.session_state.p_weight = st.session_state.weight_key
+    st.session_state.p_rsell = st.session_state.rsell_key
+    st.session_state.p_ubukin = st.session_state.ubukin_key
+    if 'rbuy_key' in st.session_state:
+        st.session_state.p_rbuy = st.session_state.rbuy_key
 
 def cat_change():
-    sync()
     new_cat = st.session_state.cat_w
     st.session_state.p_cat = new_cat
     if new_cat == "Gold": st.session_state.p_display = "K18"
@@ -31,7 +41,7 @@ def cat_change():
     elif new_cat == "Palladium": st.session_state.p_display = "Bar"
     else: st.session_state.p_display = config.OPTIONS_MAP[config.METAL_CATEGORIES[new_cat][0]]
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=60)
 def fetch(): return get_all_prices_comprehensive()
 prices, utime = fetch()
 
@@ -57,14 +67,19 @@ if page == "💰 計算機":
     cat_keys = config.METAL_CATEGORIES[cat]
     key = [k for k in cat_keys if config.OPTIONS_MAP[k] == disp][0]
     
+    # --- 入力エリア (keyとon_changeを追加して値を保持) ---
     c1, c2 = st.columns(2)
     with c1:
-        weight = st.number_input("重量(g)", value=1.0, step=0.1, format="%.1f")
+        weight = st.number_input("重量(g)", value=st.session_state.p_weight, step=0.1, format="%.1f", key="weight_key", on_change=update_state)
     with c2:
-        rsell = st.number_input("割合(%)", value=90, step=1)
+        rsell = st.number_input("割合(%)", value=st.session_state.p_rsell, step=1, key="rsell_key", on_change=update_state)
     
-    ubukin = st.checkbox("買い歩あり", value=st.session_state.get('p_b_o', False), key="b_o", on_change=sync)
-    rbuy = st.number_input("歩金 (%)", min_value=0, value=st.session_state.get('p_r_b', 5), key="r_b", on_change=sync) if ubukin else 0
+    ubukin = st.checkbox("買い歩あり", value=st.session_state.p_ubukin, key="ubukin_key", on_change=update_state)
+    
+    if ubukin:
+        rbuy = st.number_input("歩金 (%)", min_value=0, value=st.session_state.p_rbuy, key="rbuy_key", on_change=update_state)
+    else:
+        rbuy = 0
 
     if prices and key in prices:
         m_price = prices[key]

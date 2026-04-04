@@ -117,17 +117,22 @@ div[data-testid="stSegmentedControl"] button[aria-selected="false"] {
 }
 
 /* =========================================
-   スマホでの入力欄（重量・割合）を強制横並びにする
+   スマホでの入力欄（重量・割合）を強制横並びにする（スクロール解決版）
    ========================================= */
 @media screen and (max-width: 576px) {
     div[data-testid="stHorizontalBlock"] {
+        display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
         gap: 10px !important;
-        width: 100% !important;   /* コンテナを画面幅に収める */
     }
     div[data-testid="column"] {
-        flex: 1 1 50% !important; /* ぴったり半分（50%）ずつに分割 */
-        min-width: 0 !important;  /* 中身の要素によるはみ出しを強制ストップ */
+        width: 100% !important;
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+    }
+    /* Streamlit標準の入力枠が幅を突き破るのを防ぐ */
+    div[data-testid="stNumberInput"] > div {
+        min-width: 0 !important;
     }
 }

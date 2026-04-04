@@ -13,17 +13,18 @@ html, body, [class*="css"] {
 .stAppDeployButton { display: none !important; }
 
 /* 1. セグメントコントロール(金属・品位)のカスタマイズ */
-div[data-testid="stSegmentedControl"] {
-    background-color: rgba(128, 128, 128, 0.1) !important;
-    border-radius: 12px !important;
-    padding: 3px !important;
+/* --- セグメントコントロールのハイライトを青にする --- */
+div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
+    background-color: #007AFF !important; /* iOS標準のブルー */
+    color: white !important;               /* 文字は白でくっきり */
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3) !important; /* ほんのり青い影 */
+    border: none !important;
 }
 
-/* 選択されたボタンの色を青(iOSブルー)にする */
-div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
-    background-color: #007AFF !important;
-    color: white !important;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
+/* ホバー（指を置いた時）の微調整 */
+div[data-testid="stSegmentedControl"] button:hover {
+    border-color: #007AFF !important;
+    color: #007AFF !important;
 }
 
 /* 2. サイドバー (メニューの巨大ボタン) */

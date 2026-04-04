@@ -18,7 +18,6 @@ def render_calc_results(theory, sell, rate, buy=None, buy_rate=None):
 <div class="ios-card" style="border: 2px solid #007AFF; background-color: rgba(0, 122, 255, 0.05);"><span style="font-size: 13px; color: #007AFF;">歩金込価格 ({buy_rate})</span><br><span style="font-size: 32px; font-weight: 800; color: #007AFF;">¥{buy:,.0f}</span></div>
 """, unsafe_allow_html=True)
 
-# ★この関数を修正しました
 def render_history_card(m):
     br = m.get('buy_rate', '0%')
     bv = m['buy_total']
@@ -26,28 +25,28 @@ def render_history_card(m):
     
     metal = m.get('metal', '') 
     item = m.get('item', '')
+    # 表示名（Gold K18 など）
     title = f"{metal} {item}".strip()
     
-    # --------------------------------------------------
-    # ★金属ごとの色設定（修飾部分）
-    # --------------------------------------------------
+    # 金属ごとの色設定
     metal_colors = {
-        "Gold": "#FFD700",      # ゴールド（黄色系）
-        "Platinum": "#87CEEB",  # スカイブルー（水色系）
-        "Silver": "#C0C0C0",    # シルバー（灰色系）
-        "Palladium": "#808080" # パラジウムは灰色系
+        "Gold": "#FFD700",      # ゴールド（黄色）
+        "Platinum": "#87CEEB",  # プラチナ（水色）
+        "Silver": "#C0C0C0",    # シルバー（灰色）
+        "Palladium": "#808080"  # パラジウム（濃い灰色）
     }
     
-    # 金属に応じた色を取得、なければデフォルトの黒
     title_color = metal_colors.get(metal, "#000000")
-    # --------------------------------------------------
     
     st.markdown(f"""
 <div class="ios-card" style="text-align: left; padding: 12px 10px;">
 <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; border-bottom: 0.5px solid rgba(128, 128, 128, 0.2); padding-bottom: 6px;">
 <div style="flex: 1;"></div>
 <div style="flex: 2; text-align: center;">
-<span style="font-size: 17px; font-weight: 700; color: {title_color};">{title} ({m['weight']})</span>
+    <span style="font-size: 17px; font-weight: 700;">
+        <span style="color: {title_color};">{title}</span>
+        <span style="color: #8e8e93; font-weight: 400; font-size: 15px;"> ({m['weight']})</span>
+    </span>
 </div>
 <div style="flex: 1; text-align: right;">
 <span style="color: gray; font-size: 10px; white-space: nowrap;">{m['datetime']}</span>

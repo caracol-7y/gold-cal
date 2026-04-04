@@ -11,32 +11,6 @@ html, body, [class*="css"] {
     display: none !important;
 }
 
-/* サイドバーボタン */
-[data-testid="stSidebar"] div[role="radiogroup"] {
-    gap: 15px;
-    padding-top: 20px;
-}
-
-[data-testid="stSidebar"] div[role="radiogroup"] label {
-    background-color: rgba(128, 128, 128, 0.1) !important;
-    border: 1px solid rgba(128, 128, 128, 0.2) !important;
-    border-radius: 15px !important;
-    padding: 25px 10px !important;
-    width: 100%;
-}
-
-[data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
-    font-size: 20px !important;
-    font-weight: 800 !important;
-    text-align: center;
-    width: 100%;
-    margin: 0;
-}
-
-[data-testid="stSidebar"] div[role="radiogroup"] label div[data-baseweb="radio"] {
-    display: none;
-}
-
 /* iOS風カード */
 .ios-card {
     background-color: rgba(128, 128, 128, 0.08);
@@ -63,20 +37,9 @@ html, body, [class*="css"] {
     border: none;
 }
 
-/* セグメントコントロール */
-div[data-testid="stSegmentedControl"] {
-    background-color: rgba(128, 128, 128, 0.1) !important;
-    border-radius: 12px !important;
-    padding: 4px !important;
-}
-
-div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
-    background-color: #007AFF !important;
-    color: white !important;
-}
-
 /* 履歴テキスト */
 .history-weight {
     font-size: inherit !important;
     font-weight: 700 !important;
+    color: inherit !important;
 }

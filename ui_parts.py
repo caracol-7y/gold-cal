@@ -19,7 +19,7 @@ def render_market_info(display_name, weight, market_price):
 """, unsafe_allow_html=True)
 def render_calc_results(theory, sell, rate, buy=None, buy_rate=None):
     st.markdown(f"""
-<div class="ios-card" style="text-align: center;"><span style="font-size: 13px; color: gray;">最大価格 (100%)</span><br><span style="font-size: 28px; font-weight: 700;">¥{theory:,.0f}</span></div>
+<div class="ios-card" style="text-align: center;"><span style="font-size: 13px; color: gray;">最大価格 (100%)</span><br><span style="font-size: 32px; font-weight: 800;">¥{theory:,.0f}</span></div>
 <div class="ios-card" style="border: 2px solid #ff4b4b; background-color: rgba(255, 75, 75, 0.05); text-align: center;"><span style="font-size: 13px; color: #ff4b4b;">割合価格 ({rate}%)</span><br><span style="font-size: 32px; font-weight: 800; color: #ff4b4b;">¥{sell:,.0f}</span></div>
 """, unsafe_allow_html=True)
     if buy is not None:

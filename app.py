@@ -88,11 +88,9 @@ if page == "💰 計算機":
 # お手元の c1, c2 に合わせた書き方です
     c1, c2 = st.columns(2)
     with c1:
-        # ラベルを消して、入力欄の中に「重量(g)」と表示させます
-        weight = st.number_input("重量", value=1.0, step=0.1, format="%.1f", label_visibility="collapsed", placeholder="重量(g)")
+        weight = st.number_input("重量(g)", value=1.0, step=0.1, format="%.1f")
     with c2:
-        # 同様に割合もスッキリさせます
-        rate = st.number_input("割合", value=100, step=1, label_visibility="collapsed", placeholder="割合(%)")
+        rate = st.number_input("割合(%)", value=100, step=1)
     
     ubukin = st.checkbox("買い歩あり", value=st.session_state.get('p_b_o', False), key="b_o", on_change=sync)
     

@@ -20,16 +20,38 @@ html, body, [class*="css"] {
     margin-bottom: 10px;
 }
 
-/* 入力欄のフォントサイズ */
+/* 入力欄 */
 .stNumberInput input {
     font-size: 22px !important;
     font-weight: 600 !important;
 }
 
-.stNumberInput, .stCheckbox {
-    background-color: rgba(128, 128, 128, 0.05);
-    padding: 8px 15px;
-    border-radius: 14px;
+/* 金属・品位選択ボタン（Segmented Control）を力技で巨大化 */
+/* 1. ボタン全体の高さを確保 */
+div[data-testid="stSegmentedControl"] {
+    height: 90px !important; /* 外枠を大きく */
+    padding: 8px !important;
+}
+
+/* 2. ボタン一つ一つのサイズと背景色、影を強制指定 */
+div[data-testid="stSegmentedControl"] button {
+    height: 70px !important; /* ボタン自体の高さを70pxに */
+    min-width: 80px !important;
+    border-radius: 14px !important;
+    margin: 2px !important;
+}
+
+/* 3. 中にある文字（pタグ）を巨大化 */
+div[data-testid="stSegmentedControl"] button p {
+    font-size: 24px !important; /* 文字をさらに24pxまで拡大 */
+    font-weight: 900 !important; /* 最も太い設定に */
+    line-height: 1.2 !important;
+}
+
+/* サイドバー */
+[data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
+    font-size: 22px !important;
+    font-weight: 800 !important;
 }
 
 /* 保存ボタン */
@@ -38,31 +60,7 @@ html, body, [class*="css"] {
     background-color: #007AFF !important;
     color: white !important;
     padding: 12px;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
     width: 100%;
-    border: none;
-}
-
-/* 金属・品位選択ボタン（セグメントコントロール）をさらに拡大 */
-div[data-testid="stSegmentedControl"] button {
-    min-height: 65px !important; /* さらに高さを出す */
-    padding: 10px !important;
-}
-
-div[data-testid="stSegmentedControl"] button p {
-    font-size: 20px !important; /* 文字をさらに大きく */
-    font-weight: 800 !important; /* 文字を極太に */
-}
-
-div[data-testid="stSegmentedControl"] {
-    background-color: rgba(128, 128, 128, 0.1) !important;
-    border-radius: 16px !important;
-    padding: 6px !important;
-}
-
-/* サイドバー */
-[data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
-    font-size: 22px !important;
-    font-weight: 800 !important;
 }

@@ -90,7 +90,7 @@ if page == "💰 計算機":
     with c1:
         weight = st.number_input("重量(g)", value=1.0, step=0.1, format="%.1f")
     with c2:
-        # ここを確実に 'rsell' にします
+        # ここが 'rate' になっているとエラーになります。必ず 'rsell' にしてください。
         rsell = st.number_input("割合(%)", value=100, step=1)
     
     ubukin = st.checkbox("買い歩あり", value=st.session_state.get('p_b_o', False), key="b_o", on_change=sync)
@@ -114,10 +114,10 @@ if page == "💰 計算機":
         ui_parts.render_market_info(disp, weight, m_price)
         
         if weight > 0:
-            # 計算実行
+            # 計算実行 (rsell を渡す)
             th, sl, by = calculate_prices(m_price, weight, rsell, ubukin, rbuy)
             
-            # 結果カード表示（引数は合計5つ：th, sl, rsell, buy, rate_label）
+            # 結果カード表示 (th, sl, rsell, buy, rate_label の順番で渡す)
             ui_parts.render_calc_results(th, sl, rsell, by if ubukin else None, f"{rbuy}%")
             
             # 保存ボタン

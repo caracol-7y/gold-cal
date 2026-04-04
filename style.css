@@ -112,30 +112,6 @@ div[data-testid="stSegmentedControl"] button[aria-selected="false"] {
 }
 
 .history-weight {
-    font-size: inherit !important; /* 品位と同じサイズに自動で合わせる */
-    font-weight: 700 !important;   /* 品位に合わせて太字にする */
-}
-
-/* =========================================
-   スマホ・PC問わず、入力を強制的に横並びにする
-   ========================================= */
-/* カラムを包む親要素の「折り返し」を禁止する */
-div[data-testid="stHorizontalBlock"] {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important; /* 絶対に折り返さない */
-    align-items: flex-start !important;
-    gap: 8px !important;
-}
-
-/* 各カラムを強制的に「幅半分」にする */
-div[data-testid="column"] {
-    flex: 1 1 0% !important;
-    min-width: 0 !important; /* これがないとはみ出します */
-    max-width: 50% !important;
-}
-
-/* 入力欄の微調整：高さを抑えてスッキリさせる */
-div[data-testid="stNumberInput"] {
-    width: 100% !important;
+    font-size: inherit !important;
+    font-weight: 700 !important;
 }

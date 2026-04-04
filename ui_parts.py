@@ -7,7 +7,7 @@ def render_market_info(display_name, weight, market_price):
     html += f'<div style="flex: 1.5;"><div style="font-size: 11px; color: #8e8e93; margin-bottom: 2px;">相場</div><div style="font-size: 18px; font-weight: 700; color: #007AFF;">¥{market_price:,}/g</div></div></div>'
     st.markdown(html, unsafe_allow_html=True)
 
-def render_calc_results(theory, sell, rate, buy=None, buy_rate=None):
+def render_calc_results(theory, rsell, rate, buy=None, buy_rate=None):
     # 最大価格
     st.markdown(f'<div class="ios-card" style="text-align: center; padding: 10px;"><span style="font-size: 12px; color: gray;">最大価格 (100%)</span><br><span style="font-size: 26px; font-weight: 800;">¥{theory:,.0f}</span></div>', unsafe_allow_html=True)
     # 割合価格

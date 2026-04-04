@@ -13,11 +13,10 @@ def render_market_info(display_name, weight, market_price):
     </div>
     <div style="flex: 1.5;">
         <div style="font-size: 11px; color: #8e8e93; margin-bottom: 2px;">相場</div>
-        <div style="font-size: 18px; font-weight: 700; color: #007AFF;">¥{market_price:,}<span style="font-size: 12px;">/g</span></div>
+        <div style="font-size: 18px; font-weight: 700; color: #007AFF;">¥{market_price:,}/g</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
-
 def render_calc_results(theory, sell, rate, buy=None, buy_rate=None):
     st.markdown(f"""
 <div class="ios-card" style="text-align: center;"><span style="font-size: 13px; color: gray;">最大価格 (100%)</span><br><span style="font-size: 28px; font-weight: 700;">¥{theory:,.0f}</span></div>

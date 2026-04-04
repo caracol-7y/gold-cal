@@ -1,14 +1,60 @@
+/* フォント設定 */
 html, body, [class*="css"] {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
 }
 
 .main .block-container {
     max-width: 500px;
-    padding-top: 2rem !important;
+    padding-top: 1.5rem !important;
 }
 
 .stAppDeployButton {
     display: none !important;
+}
+
+/* --- 金属・品位ボタン（Segmented Control）の超巨大化 --- */
+
+/* 1. ボタンを包むコンテナの高さを強制確保 */
+div[data-testid="stSegmentedControl"] {
+    min-height: 100px !important; 
+    padding: 5px !important;
+    background-color: rgba(128, 128, 128, 0.1) !important;
+    border-radius: 20px !important;
+}
+
+/* 2. ボタン自体のサイズを強制指定 */
+div[data-testid="stSegmentedControl"] button {
+    height: 80px !important; /* ボタンの高さを80pxに固定 */
+    min-width: 60px !important;
+    border-radius: 15px !important;
+    margin: 4px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 3. ボタンの中の「文字」を強制巨大化 */
+/* セレクタを重ねて優先順位を最大にしています */
+div[data-testid="stSegmentedControl"] button div[data-testid="stMarkdownContainer"] p,
+div[data-testid="stSegmentedControl"] button p {
+    font-size: 28px !important; /* 文字を28pxまで拡大 */
+    font-weight: 900 !important; /* 最も太い設定 */
+    color: white !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* 4. 選択されているボタンの色を強調 */
+div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
+    background-color: #007AFF !important;
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4) !important;
+}
+
+/* --- その他のパーツ --- */
+
+/* 入力欄 */
+.stNumberInput input {
+    font-size: 24px !important;
+    font-weight: 700 !important;
 }
 
 /* カード共通 */
@@ -18,34 +64,6 @@ html, body, [class*="css"] {
     padding: 8px 15px;
     border: 1px solid rgba(128, 128, 128, 0.1);
     margin-bottom: 10px;
-}
-
-/* 入力欄 */
-.stNumberInput input {
-    font-size: 22px !important;
-    font-weight: 600 !important;
-}
-
-/* 金属・品位選択ボタン（Segmented Control）を力技で巨大化 */
-/* 1. ボタン全体の高さを確保 */
-div[data-testid="stSegmentedControl"] {
-    height: 90px !important; /* 外枠を大きく */
-    padding: 8px !important;
-}
-
-/* 2. ボタン一つ一つのサイズと背景色、影を強制指定 */
-div[data-testid="stSegmentedControl"] button {
-    height: 70px !important; /* ボタン自体の高さを70pxに */
-    min-width: 80px !important;
-    border-radius: 14px !important;
-    margin: 2px !important;
-}
-
-/* 3. 中にある文字（pタグ）を巨大化 */
-div[data-testid="stSegmentedControl"] button p {
-    font-size: 24px !important; /* 文字をさらに24pxまで拡大 */
-    font-weight: 900 !important; /* 最も太い設定に */
-    line-height: 1.2 !important;
 }
 
 /* サイドバー */
@@ -59,8 +77,7 @@ div[data-testid="stSegmentedControl"] button p {
     border-radius: 20px;
     background-color: #007AFF !important;
     color: white !important;
-    padding: 12px;
-    font-size: 22px;
-    font-weight: 700;
-    width: 100%;
+    padding: 15px;
+    font-size: 24px;
+    font-weight: 800;
 }

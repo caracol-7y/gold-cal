@@ -1,105 +1,90 @@
 /* =========================================
-   1. 全体設定・ツールバー
+   1. 全体フォント・基本レイアウト
    ========================================= */
 html, body, [class*="css"] {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
 }
 
+/* メインコンテンツの横幅と背景設定 */
 .main .block-container {
     max-width: 500px;
     padding-top: 2rem !important;
 }
 
-.stAppDeployButton { display: none !important; }
-
-/* =========================================
-   2. 決定版：セグメントコントロールを青にする
-   ========================================= */
-/* 土台のグレー枠 */
-div[data-testid="stSegmentedControl"] {
-    background-color: rgba(128, 128, 128, 0.1) !important;
-    border-radius: 12px !important;
-    padding: 4px !important;
-}
-
-/* 選択されたボタンを強制的に青にする（セレクタを最強に強化） */
-div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
-    background-color: rgb(0, 122, 255) !important; /* iOSブルー */
-    color: white !important;
-    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3) !important;
-    border: none !important;
-}
-
-/* 選択されたボタン内の文字色も白に固定 */
-div[data-testid="stSegmentedControl"] button[aria-selected="true"] div p {
-    color: white !important;
-    font-weight: 700 !important;
-}
-
-/* 未選択のボタン */
-div[data-testid="stSegmentedControl"] button[aria-selected="false"] {
-    background-color: transparent !important;
-    color: #8e8e93 !important;
+/* 不要なパーツの非表示（Deployボタンのみ） */
+.stAppDeployButton {
+    display: none !important;
 }
 
 /* =========================================
-   3. サイドバー (メニュー巨大ボタン)
+   2. サイドバー (メニュー巨大ボタン)
    ========================================= */
+[data-testid="stSidebar"] div[role="radiogroup"] {
+    gap: 15px;
+    padding-top: 20px;
+}
+
 [data-testid="stSidebar"] div[role="radiogroup"] label {
-    background-color: rgba(128, 128, 128, 0.1) !important;
-    border: 1px solid rgba(128, 128, 128, 0.2) !important;
+    background-color: #1C1C1E !important; /* ダークモード用のカード色 */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 15px !important;
     padding: 25px 10px !important;
     width: 100%;
 }
+
 [data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
-    font-size: 20px !important; font-weight: 800 !important; text-align: center; margin: 0;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    text-align: center;
+    color: #FFFFFF !important;
+    margin: 0;
 }
-[data-testid="stSidebar"] div[role="radiogroup"] label div[data-baseweb="radio"] { display: none; }
+
+/* サイドバーの標準ボタン（●）を消す */
+[data-testid="stSidebar"] div[role="radiogroup"] label div[data-baseweb="radio"] {
+    display: none;
+}
 
 /* =========================================
-   4. iOS風カード・入力パーツ
+   3. セグメントコントロール (金属・品位選択)
+   ========================================= */
+/* 土台のグレーの溝 */
+div[data-testid="stSegmentedControl"] {
+    background-color: #1C1C1E !important;
+    border-radius: 12px !important;
+    padding: 3px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ★決定版：選択されたボタンを iOSブルー にする */
+div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
+    background-color: #007AFF !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.4) !important;
+    border: none !important;
+}
+
+/* 選択されたボタン内の文字色を白に強制 */
+div[data-testid="stSegmentedControl"] button[aria-selected="true"] div p {
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+}
+
+/* 選択されていないボタン */
+div[data-testid="stSegmentedControl"] button[aria-selected="false"] {
+    background-color: transparent !important;
+    color: #8E8E93 !important;
+}
+
+/* =========================================
+   4. iOS風カード・入力パーツ (ダークモード最適化)
    ========================================= */
 .ios-card {
-    background-color: rgba(128, 128, 128, 0.08);
+    background-color: #1C1C1E !important;
     border-radius: 20px;
     padding: 15px;
-    border: 1px solid rgba(128, 128, 128, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     margin-bottom: 12px;
 }
-.stNumberInput, .stCheckbox {
-    background-color: rgba(128, 128, 128, 0.05);
-    padding: 10px 15px; border-radius: 12px;
-}
 
-/* 保存・削除ボタン */
-.stButton>button {
-    border-radius: 18px;
-    background-color: #007AFF !important;
-    color: white !important;
-    padding: 12px;
-    font-size: 18px;
-    font-weight: 700;
-    width: 100%;
-    border: none;
-}
-
-/* =========================================
-   5. テキスト色・視認性
-   ========================================= */
-.metal-gold { color: #FFD700 !important; }
-.metal-platinum { color: #87CEEB !important; }
-.metal-silver { color: #C0C0C0 !important; }
-
-/* パラジウムと履歴の重量(1.0g)をハッキリ白黒にする */
-.metal-palladium, .history-weight {
-    color: var(--text-color) !important;
-    opacity: 1.0 !important;
-    filter: brightness(1) !important;
-    -webkit-text-fill-color: var(--text-color) !important; /* iOS/Safari対策 */
-}
-
-.history-weight {
-    font-size: 14px;
-    font-weight: 600 !important;
-}
+/* 入力欄

@@ -1,26 +1,29 @@
-/* style.css */
-
-/* 1. 全体フォント設定 */
+/* =========================================
+   1. 全体フォント・レイアウト設定
+   ========================================= */
 html, body, [class*="css"] {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
 }
 
-/* メインコンテンツの横幅と余白 */
+/* メインコンテンツの横幅制限と余白 */
 .main .block-container {
     max-width: 500px;
     padding-top: 2rem !important;
 }
 
-/* ★ 修正：Deployボタンだけを隠し、メニュー(⋮)とサイドバーボタンは表示する */
+/* 右上のDeployボタンだけを非表示にする */
 .stAppDeployButton {
     display: none !important;
 }
 
-/* 2. サイドバーのメニューを巨大ボタンにする */
+/* =========================================
+   2. サイドバー (メニューの巨大ボタン)
+   ========================================= */
 [data-testid="stSidebar"] div[role="radiogroup"] {
     gap: 15px;
     padding-top: 20px;
 }
+
 [data-testid="stSidebar"] div[role="radiogroup"] label {
     background-color: rgba(128, 128, 128, 0.1) !important;
     border: 1px solid rgba(128, 128, 128, 0.2) !important;
@@ -28,6 +31,7 @@ html, body, [class*="css"] {
     padding: 25px 10px !important;
     width: 100%;
 }
+
 [data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
     font-size: 20px !important;
     font-weight: 800 !important;
@@ -35,11 +39,67 @@ html, body, [class*="css"] {
     width: 100%;
     margin: 0;
 }
+
+/* サイドバーの標準ラジオボタン（●）を消す */
 [data-testid="stSidebar"] div[role="radiogroup"] label div[data-baseweb="radio"] {
     display: none;
 }
 
-/* 3. iOS風カードデザイン */
+/* =========================================
+   3. ラジオボタン (iOSセグメントボタン風)
+   ========================================= */
+/* 金属選択・品位選択の枠組み */
+div[data-testid="stRadio"] > div[role="radiogroup"] {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    background-color: rgba(128, 128, 128, 0.12) !important;
+    padding: 5px !important;
+    border-radius: 14px !important;
+    gap: 4px !important;
+}
+
+/* ラジオボタンの「●」を非表示 */
+div[data-testid="stRadio"] div[data-baseweb="radio"] > div:first-child {
+    display: none !important;
+}
+
+/* 各選択肢（ラベル）のボタン化 */
+div[data-testid="stRadio"] label {
+    flex: 1 1 0% !important;
+    min-width: fit-content !important;
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 8px 4px !important;
+    margin: 0 !important;
+    transition: all 0.2s ease !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+
+/* 未選択時の文字色 */
+div[data-testid="stRadio"] label p {
+    color: #8e8e93 !important;
+    font-size: 14px !important;
+    margin: 0 !important;
+}
+
+/* 選択された時のデザイン (浮き出し効果) */
+div[data-testid="stRadio"] label[data-checked="true"] {
+    background-color: var(--background-color) !important; 
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 選択された時の文字色 (iOSブルー) */
+div[data-testid="stRadio"] label[data-checked="true"] p {
+    color: #007AFF !important;
+    font-weight: 700 !important;
+}
+
+/* =========================================
+   4. iOS風カード・入力パーツ
+   ========================================= */
 .ios-card {
     background-color: rgba(128, 128, 128, 0.08);
     border-radius: 20px;
@@ -48,27 +108,13 @@ html, body, [class*="css"] {
     margin-bottom: 12px;
 }
 
-/* 4. 金属別の色設定・重量(1.0g)の白黒ハッキリ化 */
-.metal-gold { color: #FFD700 !important; }
-.metal-platinum { color: #87CEEB !important; }
-.metal-silver { color: #C0C0C0 !important; }
-.metal-palladium { color: var(--text-color) !important; opacity: 1.0 !important; }
-
-.history-weight { 
-    color: var(--text-color) !important; 
-    opacity: 1.0 !important; /* 透かしをなくして白黒をハッキリさせる */
-    font-size: 14px; 
-    font-weight: 400; 
-}
-
-/* 5. 入力パーツのデザイン */
 .stNumberInput, .stCheckbox {
     background-color: rgba(128, 128, 128, 0.05);
     padding: 10px 15px;
     border-radius: 12px;
 }
 
-/* 6. 保存ボタン (青色) */
+/* 保存ボタン (青色) */
 .stButton>button {
     border-radius: 18px;
     background-color: #007AFF;
@@ -80,48 +126,22 @@ html, body, [class*="css"] {
     display: block;
     border: none;
 }
-/* style.css に追加 */
 
-/* --- 金属・品位の選択ボタン (Segmented Control風) --- */
-div[data-testid="stHorizontalBlock"] div[data-testid="stMarkdownContainer"] + div[data-baseweb="radio"] div[role="radiogroup"] {
-    background-color: rgba(128, 128, 128, 0.1) !important; /* 全体の背景（グレーの溝） */
-    padding: 4px !important;
-    border-radius: 12px !important;
-    gap: 4px !important;
-}
+/* =========================================
+   5. 金属カラー・テキスト視認性
+   ========================================= */
+.metal-gold { color: #FFD700 !important; }
+.metal-platinum { color: #87CEEB !important; }
+.metal-silver { color: #C0C0C0 !important; }
 
-div[data-testid="stHorizontalBlock"] div[role="radiogroup"] label {
-    background-color: transparent !important;
-    border: none !important;
-    padding: 8px 12px !important;
-    margin: 0 !important;
-    border-radius: 9px !important;
-    flex: 1; /* 幅を均等にする */
-    transition: all 0.2s ease !important;
-    cursor: pointer !important;
-}
-
-/* 選択されている時のスタイル */
-div[data-testid="stHorizontalBlock"] div[role="radiogroup"] label[data-checked="true"] {
-    background-color: #FFFFFF !important; /* 選択中は白背景（ダークモードでも白が映えます） */
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12) !important; /* 少し浮き上がらせる */
-}
-
-/* 選択されている時の文字色 */
-div[data-testid="stHorizontalBlock"] div[role="radiogroup"] label[data-checked="true"] p {
-    color: #007AFF !important; /* 選択中はiOSブルー */
+/* パラジウムと重量：モードに合わせて白黒ハッキリ */
+.metal-palladium, .history-weight {
+    color: var(--text-color) !important;
+    opacity: 1.0 !important;
     font-weight: 700 !important;
 }
 
-/* 選択されていない時の文字色 */
-div[data-testid="stHorizontalBlock"] div[role="radiogroup"] label[data-checked="false"] p {
-    color: #8e8e93 !important; /* 未選択は控えめなグレー */
-}
-
-/* ラジオボタンの「●」を完全に消す */
-div[data-testid="stHorizontalBlock"] div[data-baseweb="radio"] div[data-testid="stMarkdownContainer"] {
-    display: none !important;
-}
-div[role="radiogroup"] label div[data-baseweb="radio"] {
-    display: none !important;
+.history-weight {
+    font-size: 14px;
+    font-weight: 400 !important;
 }

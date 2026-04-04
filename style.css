@@ -20,7 +20,7 @@ html, body, [class*="css"] {
     margin-bottom: 10px;
 }
 
-/* 入力欄のフォントサイズ拡大 (+4px) */
+/* 入力欄のフォントサイズ */
 .stNumberInput input {
     font-size: 22px !important;
     font-weight: 600 !important;
@@ -32,6 +32,7 @@ html, body, [class*="css"] {
     border-radius: 14px;
 }
 
+/* 保存ボタン */
 .stButton>button {
     border-radius: 20px;
     background-color: #007AFF !important;
@@ -43,8 +44,13 @@ html, body, [class*="css"] {
     border: none;
 }
 
+/* 金属・品位選択ボタン（セグメントコントロール）のサイズ拡大 */
+div[data-testid="stSegmentedControl"] button {
+    min-height: 50px !important; /* ボタンの高さを拡大 */
+}
+
 div[data-testid="stSegmentedControl"] button p {
-    font-size: 15px !important;
+    font-size: 17px !important; /* 文字サイズを拡大 */
     font-weight: 600 !important;
 }
 
@@ -54,6 +60,7 @@ div[data-testid="stSegmentedControl"] {
     padding: 5px !important;
 }
 
+/* サイドバー */
 [data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
     font-size: 22px !important;
     font-weight: 800 !important;

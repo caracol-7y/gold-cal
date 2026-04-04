@@ -1,4 +1,4 @@
-/* フォント設定 */
+/* 基本フォント */
 html, body, [class*="css"] {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
 }
@@ -12,52 +12,43 @@ html, body, [class*="css"] {
     display: none !important;
 }
 
-/* --- 金属・品位ボタン（Segmented Control）の超巨大化 --- */
+/* --- 【最重要】金属・品位ボタン（Segmented Control）の強制上書き --- */
 
-/* 1. ボタンを包むコンテナの高さを強制確保 */
+/* ボタンを包む箱そのものを巨大化 */
 div[data-testid="stSegmentedControl"] {
-    min-height: 100px !important; 
-    padding: 5px !important;
+    height: 110px !important; 
+    padding: 10px !important;
     background-color: rgba(128, 128, 128, 0.1) !important;
     border-radius: 20px !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
-/* 2. ボタン自体のサイズを強制指定 */
+/* ボタン要素すべてを巨大化（a, div, button, pすべてをターゲット） */
 div[data-testid="stSegmentedControl"] button {
-    height: 80px !important; /* ボタンの高さを80pxに固定 */
-    min-width: 60px !important;
+    height: 85px !important; 
+    min-height: 85px !important;
     border-radius: 15px !important;
-    margin: 4px !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    margin: 5px !important;
+    flex: 1 !important;
+    /* デバッグ用：もし反映されていれば、ボタンの枠が少し太くなります */
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
 }
 
-/* 3. ボタンの中の「文字」を強制巨大化 */
-/* セレクタを重ねて優先順位を最大にしています */
-div[data-testid="stSegmentedControl"] button div[data-testid="stMarkdownContainer"] p,
-div[data-testid="stSegmentedControl"] button p {
-    font-size: 28px !important; /* 文字を28pxまで拡大 */
-    font-weight: 900 !important; /* 最も太い設定 */
-    color: white !important;
+/* ボタンの中のテキスト（すべての階層を狙い撃ち） */
+div[data-testid="stSegmentedControl"] button * {
+    font-size: 32px !important; /* 圧倒的に大きく */
+    font-weight: 900 !important;
     line-height: 1 !important;
-    margin: 0 !important;
-    padding: 0 !important;
 }
 
-/* 4. 選択されているボタンの色を強調 */
+/* 選択中のボタン色 */
 div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
     background-color: #007AFF !important;
-    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4) !important;
 }
 
-/* --- その他のパーツ --- */
+/* --- カードと入力欄 --- */
 
-/* 入力欄 */
-.stNumberInput input {
-    font-size: 24px !important;
-    font-weight: 700 !important;
-}
-
-/* カード共通 */
 .ios-card {
     background-color: rgba(128, 128, 128, 0.08);
     border-radius: 22px;
@@ -66,13 +57,17 @@ div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
     margin-bottom: 10px;
 }
 
-/* サイドバー */
-[data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
-    font-size: 22px !important;
-    font-weight: 800 !important;
+.stNumberInput input {
+    font-size: 26px !important;
+    font-weight: 700 !important;
 }
 
-/* 保存ボタン */
+.stNumberInput, .stCheckbox {
+    background-color: rgba(128, 128, 128, 0.05);
+    padding: 8px 15px;
+    border-radius: 14px;
+}
+
 .stButton>button {
     border-radius: 20px;
     background-color: #007AFF !important;
@@ -80,4 +75,10 @@ div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
     padding: 15px;
     font-size: 24px;
     font-weight: 800;
+}
+
+/* サイドバー */
+[data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
+    font-size: 22px !important;
+    font-weight: 800 !important;
 }

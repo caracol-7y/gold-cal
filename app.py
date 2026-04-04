@@ -47,7 +47,9 @@ if page == "💰 計算機":
         </div>
     """, unsafe_allow_html=True)
     
-    cat = st.radio("金属", options=list(config.METAL_CATEGORIES.keys()), index=list(config.METAL_CATEGORIES.keys()).index(st.session_state.p_cat), horizontal=True, key="cat_w", on_change=cat_change)
+    cat = st.radio("金属", options=list(config.METAL_CATEGORIES.keys()), 
+               index=list(config.METAL_CATEGORIES.keys()).index(st.session_state.p_cat), 
+               horizontal=True, key="cat_w", on_change=cat_change)
     opts = [config.OPTIONS_MAP[k] for k in config.METAL_CATEGORIES[cat]]
     try: d_idx = opts.index(st.session_state.p_display)
     except: d_idx = 0

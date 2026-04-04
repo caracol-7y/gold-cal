@@ -17,6 +17,9 @@ def render_market_info(display_name, weight, market_price):
     </div>
 </div>
 """, unsafe_allow_html=True)
+
+import streamlit as st
+
 def render_calc_results(theory, sell, rate, buy=None, buy_rate=None):
     # 横並びにするためのFlexコンテナ
     html = '<div style="display: flex; gap: 8px; margin-bottom: 12px;">'

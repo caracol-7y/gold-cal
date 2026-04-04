@@ -11,63 +11,53 @@ html, body, [class*="css"] {
     display: none !important;
 }
 
+/* カード共通：余白を少し広げてゆとりを持たせる */
 .ios-card {
     background-color: rgba(128, 128, 128, 0.08);
-    border-radius: 20px;
+    border-radius: 22px;
     padding: 15px;
     border: 1px solid rgba(128, 128, 128, 0.1);
-    margin-bottom: 12px;
+    margin-bottom: 15px;
+}
+
+/* 入力欄のフォントサイズアップ */
+.stNumberInput input {
+    font-size: 18px !important;
+    font-weight: 600 !important;
 }
 
 .stNumberInput, .stCheckbox {
     background-color: rgba(128, 128, 128, 0.05);
-    padding: 10px 15px;
-    border-radius: 12px;
+    padding: 12px 15px;
+    border-radius: 14px;
 }
 
+/* 保存ボタンなどのフォントサイズアップ */
 .stButton>button {
-    border-radius: 18px;
+    border-radius: 20px;
     background-color: #007AFF !important;
     color: white !important;
-    padding: 12px;
-    font-size: 18px;
+    padding: 15px;
+    font-size: 20px;
     font-weight: 700;
     width: 100%;
     border: none;
 }
 
+/* セグメントコントロール（金属・品位選択）の文字拡大 */
+div[data-testid="stSegmentedControl"] button p {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+}
+
 div[data-testid="stSegmentedControl"] {
     background-color: rgba(128, 128, 128, 0.1) !important;
-    border-radius: 12px !important;
-    padding: 4px !important;
+    border-radius: 14px !important;
+    padding: 5px !important;
 }
 
-div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
-    background-color: #007AFF !important;
-    color: white !important;
-}
-
-[data-testid="stSidebar"] div[role="radiogroup"] {
-    gap: 15px;
-    padding-top: 20px;
-}
-
-[data-testid="stSidebar"] div[role="radiogroup"] label {
-    background-color: rgba(128, 128, 128, 0.1) !important;
-    border: 1px solid rgba(128, 128, 128, 0.2) !important;
-    border-radius: 15px !important;
-    padding: 25px 10px !important;
-    width: 100%;
-}
-
+/* サイドバーのメニュー文字拡大 */
 [data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
-    font-size: 20px !important;
+    font-size: 22px !important;
     font-weight: 800 !important;
-    text-align: center;
-    width: 100%;
-    margin: 0;
-}
-
-[data-testid="stSidebar"] div[role="radiogroup"] label div[data-baseweb="radio"] {
-    display: none;
 }

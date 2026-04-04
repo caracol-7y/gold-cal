@@ -1,4 +1,3 @@
-/* 基本フォント */
 html, body, [class*="css"] {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
 }
@@ -12,43 +11,7 @@ html, body, [class*="css"] {
     display: none !important;
 }
 
-/* --- 【最重要】金属・品位ボタン（Segmented Control）の強制上書き --- */
-
-/* ボタンを包む箱そのものを巨大化 */
-div[data-testid="stSegmentedControl"] {
-    height: 110px !important; 
-    padding: 10px !important;
-    background-color: rgba(128, 128, 128, 0.1) !important;
-    border-radius: 20px !important;
-    display: flex !important;
-    align-items: center !important;
-}
-
-/* ボタン要素すべてを巨大化（a, div, button, pすべてをターゲット） */
-div[data-testid="stSegmentedControl"] button {
-    height: 85px !important; 
-    min-height: 85px !important;
-    border-radius: 15px !important;
-    margin: 5px !important;
-    flex: 1 !important;
-    /* デバッグ用：もし反映されていれば、ボタンの枠が少し太くなります */
-    border: 2px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-/* ボタンの中のテキスト（すべての階層を狙い撃ち） */
-div[data-testid="stSegmentedControl"] button * {
-    font-size: 32px !important; /* 圧倒的に大きく */
-    font-weight: 900 !important;
-    line-height: 1 !important;
-}
-
-/* 選択中のボタン色 */
-div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
-    background-color: #007AFF !important;
-}
-
-/* --- カードと入力欄 --- */
-
+/* カード共通：上下余白を抑えた設定 */
 .ios-card {
     background-color: rgba(128, 128, 128, 0.08);
     border-radius: 22px;
@@ -57,9 +20,10 @@ div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
     margin-bottom: 10px;
 }
 
+/* 入力欄の文字サイズ */
 .stNumberInput input {
-    font-size: 26px !important;
-    font-weight: 700 !important;
+    font-size: 22px !important;
+    font-weight: 600 !important;
 }
 
 .stNumberInput, .stCheckbox {
@@ -68,13 +32,28 @@ div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
     border-radius: 14px;
 }
 
+/* 保存ボタン */
 .stButton>button {
     border-radius: 20px;
     background-color: #007AFF !important;
     color: white !important;
-    padding: 15px;
-    font-size: 24px;
-    font-weight: 800;
+    padding: 12px;
+    font-size: 20px;
+    font-weight: 700;
+    width: 100%;
+    border: none;
+}
+
+/* 選択ボタン（Segmented Control）の標準サイズ調整 */
+div[data-testid="stSegmentedControl"] button p {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+}
+
+div[data-testid="stSegmentedControl"] {
+    background-color: rgba(128, 128, 128, 0.1) !important;
+    border-radius: 14px !important;
+    padding: 5px !important;
 }
 
 /* サイドバー */

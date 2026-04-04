@@ -1,6 +1,6 @@
 /* style.css */
 
-/* 全体フォント設定 */
+/* 1. 全体フォント設定 */
 html, body, [class*="css"] {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
 }
@@ -11,12 +11,12 @@ html, body, [class*="css"] {
     padding-top: 2rem !important;
 }
 
-/* 不要なツールバーを隠す */
-.stAppDeployButton, [data-testid="stToolbar"] {
+/* ★ 修正：Deployボタンだけを隠し、メニュー(⋮)とサイドバーボタンは表示する */
+.stAppDeployButton {
     display: none !important;
 }
 
-/* サイドバーのメニューを巨大ボタンにする */
+/* 2. サイドバーのメニューを巨大ボタンにする */
 [data-testid="stSidebar"] div[role="radiogroup"] {
     gap: 15px;
     padding-top: 20px;
@@ -39,7 +39,7 @@ html, body, [class*="css"] {
     display: none;
 }
 
-/* iOS風カードデザイン */
+/* 3. iOS風カードデザイン */
 .ios-card {
     background-color: rgba(128, 128, 128, 0.08);
     border-radius: 20px;
@@ -48,33 +48,35 @@ html, body, [class*="css"] {
     margin-bottom: 12px;
 }
 
-/* 金属別の色設定 */
+/* 4. 金属別の色設定・重量(1.0g)の白黒ハッキリ化 */
 .metal-gold { color: #FFD700 !important; }
 .metal-platinum { color: #87CEEB !important; }
 .metal-silver { color: #C0C0C0 !important; }
-.metal-palladium { color: var(--text-color) !important; }
+.metal-palladium { color: var(--text-color) !important; opacity: 1.0 !important; }
+
 .history-weight { 
     color: var(--text-color) !important; 
-    opacity: 1.0 !important; /* 0.6 から 1.0 に変更してハッキリさせる */
+    opacity: 1.0 !important; /* 透かしをなくして白黒をハッキリさせる */
     font-size: 14px; 
     font-weight: 400; 
 }
 
-/* 入力パーツのデザイン */
+/* 5. 入力パーツのデザイン */
 .stNumberInput, .stCheckbox {
     background-color: rgba(128, 128, 128, 0.05);
     padding: 10px 15px;
     border-radius: 12px;
 }
 
-/* 保存ボタン (青色) */
+/* 6. 保存ボタン (青色) */
 .stButton>button {
     border-radius: 18px;
     background-color: #007AFF;
     color: white;
-    padding: 18px;
+    padding: 12px;
     font-size: 18px;
     font-weight: 700;
     width: 100%;
+    display: block;
     border: none;
 }

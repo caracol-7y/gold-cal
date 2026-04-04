@@ -1,4 +1,3 @@
-# ui_parts.py
 import streamlit as st
 
 def render_market_info(display_name, weight, market_price):

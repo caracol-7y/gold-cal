@@ -115,3 +115,19 @@ div[data-testid="stSegmentedControl"] button[aria-selected="false"] {
     font-size: inherit !important; /* 品位と同じサイズに自動で合わせる */
     font-weight: 700 !important;   /* 品位に合わせて太字にする */
 }
+
+/* =========================================
+   スマホでの入力欄（重量・割合）を強制横並びにする
+   ========================================= */
+@media screen and (max-width: 576px) {
+    div[data-testid="stHorizontalBlock"] {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 10px !important;
+    }
+    div[data-testid="column"] {
+        flex: 1 1 0% !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+}

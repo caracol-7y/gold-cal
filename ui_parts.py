@@ -26,7 +26,6 @@ def render_history_prices_only(m):
     bv = m['buy_total']
     bc = "#007AFF" if bv != "-" else "gray"
     
-    # 履歴カード内の「価格表示」だけを担当（枠はapp.pyで作成）
     st.markdown(f"""
     <div style="display: flex; justify-content: space-between; text-align: center; align-items: flex-end;">
         <div style="flex: 1;">

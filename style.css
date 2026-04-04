@@ -112,6 +112,6 @@ div[data-testid="stSegmentedControl"] button[aria-selected="false"] {
 }
 
 .history-weight {
-    font-size: 14px;
-    font-weight: 400 !important;
+    font-size: inherit !important; /* 品位と同じサイズに自動で合わせる */
+    font-weight: 700 !important;   /* 品位に合わせて太字にする */
 }

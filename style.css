@@ -5,13 +5,11 @@ html, body, [class*="css"] {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
 }
 
-/* メインコンテンツの横幅と背景設定 */
 .main .block-container {
     max-width: 500px;
     padding-top: 2rem !important;
 }
 
-/* 不要なパーツの非表示（Deployボタンのみ） */
 .stAppDeployButton {
     display: none !important;
 }
@@ -24,9 +22,10 @@ html, body, [class*="css"] {
     padding-top: 20px;
 }
 
+/* ★サイドバーのボタンを明るいグレーに */
 [data-testid="stSidebar"] div[role="radiogroup"] label {
-    background-color: #1C1C1E !important; /* ダークモード用のカード色 */
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background-color: #3A3A3C !important; 
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
     border-radius: 15px !important;
     padding: 25px 10px !important;
     width: 100%;
@@ -40,7 +39,6 @@ html, body, [class*="css"] {
     margin: 0;
 }
 
-/* サイドバーの標準ボタン（●）を消す */
 [data-testid="stSidebar"] div[role="radiogroup"] label div[data-baseweb="radio"] {
     display: none;
 }
@@ -48,15 +46,14 @@ html, body, [class*="css"] {
 /* =========================================
    3. セグメントコントロール (金属・品位選択)
    ========================================= */
-/* 土台のグレーの溝 */
+/* ★セグメントコントロールの土台も明るいグレーに */
 div[data-testid="stSegmentedControl"] {
-    background-color: #1C1C1E !important;
+    background-color: #3A3A3C !important; 
     border-radius: 12px !important;
     padding: 3px !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
 
-/* ★決定版：選択されたボタンを iOSブルー にする */
 div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
     background-color: #007AFF !important;
     color: #FFFFFF !important;
@@ -64,42 +61,40 @@ div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
     border: none !important;
 }
 
-/* 選択されたボタン内の文字色を白に強制 */
 div[data-testid="stSegmentedControl"] button[aria-selected="true"] div p {
     color: #FFFFFF !important;
     font-weight: 700 !important;
 }
 
-/* 選択されていないボタン */
 div[data-testid="stSegmentedControl"] button[aria-selected="false"] {
     background-color: transparent !important;
     color: #8E8E93 !important;
 }
 
 /* =========================================
-   4. iOS風カード・入力パーツ (ダークモード最適化)
+   4. iOS風カード・入力パーツ
    ========================================= */
+/* ★カードの背景色を明るいグレー（#3A3A3C）に変更 */
 .ios-card {
-    background-color: #1C1C1E !important;
+    background-color: #3A3A3C !important; 
     border-radius: 20px;
     padding: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     margin-bottom: 12px;
 }
 
-/* 入力欄（重量、割合） */
+/* 入力欄はカードよりさらに少しだけ明るく（#48484A）して凹凸を出す */
 .stNumberInput, .stCheckbox {
-    background-color: #1C1C1E !important;
+    background-color: #48484A !important;
     border-radius: 12px;
     margin-bottom: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
 
-/* チェックボックスのチェック色を青に（configで効かない場合の予備） */
 input[type="checkbox"]:checked {
     background-color: #007AFF !important;
 }
 
-/* 保存・削除ボタン (青色) */
 .stButton>button {
     border-radius: 18px;
     background-color: #007AFF !important;
@@ -119,7 +114,6 @@ input[type="checkbox"]:checked {
 .metal-platinum { color: #87CEEB !important; }
 .metal-silver { color: #C0C0C0 !important; }
 
-/* パラジウムと重量(1.0g)：ダークモードでハッキリ白にする */
 .metal-palladium, .history-weight {
     color: #FFFFFF !important;
     opacity: 1.0 !important;
@@ -131,7 +125,6 @@ input[type="checkbox"]:checked {
     font-weight: 500 !important;
 }
 
-/* 更新日時などのキャプション */
 div[style*="text-align: right"] {
     color: #8E8E93 !important;
 }

@@ -7,6 +7,7 @@ def render_market_info(display_name, weight, market_price):
 <span style="font-size: 22px; font-weight: 700;">{market_price:,} 円/g</span>
 </div>
 """, unsafe_allow_html=True)
+
 def render_calc_results(theory, sell, rate, buy=None, buy_rate=None):
     st.markdown(f"""
 <div class="ios-card"><span style="font-size: 13px; color: gray;">最大価格 (100%)</span><br><span style="font-size: 28px; font-weight: 700;">¥{theory:,.0f}</span></div>
@@ -17,6 +18,7 @@ def render_calc_results(theory, sell, rate, buy=None, buy_rate=None):
 <div class="ios-card" style="border: 2px solid #007AFF; background-color: rgba(0, 122, 255, 0.05);"><span style="font-size: 13px; color: #007AFF;">歩金込価格 ({buy_rate})</span><br><span style="font-size: 32px; font-weight: 800; color: #007AFF;">¥{buy:,.0f}</span></div>
 """, unsafe_allow_html=True)
 
+# ★この関数を修正しました
 def render_history_card(m):
     br = m.get('buy_rate', '0%')
     bv = m['buy_total']
@@ -26,12 +28,26 @@ def render_history_card(m):
     item = m.get('item', '')
     title = f"{metal} {item}".strip()
     
+    # --------------------------------------------------
+    # ★金属ごとの色設定（修飾部分）
+    # --------------------------------------------------
+    metal_colors = {
+        "Gold": "#FFD700",      # ゴールド（黄色系）
+        "Platinum": "#87CEEB",  # スカイブルー（水色系）
+        "Silver": "#C0C0C0",    # シルバー（灰色系）
+        "Palladium": "#808080" # パラジウムは灰色系
+    }
+    
+    # 金属に応じた色を取得、なければデフォルトの黒
+    title_color = metal_colors.get(metal, "#000000")
+    # --------------------------------------------------
+    
     st.markdown(f"""
 <div class="ios-card" style="text-align: left; padding: 12px 10px;">
 <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; border-bottom: 0.5px solid rgba(128, 128, 128, 0.2); padding-bottom: 6px;">
 <div style="flex: 1;"></div>
 <div style="flex: 2; text-align: center;">
-<span style="font-size: 17px; font-weight: 700;">{title} ({m['weight']})</span>
+<span style="font-size: 17px; font-weight: 700; color: {title_color};">{title} ({m['weight']})</span>
 </div>
 <div style="flex: 1; text-align: right;">
 <span style="color: gray; font-size: 10px; white-space: nowrap;">{m['datetime']}</span>
@@ -39,22 +55,4 @@ def render_history_card(m):
 </div>
 <div style="display: flex; justify-content: space-between; text-align: center; align-items: flex-end;">
 <div style="flex: 1;"><div style="font-size: 10px; color: gray; margin-bottom: 2px;">最大</div><div style="font-size: 18px; font-weight: 700; color: gray;">{m['theory']}</div></div>
-<div style="flex: 1; border-left: 0.5px solid rgba(128, 128, 128, 0.2); border-right: 0.5px solid rgba(128, 128, 128, 0.2);"><div style="font-size: 10px; color: #ff4b4b; margin-bottom: 2px;">割合({m['rate']})</div><div style="font-size: 18px; font-weight: 800; color: #ff4b4b;">{m['sell_total']}</div></div>
-<div style="flex: 1;">
-<div style="font-size: 10px; color: {bc}; margin-bottom: 2px;">歩金({br})</div>
-<div style="font-size: 18px; font-weight: 800; color: {bc};">{bv}</div>
-</div>
-</div>
-</div>
-""", unsafe_allow_html=True)
-
-def render_price_list(label, keys, prices, options):
-    st.write(f"### {label}")
-    html = '<div style="background-color: rgba(128,128,128,0.08); border-radius: 15px; overflow: hidden; margin-bottom: 20px;">'
-    for i, k in enumerate(keys):
-        p = prices.get(k)
-        txt = f"{p:,} 円" if p else "-"
-        border = "border-bottom: 1px solid rgba(128,128,128,0.1);" if i < len(keys)-1 else ""
-        html += f'<div style="display: flex; justify-content: space-between; padding: 15px; {border}"><span>{options[k]}</span><span style="font-weight: 700; color: #ff4b4b;">{txt}</span></div>'
-    html += '</div>'
-    st.markdown(html, unsafe_allow_html=True)
+<div style="flex: 1; border-left: 0.5px solid rgba(128, 128, 128, 0.2); border-right: 0.5

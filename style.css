@@ -1,5 +1,5 @@
 /* =========================================
-   1. 全体フォント・基本レイアウト
+   1. 全体フォント・レイアウト設定
    ========================================= */
 html, body, [class*="css"] {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
@@ -15,17 +15,16 @@ html, body, [class*="css"] {
 }
 
 /* =========================================
-   2. サイドバー (メニュー巨大ボタン)
+   2. サイドバー (メニューの巨大ボタン)
    ========================================= */
 [data-testid="stSidebar"] div[role="radiogroup"] {
     gap: 15px;
     padding-top: 20px;
 }
 
-/* ★サイドバーのボタンを明るいグレーに */
 [data-testid="stSidebar"] div[role="radiogroup"] label {
-    background-color: #3A3A3C !important; 
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background-color: rgba(128, 128, 128, 0.1) !important;
+    border: 1px solid rgba(128, 128, 128, 0.2) !important;
     border-radius: 15px !important;
     padding: 25px 10px !important;
     width: 100%;
@@ -35,7 +34,7 @@ html, body, [class*="css"] {
     font-size: 20px !important;
     font-weight: 800 !important;
     text-align: center;
-    color: #FFFFFF !important;
+    width: 100%;
     margin: 0;
 }
 
@@ -46,59 +45,51 @@ html, body, [class*="css"] {
 /* =========================================
    3. セグメントコントロール (金属・品位選択)
    ========================================= */
-/* ★セグメントコントロールの土台も明るいグレーに */
 div[data-testid="stSegmentedControl"] {
-    background-color: #3A3A3C !important; 
+    background-color: rgba(128, 128, 128, 0.1) !important;
     border-radius: 12px !important;
-    padding: 3px !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    padding: 4px !important;
+    gap: 4px !important;
 }
 
 div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
     background-color: #007AFF !important;
-    color: #FFFFFF !important;
-    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.4) !important;
+    color: white !important;
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3) !important;
     border: none !important;
 }
 
-div[data-testid="stSegmentedControl"] button[aria-selected="true"] div p {
-    color: #FFFFFF !important;
+div[data-testid="stSegmentedControl"] button[aria-selected="true"] p {
     font-weight: 700 !important;
 }
 
 div[data-testid="stSegmentedControl"] button[aria-selected="false"] {
     background-color: transparent !important;
-    color: #8E8E93 !important;
+    color: #8e8e93 !important;
+    border: none !important;
 }
 
 /* =========================================
    4. iOS風カード・入力パーツ
    ========================================= */
-/* ★カードの背景色を明るいグレー（#3A3A3C）に変更 */
 .ios-card {
-    background-color: #3A3A3C !important; 
+    background-color: rgba(128, 128, 128, 0.08);
     border-radius: 20px;
     padding: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(128, 128, 128, 0.1);
     margin-bottom: 12px;
 }
 
-/* 入力欄はカードよりさらに少しだけ明るく（#48484A）して凹凸を出す */
 .stNumberInput, .stCheckbox {
-    background-color: #48484A !important;
+    background-color: rgba(128, 128, 128, 0.05);
+    padding: 10px 15px;
     border-radius: 12px;
-    margin-bottom: 5px;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
-}
-
-input[type="checkbox"]:checked {
-    background-color: #007AFF !important;
 }
 
 .stButton>button {
     border-radius: 18px;
     background-color: #007AFF !important;
-    color: #FFFFFF !important;
+    color: white !important;
     padding: 12px;
     font-size: 18px;
     font-weight: 700;
@@ -115,16 +106,12 @@ input[type="checkbox"]:checked {
 .metal-silver { color: #C0C0C0 !important; }
 
 .metal-palladium, .history-weight {
-    color: #FFFFFF !important;
+    color: var(--text-color) !important;
     opacity: 1.0 !important;
     font-weight: 700 !important;
 }
 
 .history-weight {
     font-size: 14px;
-    font-weight: 500 !important;
-}
-
-div[style*="text-align: right"] {
-    color: #8E8E93 !important;
+    font-weight: 400 !important;
 }

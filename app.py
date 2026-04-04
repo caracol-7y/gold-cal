@@ -97,10 +97,29 @@ if page == "💰 計算機":
 
 elif page == "📝 履歴":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>計算履歴</h1>", unsafe_allow_html=True)
-    if not st.session_state.memo_list: st.info("履歴はありません")
+    
+    if not st.session_state.memo_list:
+        st.info("履歴はありません")
     else:
-        for m in reversed(st.session_state.memo_list): ui_parts.render_history_card(m)
-        if st.button("🗑️ すべて削除"): st.session_state.memo_list = []; st.rerun()
+        # 履歴を新しい順（逆順）に表示
+        # 削除ボタンを正しく動作させるため、元のインデックス(idx)を保持してループします
+        for i, m in enumerate(reversed(st.session_state.memo_list)):
+            # 逆順ループにおける、元のリストでの正しいインデックスを計算
+            real_index = len(st.session_state.memo_list) - 1 - i
+            
+            # カードを表示
+            ui_parts.render_history_card(m)
+            
+            # カードのすぐ下に削除ボタンを配置
+            # st.button に一意の key（del_0, del_1...）を振るのがポイントです
+            if st.button("この履歴を削除", key=f"del_{real_index}"):
+                st.session_state.memo_list.pop(real_index)
+                st.rerun()
+        
+        st.markdown("---")
+        if st.button("🗑️ すべての履歴を削除", key="clear_all"):
+            st.session_state.memo_list = []
+            st.rerun()
 
 elif page == "📋 最新相場":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>最新相場</h1>", unsafe_allow_html=True)

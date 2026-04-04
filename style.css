@@ -1,62 +1,34 @@
 /* style.css */
 
-/* 1. 全体フォント・基本設定 */
+/* 1. 全体フォント */
 html, body, [class*="css"] {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
 }
 
-.main .block-container {
-    max-width: 500px;
-    padding-top: 2.5rem !important;
-}
-
-/* 2. iOS風カード (履歴・計算結果共通) */
-.ios-card {
+/* 2. 履歴カード全体の枠 */
+.history-outer-card {
     background-color: rgba(128, 128, 128, 0.08);
     border-radius: 18px;
-    padding: 15px;
     border: 1px solid rgba(128, 128, 128, 0.1);
-    margin-bottom: 10px;
+    padding: 12px;
+    margin-bottom: 15px;
 }
 
-/* 3. ボタンの作り分け (ここが重要) */
-
-/* 【A】保存ボタン (青色・巨大) */
-button[kind="primary"] {
-    background-color: #007AFF !important;
-    color: white !important;
-    border-radius: 16px !important;
-    padding: 14px !important;
-    font-size: 18px !important;
-    font-weight: 700 !important;
-    width: 100% !important;
-    border: none !important;
-}
-
-/* 【B】履歴の「×」ボタン (カード内・グレー) */
-.del-btn-area button {
+/* 3. 個別削除「×」ボタン（極小・グレー） */
+.del-btn-container button {
     background-color: transparent !important;
     border: none !important;
     color: #8e8e93 !important;
-    font-size: 20px !important;
+    font-size: 18px !important;
     font-weight: 300 !important;
-    width: 30px !important;
-    height: 30px !important;
+    width: 24px !important;
+    height: 24px !important;
     padding: 0 !important;
     margin: 0 !important;
     line-height: 1 !important;
 }
-.del-btn-area button:hover {
+.del-btn-container button:hover {
     color: #ff4b4b !important;
-}
-
-/* 【C】すべての履歴を削除ボタン (赤枠・下部) */
-.clear-all-area button {
-    background-color: transparent !important;
-    color: #ff4b4b !important;
-    border: 1px solid rgba(255, 75, 75, 0.3) !important;
-    border-radius: 12px !important;
-    width: 100% !important;
 }
 
 /* 4. 金属の色設定 */
@@ -64,4 +36,19 @@ button[kind="primary"] {
 .metal-platinum { color: #87CEEB !important; }
 .metal-silver { color: #C0C0C0 !important; }
 .metal-palladium { color: var(--text-color) !important; }
-.history-weight { color: var(--text-color) !important; opacity: 0.6; font-weight: 400; font-size: 14px; }
+
+.history-weight { 
+    color: var(--text-color) !important; 
+    opacity: 0.6; 
+    font-size: 14px; 
+}
+
+/* 5. 青い保存ボタン */
+button[kind="primary"] {
+    background-color: #007AFF !important;
+    color: white !important;
+    border-radius: 16px !important;
+    padding: 12px !important;
+    font-weight: 700 !important;
+    width: 100% !important;
+}

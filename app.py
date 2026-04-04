@@ -3,6 +3,7 @@ from datetime import datetime
 from scraper import get_all_prices_comprehensive
 from calculator import calculate_prices
 import ui_parts
+import config
 
 st.set_page_config(page_title="地金計算 Pro", page_icon="💰", layout="centered")
 
@@ -15,8 +16,6 @@ except:
 if 'memo_list' not in st.session_state: st.session_state.memo_list = []
 if 'p_cat' not in st.session_state: st.session_state.p_cat = "Gold"
 if 'p_display' not in st.session_state: st.session_state.p_display = "K18"
-
-import config
 
 def sync():
     for k in ["w_v", "r_s", "b_o", "r_b"]:

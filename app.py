@@ -106,27 +106,39 @@ elif page == "📝 履歴":
         for i, m in enumerate(reversed(st.session_state.memo_list)):
             real_index = len(st.session_state.memo_list) - 1 - i
             
-            # --- ここからレイアウトの工夫 ---
-            # カードを表示する前に、ボタンをタイトルの位置に浮かせるためのコンテナ
-            container = st.container()
+            # --- 1. タイトル行を columns で構築 ---
+            # [×ボタン(1)] [タイトル(8)] [日付(3)] の比率で並べる
+            c_del, c_title, c_date = st.columns([1, 8, 3])
             
-            # カード本体を表示
+            with c_del:
+                # 品位の左端に「×」を配置
+                if st.button("×", key=f"del_{real_index}"):
+                    st.session_state.memo_list.pop(real_index)
+                    st.rerun()
+            
+            with c_title:
+                # 金属ごとの色を適用した品位を表示
+                m_class = f"metal-{m.get('metal','').lower()}"
+                title = f"{m.get('metal','')} {m.get('item','')}"
+                st.markdown(f"""
+                    <div style="text-align: center; line-height: 1.8;">
+                        <span style="font-size: 17px; font-weight: 700;" class="{m_class}">{title}</span>
+                        <span class="history-weight">({m['weight']})</span>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+            with c_date:
+                # 日付を右側に
+                st.markdown(f"""
+                    <div style="text-align: right; line-height: 2.8;">
+                        <span style="color: gray; font-size: 10px;">{m['datetime']}</span>
+                    </div>
+                """, unsafe_allow_html=True)
+            
+            # --- 2. カード本体（価格部分）を表示 ---
             ui_parts.render_history_card(m)
+            st.markdown('<div style="margin-bottom: 25px;"></div>', unsafe_allow_html=True)
             
-            # ボタンをカードの「中」に見える位置に配置（マイナスマージンで調整）
-            with container:
-                # 3つのカラムでボタンをタイトルの左側に合わせる
-                c_btn, c_empty = st.columns([1, 10])
-                with c_btn:
-                    # このボタンが「Gold K18」の左側に表示されます
-                    st.write("") # 少し隙間を調整
-                    if st.button("×", key=f"del_{real_index}", help="この履歴を削除"):
-                        st.session_state.memo_list.pop(real_index)
-                        st.rerun()
-            
-            # カード間の余白
-            st.write("") 
-        
         st.markdown("---")
         if st.button("🗑️ すべての履歴を削除", key="clear_all"):
             st.session_state.memo_list = []

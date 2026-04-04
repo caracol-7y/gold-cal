@@ -106,41 +106,43 @@ elif page == "📝 履歴":
         for i, m in enumerate(reversed(st.session_state.memo_list)):
             real_index = len(st.session_state.memo_list) - 1 - i
             
-            # --- ここから一つのカード ---
-            with st.container():
-                # カードの背景（上半分）を開始
+            # --- 1つのカードの開始 ---
+            # 枠となるdivを開始
+            st.markdown('<div class="history-card-container">', unsafe_allow_html=True)
+            
+            # 1行目: ×ボタン, 品位, 日付 を横並びにする
+            c1, c2, c3 = st.columns([1, 6, 3])
+            
+            with c1:
+                st.markdown('<div class="del-btn-wrap">', unsafe_allow_html=True)
+                if st.button("×", key=f"del_{real_index}"):
+                    st.session_state.memo_list.pop(real_index)
+                    st.rerun()
+                st.markdown('</div>', unsafe_allow_html=True)
+                
+            with c2:
                 m_class = f"metal-{m.get('metal','').lower()}"
                 title = f"{m.get('metal','')} {m.get('item','')}"
+                st.markdown(f"""
+                    <div style="text-align: center; line-height: 1.5;">
+                        <span class="{m_class}" style="font-size: 17px; font-weight: 700;">{title}</span>
+                        <span class="history-weight">({m['weight']})</span>
+                    </div>
+                """, unsafe_allow_html=True)
                 
-                # 1行目: [×] [タイトル] [日付] を columns で配置
-                st.markdown('<div class="history-outer-card">', unsafe_allow_html=True)
-                
-                c1, c2, c3 = st.columns([1, 8, 3])
-                with c1:
-                    st.markdown('<div class="del-btn-container">', unsafe_allow_html=True)
-                    if st.button("×", key=f"del_{real_index}"):
-                        st.session_state.memo_list.pop(real_index)
-                        st.rerun()
-                    st.markdown('</div>', unsafe_allow_html=True)
-                with c2:
-                    st.markdown(f"""
-                        <div style="text-align: center; line-height: 1.5;">
-                            <span class="{m_class}" style="font-size: 17px; font-weight: 700;">{title}</span>
-                            <span class="history-weight">({m['weight']})</span>
-                        </div>
-                    """, unsafe_allow_html=True)
-                with c3:
-                    st.markdown(f'<div style="text-align: right; font-size: 10px; color: gray; line-height: 2.5;">{m["datetime"]}</div>', unsafe_allow_html=True)
-                
-                # 2行目: 区切り線
-                st.markdown('<div style="border-bottom: 0.5px solid rgba(128,128,128,0.2); margin: 8px 0;"></div>', unsafe_allow_html=True)
-                
-                # 3行目: 価格表示
-                ui_parts.render_history_prices(m)
-                
-                st.markdown('</div>', unsafe_allow_html=True)
-                # --- カード終了 ---
-        
+            with c3:
+                st.markdown(f'<div style="text-align: right; font-size: 10px; color: gray; line-height: 2.5;">{m["datetime"]}</div>', unsafe_allow_html=True)
+            
+            # 区切り線
+            st.markdown('<div style="border-bottom: 1px solid rgba(128,128,128,0.15); margin: 8px 0;"></div>', unsafe_allow_html=True)
+            
+            # 2行目: 価格情報の数字のみを表示
+            ui_parts.render_history_prices_only(m)
+            
+            # 枠となるdivを終了
+            st.markdown('</div>', unsafe_allow_html=True)
+            # --- 1つのカードの終了 ---
+            
         st.markdown("---")
         if st.button("🗑️ すべての履歴を削除", key="clear_all"):
             st.session_state.memo_list = []

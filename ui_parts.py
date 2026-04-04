@@ -19,12 +19,12 @@ def render_history_card(m):
     m_color = color_map.get(m["metal"], "#FFFFFF")
 
     html = f'<div class="ios-card" style="padding: 8px 15px; margin-bottom: 10px;">'
-    # 上段：タイトル 21px -> 20px に縮小
+    # 上段
     html += f'<div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline; border-bottom: 1px solid rgba(128,128,128,0.1); padding-bottom: 5px; margin-bottom: 8px;">'
     html += f'<div></div>'
     html += f'<div style="text-align: center; font-weight: 800; font-size: 20px;"><span style="color: {m_color};">{m["metal"]} {m["item"]}</span> <span style="color: #FFFFFF; margin-left: 5px;">{m["weight"]}</span></div>'
     html += f'<div style="text-align: right; color: gray; font-size: 11px; white-space: nowrap;">{m["datetime"]}</div></div>'
-    # 下段：価格部分は変更なし (20px)
+    # 下段：
     html += f'<div style="display: flex; justify-content: space-between; align-items: flex-start;">'
     html += f'<div style="flex: 1; text-align: center;"><div style="font-size: 11px; color: gray; margin-bottom: 2px;">最大価格</div><div style="font-weight: 700; font-size: 20px;">{m["theory"]}</div></div>'
     html += f'<div style="flex: 1; text-align: center; border-left: 1px solid rgba(128,128,128,0.1); border-right: 1px solid rgba(128,128,128,0.1);"><div style="font-size: 11px; color: #ff4b4b; margin-bottom: 2px;">割合({m["rate"]})</div><div style="font-weight: 800; font-size: 20px; color: #ff4b4b;">{m["sell_total"]}</div></div>'

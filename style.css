@@ -65,20 +65,27 @@ html, body, [class*="css"] {
     border: none;
 }
 
-/* style.css の最後の方に追加、または上書き */
+/* style.css の金属名設定セクション */
 
-/* 金属名の色設定 */
-.metal-gold { color: #FFD700; }     /* 黄色 */
-.metal-platinum { color: #87CEEB; } /* 水色 */
-.metal-silver { color: #C0C0C0; }   /* 灰色 */
-.metal-palladium { color: #808080; } /* 標準は濃い灰色 */
+.metal-gold { color: #FFD700; }     /* 金：黄色 */
+.metal-platinum { color: #87CEEB; } /* プラチナ：水色 */
+.metal-silver { color: #C0C0C0; }   /* 銀：灰色 */
 
-/* 端末がダークモードの時のパラジウム設定 */
-@media (prefers-color-scheme: dark) {
-    .metal-palladium { color: #FFFFFF !important; }
+/* ★パラジウム：ライトモード時は黒(#000000) */
+.metal-palladium { 
+    color: #000000; 
 }
 
-/* 重量 (1.0g) の設定：システム標準の色に従う */
+/* ★ダークモード検知時の上書き設定 */
+@media (prefers-color-scheme: dark) {
+    /* パラジウムを白に */
+    .metal-palladium { color: #FFFFFF !important; }
+    
+    /* 銀(Silver)が背景の黒に沈んで見えにくい場合は、ここを少し明るくしてもOK */
+    /* .metal-silver { color: #E0E0E0 !important; } */
+}
+
+/* 重量 (1.0g) の設定：常にシステムのテキスト色に従う */
 .history-weight {
     color: var(--text-color) !important;
     font-weight: 400;

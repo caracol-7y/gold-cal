@@ -11,7 +11,6 @@ html, body, [class*="css"] {
     display: none !important;
 }
 
-/* iOS風カード */
 .ios-card {
     background-color: rgba(128, 128, 128, 0.08);
     border-radius: 20px;
@@ -37,8 +36,9 @@ html, body, [class*="css"] {
     border: none;
 }
 
-/* 履歴テキスト */
+/* 履歴の重量を品位と同じサイズ・太字にする */
 .history-weight {
     font-size: inherit !important;
     font-weight: 700 !important;
+    color: inherit !important;
 }

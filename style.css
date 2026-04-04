@@ -1,74 +1,75 @@
 /* style.css */
 
-/* 全体フォント */
+/* 全体フォント設定 */
 html, body, [class*="css"] {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
 }
 
+/* メインコンテンツの横幅と余白 */
 .main .block-container {
     max-width: 500px;
     padding-top: 2rem !important;
 }
 
-/* 1. Streamlitの標準コンテナ(border=True)をiOSカードに改造 */
-[data-testid="stVerticalBlockBorderWrapper"] {
-    background-color: rgba(128, 128, 128, 0.08) !important;
-    border: 1px solid rgba(128, 128, 128, 0.1) !important;
-    border-radius: 20px !important;
-    padding: 12px !important;
-    margin-bottom: 12px !important;
+/* 不要なツールバーを隠す */
+.stAppDeployButton, [data-testid="stToolbar"] {
+    display: none !important;
 }
 
-/* 2. 「×」ボタン：極小・グレー・配置調整 */
-div[data-testid="column"] button[kind="secondary"] {
-    background: transparent !important;
-    border: none !important;
-    color: #8e8e93 !important;
-    font-size: 18px !important;
-    font-weight: 300 !important;
-    width: 24px !important;
-    height: 24px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    line-height: 1 !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* サイドバーのメニューを巨大ボタンにする */
+[data-testid="stSidebar"] div[role="radiogroup"] {
+    gap: 15px;
+    padding-top: 20px;
 }
-div[data-testid="column"] button[kind="secondary"]:hover {
-    color: #ff4b4b !important;
+[data-testid="stSidebar"] div[role="radiogroup"] label {
+    background-color: rgba(128, 128, 128, 0.1) !important;
+    border: 1px solid rgba(128, 128, 128, 0.2) !important;
+    border-radius: 15px !important;
+    padding: 25px 10px !important;
+    width: 100%;
+}
+[data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    text-align: center;
+    width: 100%;
+    margin: 0;
+}
+[data-testid="stSidebar"] div[role="radiogroup"] label div[data-baseweb="radio"] {
+    display: none;
 }
 
-/* 3. 金属の色 */
+/* iOS風カードデザイン */
+.ios-card {
+    background-color: rgba(128, 128, 128, 0.08);
+    border-radius: 20px;
+    padding: 15px;
+    border: 1px solid rgba(128, 128, 128, 0.1);
+    margin-bottom: 12px;
+}
+
+/* 金属別の色設定 */
 .metal-gold { color: #FFD700 !important; }
 .metal-platinum { color: #87CEEB !important; }
 .metal-silver { color: #C0C0C0 !important; }
 .metal-palladium { color: var(--text-color) !important; }
-.history-weight { color: var(--text-color) !important; opacity: 0.6; font-size: 14px; }
+.history-weight { color: var(--text-color) !important; opacity: 0.6; font-size: 14px; font-weight: 400; }
 
-/* 4. 下部の「すべて削除」ボタン */
-.clear-all-area button {
-    background: transparent !important;
-    color: #ff4b4b !important;
-    border: 1px solid rgba(255, 75, 75, 0.2) !important;
-    border-radius: 12px !important;
-    width: 100% !important;
+/* 入力パーツのデザイン */
+.stNumberInput, .stCheckbox {
+    background-color: rgba(128, 128, 128, 0.05);
+    padding: 10px 15px;
+    border-radius: 12px;
 }
 
-/* 5. 計算機のカードと保存ボタン */
-.ios-card {
-    background-color: rgba(128, 128, 128, 0.08);
+/* 保存ボタン (青色) */
+.stButton>button {
     border-radius: 18px;
-    padding: 15px;
-    border: 1px solid rgba(128, 128, 128, 0.1);
-    margin-bottom: 10px;
-}
-button[kind="primary"] {
-    background-color: #007AFF !important;
-    color: white !important;
-    border-radius: 16px !important;
-    padding: 12px !important;
-    font-weight: 700 !important;
-    width: 100% !important;
-    border: none !important;
+    background-color: #007AFF;
+    color: white;
+    padding: 18px;
+    font-size: 18px;
+    font-weight: 700;
+    width: 100%;
+    border: none;
 }

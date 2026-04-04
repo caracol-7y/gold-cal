@@ -1,55 +1,101 @@
-/* style.css */
+/* =========================================
+   style.css (レイアウト最適化・完全版)
+   ========================================= */
 
-/* 1. 全体フォント */
+/* 1. 全体フォント・余白 */
 html, body, [class*="css"] {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
 }
 
-/* 2. 履歴カード全体の容器（この中にすべてを収める） */
-.history-card-container {
+.main .block-container {
+    max-width: 500px;
+    padding-top: 2rem !important;
+}
+
+.stAppDeployButton, [data-testid="stToolbar"] {
+    display: none !important;
+}
+
+/* 2. サイドバーの巨大ボタン */
+[data-testid="stSidebar"] div[role="radiogroup"] { gap: 15px; padding-top: 20px; }
+[data-testid="stSidebar"] div[role="radiogroup"] label {
+    background-color: rgba(128, 128, 128, 0.1) !important;
+    border: 1px solid rgba(128, 128, 128, 0.2) !important;
+    border-radius: 15px !important;
+    padding: 25px 10px !important;
+    width: 100%;
+}
+[data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
+    font-size: 20px !important; font-weight: 800 !important; text-align: center; width: 100%; margin: 0;
+}
+[data-testid="stSidebar"] div[role="radiogroup"] label div[data-baseweb="radio"] { display: none; }
+
+/* 3. 計算機の入力パーツ・標準iOSカード */
+.stNumberInput, .stCheckbox {
+    background-color: rgba(128, 128, 128, 0.05);
+    padding: 5px 10px;
+    border-radius: 12px;
+}
+.ios-card {
     background-color: rgba(128, 128, 128, 0.08);
     border-radius: 18px;
+    padding: 15px;
     border: 1px solid rgba(128, 128, 128, 0.1);
-    padding: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
-/* 3. 個別削除「×」ボタンのスタイル */
-.del-btn-wrap button {
-    background-color: transparent !important;
-    border: none !important;
-    color: #8e8e93 !important;
-    font-size: 18px !important;
-    width: 28px !important;
-    height: 28px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    line-height: 1 !important;
-}
-.del-btn-wrap button:hover {
-    color: #ff4b4b !important;
-    background-color: rgba(255, 75, 75, 0.1) !important;
-    border-radius: 50% !important;
+/* 4. StreamlitネイティブコンテナをiOSカード化 (重要) */
+/* これにより、Pythonで書いた構造がそのままカードになります */
+[data-testid="stVerticalBlockBorderWrapper"] {
+    background-color: rgba(128, 128, 128, 0.08) !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(128, 128, 128, 0.1) !important;
+    padding: 10px 10px !important;
+    margin-bottom: 15px !important;
 }
 
-/* 4. 金属の色設定 */
-.metal-gold { color: #FFD700 !important; }
-.metal-platinum { color: #87CEEB !important; }
-.metal-silver { color: #C0C0C0 !important; }
-.metal-palladium { color: var(--text-color) !important; }
-
-.history-weight { 
-    color: var(--text-color) !important; 
-    opacity: 0.6; 
-    font-size: 14px; 
-}
-
-/* 5. 保存ボタン (青) */
+/* 5. ボタンの作り分け */
+/* 【保存ボタン】(青色・巨大) */
 button[kind="primary"] {
     background-color: #007AFF !important;
     color: white !important;
     border-radius: 16px !important;
     padding: 12px !important;
+    font-size: 18px !important;
     font-weight: 700 !important;
     width: 100% !important;
+    border: none !important;
 }
+
+/* 【×ボタン】(カード内の一番左のカラムに入るボタン) */
+div[data-testid="stColumn"]:first-child button[kind="secondary"] {
+    background-color: transparent !important;
+    color: #8e8e93 !important;
+    border: none !important;
+    font-size: 20px !important;
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    margin-top: 5px !important; 
+}
+div[data-testid="stColumn"]:first-child button[kind="secondary"]:hover {
+    color: #ff4b4b !important;
+    background-color: rgba(255, 75, 75, 0.1) !important;
+    border-radius: 50% !important;
+}
+
+/* 【すべて削除ボタン】 */
+.clear-all-btn button {
+    color: #ff4b4b !important;
+    border: 1px solid rgba(255, 75, 75, 0.3) !important;
+    border-radius: 12px !important;
+    width: 100% !important;
+    background-color: transparent !important;
+}
+
+/* 6. 金属の色設定 */
+.metal-gold { color: #FFD700 !important; }
+.metal-platinum { color: #87CEEB !important; }
+.metal-silver { color: #C0C0C0 !important; }
+.metal-palladium { color: var(--text-color) !important; }
+.history-weight { color: var(--text-color) !important; opacity: 0.6; font-size: 14px; font-weight: 400; }

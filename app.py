@@ -31,7 +31,7 @@ def cat_change():
     elif new_cat == "Palladium": st.session_state.p_display = "Bar"
     else: st.session_state.p_display = config.OPTIONS_MAP[config.METAL_CATEGORIES[new_cat][0]]
 
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=3600)
 def fetch(): return get_all_prices_comprehensive()
 prices, utime = fetch()
 

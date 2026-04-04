@@ -19,11 +19,6 @@ html, body, [class*="css"] {
 /* =========================================
    2. サイドバー (メニューの巨大ボタン)
    ========================================= */
-[data-testid="stSidebar"] div[role="radiogroup"] {
-    gap: 15px;
-    padding-top: 20px;
-}
-
 [data-testid="stSidebar"] div[role="radiogroup"] label {
     background-color: rgba(128, 128, 128, 0.1) !important;
     border: 1px solid rgba(128, 128, 128, 0.2) !important;
@@ -52,16 +47,18 @@ html, body, [class*="css"] {
 div[data-testid="stSegmentedControl"] {
     background-color: rgba(128, 128, 128, 0.1) !important;
     border-radius: 12px !important;
-    padding: 4px !important;
+    padding: 3px !important;
     gap: 4px !important;
 }
 
-/* ★選択されたボタンを iOSブルー (#007AFF) にする */
+/* ★決定版：選択されたボタンを iOSブルー (#007AFF) に強制する */
+/* 赤色になるのを防ぐため、より具体的なセレクタで指定します */
 div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
     background-color: #007AFF !important; /* 青背景 */
     color: white !important;               /* 白文字 */
     box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3) !important; /* ほんのり青い影 */
     border: none !important;
+    font-weight: 700 !important;
 }
 
 /* 選択されていないボタン */
@@ -69,6 +66,12 @@ div[data-testid="stSegmentedControl"] button[aria-selected="false"] {
     background-color: transparent !important;
     color: #8e8e93 !important;
     border: none !important;
+}
+
+/* ホバー時の青枠（iOS風） */
+div[data-testid="stSegmentedControl"] button:hover:not([aria-selected="true"]) {
+    color: #007AFF !important;
+    background-color: rgba(0, 122, 255, 0.05) !important;
 }
 
 /* =========================================
@@ -88,7 +91,7 @@ div[data-testid="stSegmentedControl"] button[aria-selected="false"] {
     border-radius: 12px;
 }
 
-/* 保存ボタン (青色) */
+/* 標準のボタン (保存、すべて削除) */
 .stButton>button {
     border-radius: 18px;
     background-color: #007AFF;
@@ -102,20 +105,10 @@ div[data-testid="stSegmentedControl"] button[aria-selected="false"] {
 }
 
 /* =========================================
-   5. 金属カラー・テキスト視認性
+   5. 金属カラー・履歴テキスト視認性
    ========================================= */
 .metal-gold { color: #FFD700 !important; }
 .metal-platinum { color: #87CEEB !important; }
 .metal-silver { color: #C0C0C0 !important; }
 
-/* パラジウムと重量：モードに合わせて白黒ハッキリ */
-.metal-palladium, .history-weight {
-    color: var(--text-color) !important;
-    opacity: 1.0 !important; /* 透かしを完全に排除 */
-    font-weight: 700 !important;
-}
-
-.history-weight {
-    font-size: 14px;
-    font-weight: 400 !important;
-}
+/* パラ

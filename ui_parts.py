@@ -13,21 +13,26 @@ def render_calc_results(theory, sell, rate, buy=None, buy_rate=None):
         st.markdown(f'<div class="ios-card" style="border: 2px solid #007AFF; background-color: rgba(0, 122, 255, 0.05); text-align: center; padding: 10px;"><span style="font-size: 12px; color: #007AFF;">歩金込価格 ({buy_rate})</span><br><span style="font-size: 26px; font-weight: 800; color: #007AFF;">¥{buy:,.0f}</span></div>', unsafe_allow_html=True)
 
 def render_history_card(m):
-    """履歴カード（上下2段：文字化け回避版）"""
+    """履歴カード（下段全センタリング版）"""
     buy_val = m["buy_total"] if m["buy_total"] != "-" else "-"
     
-    # 上段：中央寄せ（品位・重量）と右寄せ（日付）
+    # 全体を囲う枠
     html = f'<div class="ios-card" style="padding: 12px; margin-bottom: 12px;">'
+    
+    # 上段：グリッドで中央にタイトル、右に日付
     html += f'<div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline; border-bottom: 1px solid rgba(128,128,128,0.1); padding-bottom: 8px; margin-bottom: 10px;">'
     html += f'<div></div>'
     html += f'<div style="text-align: center; font-weight: 800; font-size: 14px; color: #333;">{m["metal"]} {m["item"]} {m["weight"]}</div>'
     html += f'<div style="text-align: right; color: gray; font-size: 9px; white-space: nowrap;">{m["datetime"]}</div></div>'
     
-    # 下段：左(最大)・中(割合)・右(歩金)
+    # 下段：3カラムすべて text-align: center に設定
     html += f'<div style="display: flex; justify-content: space-between; align-items: flex-start;">'
-    html += f'<div style="flex: 1; text-align: left;"><div style="font-size: 9px; color: gray; margin-bottom: 2px;">最大価格</div><div style="font-weight: 700; font-size: 13px;">{m["theory"]}</div></div>'
+    # 左：最大価格
+    html += f'<div style="flex: 1; text-align: center;"><div style="font-size: 9px; color: gray; margin-bottom: 2px;">最大価格</div><div style="font-weight: 700; font-size: 13px;">{m["theory"]}</div></div>'
+    # 中：割合価格
     html += f'<div style="flex: 1; text-align: center; border-left: 1px solid rgba(128,128,128,0.1); border-right: 1px solid rgba(128,128,128,0.1);"><div style="font-size: 9px; color: #ff4b4b; margin-bottom: 2px;">割合({m["rate"]})</div><div style="font-weight: 800; font-size: 13px; color: #ff4b4b;">{m["sell_total"]}</div></div>'
-    html += f'<div style="flex: 1; text-align: right;"><div style="font-size: 9px; color: #007AFF; margin-bottom: 2px;">歩金込</div><div style="font-weight: 800; font-size: 13px; color: #007AFF;">{buy_val}</div></div>'
+    # 右：歩金込価格
+    html += f'<div style="flex: 1; text-align: center;"><div style="font-size: 9px; color: #007AFF; margin-bottom: 2px;">歩金込</div><div style="font-weight: 800; font-size: 13px; color: #007AFF;">{buy_val}</div></div>'
     html += f'</div></div>'
     
     st.markdown(html, unsafe_allow_html=True)

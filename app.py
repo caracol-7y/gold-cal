@@ -84,7 +84,7 @@ if page == "💰 計算機":
             th, sl, by = calculate_prices(m_price, weight, rsell, ubukin, rbuy)
             ui_parts.render_calc_results(th, sl, rsell, by if ubukin else None, f"{rbuy}%")
             
-            if st.button("💾 この結果を保存"):
+            if st.button("💾 この結果を保存", type="primary"):
                 st.session_state.memo_list.append({
                     "datetime": datetime.now().strftime("%m/%d %H:%M"),
                     "metal": cat, # ★金属名(Gold等)を保存
@@ -111,10 +111,12 @@ elif page == "📝 履歴":
             c_del, c_title, c_date = st.columns([1, 8, 3])
             
             with c_del:
-                # 品位の左端に「×」を配置
+                # ★専用のdivで囲って、この中のボタンだけを小さくする
+                st.markdown('<div class="del-btn-container">', unsafe_allow_html=True)
                 if st.button("×", key=f"del_{real_index}"):
                     st.session_state.memo_list.pop(real_index)
                     st.rerun()
+                st.markdown('</div>', unsafe_allow_html=True)
             
             with c_title:
                 # 金属ごとの色を適用した品位を表示
@@ -139,10 +141,11 @@ elif page == "📝 履歴":
             ui_parts.render_history_card(m)
             st.markdown('<div style="margin-bottom: 25px;"></div>', unsafe_allow_html=True)
             
-        st.markdown("---")
-        if st.button("🗑️ すべての履歴を削除", key="clear_all"):
-            st.session_state.memo_list = []
-            st.rerun()
+            st.markdown("---")
+            # ★ここも普通のボタンとして表示
+            if st.button("🗑️ すべての履歴を削除", key="clear_all"):
+                st.session_state.memo_list = []
+                st.rerun()
 
 elif page == "📋 最新相場":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>最新相場</h1>", unsafe_allow_html=True)

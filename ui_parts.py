@@ -27,7 +27,7 @@ def render_history_card(m):
     item = m.get('item', '')
     title = f"{metal} {item}".strip()
     
-    # 金属名に応じたCSSクラス名を決定（Gold -> metal-gold）
+    # 小文字に変換してクラス名を作成 (metal-gold, metal-palladium 等)
     m_class = f"metal-{metal.lower()}"
     
     st.markdown(f"""

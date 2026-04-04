@@ -2,9 +2,19 @@ import streamlit as st
 
 def render_market_info(display_name, weight, market_price):
     st.markdown(f"""
-<div class="ios-card" style="background-color: rgba(0, 122, 255, 0.05); border: 1px solid rgba(0, 122, 255, 0.2); text-align: center;">
-<span style="font-size: 14px; color: #8e8e93;">{display_name} | {weight:.1f}g</span><br>
-<span style="font-size: 22px; font-weight: 700;">{market_price:,} 円/g</span>
+<div class="ios-card" style="background-color: rgba(0, 122, 255, 0.05); border: 1px solid rgba(0, 122, 255, 0.2); display: flex; justify-content: space-between; align-items: center; text-align: center; padding: 12px 10px;">
+    <div style="flex: 1;">
+        <div style="font-size: 11px; color: #8e8e93; margin-bottom: 2px;">品位</div>
+        <div style="font-size: 18px; font-weight: 700;">{display_name}</div>
+    </div>
+    <div style="flex: 1; border-left: 1px solid rgba(128, 128, 128, 0.2); border-right: 1px solid rgba(128, 128, 128, 0.2);">
+        <div style="font-size: 11px; color: #8e8e93; margin-bottom: 2px;">重量</div>
+        <div style="font-size: 18px; font-weight: 700;">{weight:.1f}g</div>
+    </div>
+    <div style="flex: 1.5;">
+        <div style="font-size: 11px; color: #8e8e93; margin-bottom: 2px;">相場</div>
+        <div style="font-size: 18px; font-weight: 700; color: #007AFF;">¥{market_price:,}<span style="font-size: 12px;">/g</span></div>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 

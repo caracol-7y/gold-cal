@@ -25,18 +25,10 @@ def render_history_card(m):
     
     metal = m.get('metal', '') 
     item = m.get('item', '')
-    # 表示名（Gold K18 など）
     title = f"{metal} {item}".strip()
     
-    # 金属ごとの色設定
-    metal_colors = {
-        "Gold": "#FFD700",      # ゴールド（黄色）
-        "Platinum": "#87CEEB",  # プラチナ（水色）
-        "Silver": "#C0C0C0",    # シルバー（灰色）
-        "Palladium": "#808080"  # パラジウム（濃い灰色）
-    }
-    
-    title_color = metal_colors.get(metal, "#000000")
+    # 金属名に応じたCSSクラス名を決定（Gold -> metal-gold）
+    m_class = f"metal-{metal.lower()}"
     
     st.markdown(f"""
 <div class="ios-card" style="text-align: left; padding: 12px 10px;">
@@ -44,8 +36,8 @@ def render_history_card(m):
 <div style="flex: 1;"></div>
 <div style="flex: 2; text-align: center;">
     <span style="font-size: 17px; font-weight: 700;">
-        <span style="color: {title_color};">{title}</span>
-        <span style="color: #8e8e93; font-weight: 400; font-size: 15px;"> ({m['weight']})</span>
+        <span class="{m_class}">{title}</span>
+        <span class="history-weight"> ({m['weight']})</span>
     </span>
 </div>
 <div style="flex: 1; text-align: right;">

@@ -26,9 +26,22 @@ def sync():
         if k in st.session_state: st.session_state[f"p_{k}"] = st.session_state[k]
 
 def cat_change():
-    sync()
-    st.session_state.p_cat = st.session_state.cat_w
-    st.session_state.p_display = config.OPTIONS_MAP[config.METAL_CATEGORIES[st.session_state.cat_w][0]]
+    sync() # 現在の入力値を保持
+    new_cat = st.session_state.cat_w
+    st.session_state.p_cat = new_cat
+    
+    # 金属ごとにデフォルトの表示名（config.OPTIONS_MAPの右側の値）を指定
+    if new_cat == "Gold":
+        st.session_state.p_display = "K18"
+    elif new_cat == "Platinum":
+        st.session_state.p_display = "Pt900"
+    elif new_cat == "Silver":
+        st.session_state.p_display = "Sv1000"
+    elif new_cat == "Palladium":
+        st.session_state.p_display = "Bar"
+    else:
+        # 万が一設定がない場合はリストの先頭にする
+        st.session_state.p_display = config.OPTIONS_MAP[config.METAL_CATEGORIES[new_cat][0]]
 
 @st.cache_data(ttl=3600)
 def fetch(): return get_all_prices_comprehensive()
@@ -40,16 +53,19 @@ if page == "💰 計算機":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>地金計算機</h1>", unsafe_allow_html=True)
     st.caption(f"最終更新: {utime}")
     
-    cat = st.radio("金属", options=list(config.METAL_CATEGORIES.keys()), index=list(config.METAL_CATEGORIES.keys()).index(st.session_state.p_cat), horizontal=True, key="cat_w", on_change=cat_change)
-    
-    # 品位選択の選択肢を作成
+    cat = st.radio("金属", options=list(config.METAL_CATEGORIES.keys()), 
+               index=list(config.METAL_CATEGORIES.keys()).index(st.session_state.p_cat), 
+               horizontal=True, key="cat_w", on_change=cat_change)
+
     opts = [config.OPTIONS_MAP[k] for k in config.METAL_CATEGORIES[cat]]
     try:
+        # 現在のセッション状態にある品位を選択状態にする
         d_idx = opts.index(st.session_state.p_display)
-    except:
+    except ValueError:
         d_idx = 0
+    
     disp = st.radio("品位", options=opts, index=d_idx, horizontal=True, key="disp_w")
-    st.session_state.p_display = disp
+    st.session_state.p_display = disp # 選択された値を即座にセッションへ保存
 
     # ★修正ポイント：今選んでいるカテゴリ(cat)のキーの中から、表示名(disp)に一致するものを探す
     cat_keys = config.METAL_CATEGORIES[cat]

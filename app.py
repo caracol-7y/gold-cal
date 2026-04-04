@@ -95,26 +95,37 @@ if page == "💰 計算機":
                 })
                 st.toast("保存しました")
 
+# app.py の「📝 履歴」セクションを修正
+
 elif page == "📝 履歴":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>計算履歴</h1>", unsafe_allow_html=True)
     
     if not st.session_state.memo_list:
         st.info("履歴はありません")
     else:
-        # 履歴を新しい順（逆順）に表示
-        # 削除ボタンを正しく動作させるため、元のインデックス(idx)を保持してループします
         for i, m in enumerate(reversed(st.session_state.memo_list)):
-            # 逆順ループにおける、元のリストでの正しいインデックスを計算
             real_index = len(st.session_state.memo_list) - 1 - i
             
-            # カードを表示
+            # --- ここからレイアウトの工夫 ---
+            # カードを表示する前に、ボタンをタイトルの位置に浮かせるためのコンテナ
+            container = st.container()
+            
+            # カード本体を表示
             ui_parts.render_history_card(m)
             
-            # カードのすぐ下に削除ボタンを配置
-            # st.button に一意の key（del_0, del_1...）を振るのがポイントです
-            if st.button("この履歴を削除", key=f"del_{real_index}"):
-                st.session_state.memo_list.pop(real_index)
-                st.rerun()
+            # ボタンをカードの「中」に見える位置に配置（マイナスマージンで調整）
+            with container:
+                # 3つのカラムでボタンをタイトルの左側に合わせる
+                c_btn, c_empty = st.columns([1, 10])
+                with c_btn:
+                    # このボタンが「Gold K18」の左側に表示されます
+                    st.write("") # 少し隙間を調整
+                    if st.button("×", key=f"del_{real_index}", help="この履歴を削除"):
+                        st.session_state.memo_list.pop(real_index)
+                        st.rerun()
+            
+            # カード間の余白
+            st.write("") 
         
         st.markdown("---")
         if st.button("🗑️ すべての履歴を削除", key="clear_all"):

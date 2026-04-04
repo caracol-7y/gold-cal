@@ -2,7 +2,7 @@ import streamlit as st
 
 def render_market_info(display_name, weight, market_price):
     st.markdown(f"""
-<div class="ios-card" style="background-color: rgba(0, 122, 255, 0.05); border: 1px solid rgba(0, 122, 255, 0.2); display: flex; justify-content: space-between; align-items: center; text-align: center; padding: 6px 10px;">
+<div class="ios-card" style="background-color: rgba(0, 122, 255, 0.05); border: 1px solid rgba(0, 122, 255, 0.2); display: flex; justify-content: space-between; align-items: center; text-align: center; padding: 8px 10px;">
     <div style="flex: 1;">
         <div style="font-size: 11px; color: #8e8e93; margin-bottom: 2px;">品位</div>
         <div style="font-size: 18px; font-weight: 700;">{display_name}</div>

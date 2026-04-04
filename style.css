@@ -80,3 +80,48 @@ html, body, [class*="css"] {
     display: block;
     border: none;
 }
+/* style.css に追加 */
+
+/* --- 金属・品位の選択ボタン (Segmented Control風) --- */
+div[data-testid="stHorizontalBlock"] div[data-testid="stMarkdownContainer"] + div[data-baseweb="radio"] div[role="radiogroup"] {
+    background-color: rgba(128, 128, 128, 0.1) !important; /* 全体の背景（グレーの溝） */
+    padding: 4px !important;
+    border-radius: 12px !important;
+    gap: 4px !important;
+}
+
+div[data-testid="stHorizontalBlock"] div[role="radiogroup"] label {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 8px 12px !important;
+    margin: 0 !important;
+    border-radius: 9px !important;
+    flex: 1; /* 幅を均等にする */
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+/* 選択されている時のスタイル */
+div[data-testid="stHorizontalBlock"] div[role="radiogroup"] label[data-checked="true"] {
+    background-color: #FFFFFF !important; /* 選択中は白背景（ダークモードでも白が映えます） */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12) !important; /* 少し浮き上がらせる */
+}
+
+/* 選択されている時の文字色 */
+div[data-testid="stHorizontalBlock"] div[role="radiogroup"] label[data-checked="true"] p {
+    color: #007AFF !important; /* 選択中はiOSブルー */
+    font-weight: 700 !important;
+}
+
+/* 選択されていない時の文字色 */
+div[data-testid="stHorizontalBlock"] div[role="radiogroup"] label[data-checked="false"] p {
+    color: #8e8e93 !important; /* 未選択は控えめなグレー */
+}
+
+/* ラジオボタンの「●」を完全に消す */
+div[data-testid="stHorizontalBlock"] div[data-baseweb="radio"] div[data-testid="stMarkdownContainer"] {
+    display: none !important;
+}
+div[role="radiogroup"] label div[data-baseweb="radio"] {
+    display: none !important;
+}

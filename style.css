@@ -44,20 +44,21 @@ html, body, [class*="css"] {
     border: none;
 }
 
-/* 金属・品位選択ボタン（セグメントコントロール）のサイズ拡大 */
+/* 金属・品位選択ボタン（セグメントコントロール）をさらに拡大 */
 div[data-testid="stSegmentedControl"] button {
-    min-height: 50px !important; /* ボタンの高さを拡大 */
+    min-height: 65px !important; /* さらに高さを出す */
+    padding: 10px !important;
 }
 
 div[data-testid="stSegmentedControl"] button p {
-    font-size: 17px !important; /* 文字サイズを拡大 */
-    font-weight: 600 !important;
+    font-size: 20px !important; /* 文字をさらに大きく */
+    font-weight: 800 !important; /* 文字を極太に */
 }
 
 div[data-testid="stSegmentedControl"] {
     background-color: rgba(128, 128, 128, 0.1) !important;
-    border-radius: 14px !important;
-    padding: 5px !important;
+    border-radius: 16px !important;
+    padding: 6px !important;
 }
 
 /* サイドバー */

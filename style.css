@@ -11,7 +11,6 @@ html, body, [class*="css"] {
     display: none !important;
 }
 
-/* カード共通：余白を少し広げてゆとりを持たせる */
 .ios-card {
     background-color: rgba(128, 128, 128, 0.08);
     border-radius: 22px;
@@ -20,7 +19,6 @@ html, body, [class*="css"] {
     margin-bottom: 15px;
 }
 
-/* 入力欄のフォントサイズアップ */
 .stNumberInput input {
     font-size: 18px !important;
     font-weight: 600 !important;
@@ -32,7 +30,6 @@ html, body, [class*="css"] {
     border-radius: 14px;
 }
 
-/* 保存ボタンなどのフォントサイズアップ */
 .stButton>button {
     border-radius: 20px;
     background-color: #007AFF !important;
@@ -44,7 +41,6 @@ html, body, [class*="css"] {
     border: none;
 }
 
-/* セグメントコントロール（金属・品位選択）の文字拡大 */
 div[data-testid="stSegmentedControl"] button p {
     font-size: 15px !important;
     font-weight: 600 !important;
@@ -56,7 +52,6 @@ div[data-testid="stSegmentedControl"] {
     padding: 5px !important;
 }
 
-/* サイドバーのメニュー文字拡大 */
 [data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
     font-size: 22px !important;
     font-weight: 800 !important;

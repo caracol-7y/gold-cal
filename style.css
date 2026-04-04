@@ -93,21 +93,20 @@ html, body, [class*="css"] {
    5. ボタン（保存・削除）
    ========================================== */
 /* 保存ボタン（プライマリ） */
-.stButton > button[kind="primary"], 
-div.stButton > button:first-child:not([kind="secondary"]) {
-    border-radius: 16px;
-    background-color: #007AFF;
-    color: white;
-    padding: 16px;
-    font-size: 18px;
-    font-weight: 700;
-    width: 100%;
-    border: none;
-    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+button[kind="primary"] {
+    background-color: #007AFF !important;
+    color: white !important;
+    border-radius: 16px !important;
+    padding: 12px !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    width: 100% !important;
+    border: none !important;
+    margin-top: 10px !important;
 }
 
 /* 履歴の個別削除ボタン（×ボタン：セカンダリ） */
-.stButton > button[kind="secondary"] {
+.del-btn-container button {
     background-color: transparent !important;
     border: none !important;
     color: #8e8e93 !important;
@@ -116,11 +115,17 @@ div.stButton > button:first-child:not([kind="secondary"]) {
     height: 30px !important;
     padding: 0 !important;
     margin: 0 !important;
-    transition: 0.2s;
 }
-
-.stButton > button[kind="secondary"]:hover {
+.del-btn-container button:hover {
     color: #ff4b4b !important;
     background-color: rgba(255, 75, 75, 0.1) !important;
     border-radius: 50% !important;
+}
+
+button[kind="secondary"]:not(.del-btn-container button) {
+    border-radius: 12px !important;
+    width: 100% !important;
+    margin-top: 10px !important;
+    color: #ff4b4b !important; /* 文字を赤く */
+    border: 1px solid rgba(255, 75, 75, 0.2) !important;
 }

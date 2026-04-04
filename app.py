@@ -48,7 +48,7 @@ prices, utime = fetch()
 page = st.sidebar.radio("MENU", ["💰 計算機", "📝 履歴", "📋 最新相場"], label_visibility="collapsed")
 
 if page == "💰 計算機":
-    st.markdown("<h1 style='text-align: center; font-weight: 800;'>地金計算機</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; font-weight: 400;'>地金計算機</h1>", unsafe_allow_html=True)
     st.markdown(f'<div style="text-align: right; color: gray; font-size: 0.8rem; margin-bottom: 10px;">更新日時: {utime}</div>', unsafe_allow_html=True)
     
     cat = st.segmented_control("金属", options=list(config.METAL_CATEGORIES.keys()), selection_mode="single", default=st.session_state.p_cat, key="cat_w", on_change=cat_change)

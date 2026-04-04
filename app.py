@@ -18,9 +18,9 @@ if 'memo_list' not in st.session_state: st.session_state.memo_list = []
 if 'p_cat' not in st.session_state: st.session_state.p_cat = "Gold"
 if 'p_display' not in st.session_state: st.session_state.p_display = "K18"
 
-# 各入力値の保持用（初期値）
+# 各入力値の保持用（初期値：割合を90に設定）
 if 'p_weight' not in st.session_state: st.session_state.p_weight = 1.0
-if 'p_rsell' not in st.session_state: st.session_state.p_rsell = 100
+if 'p_rsell' not in st.session_state: st.session_state.p_rsell = 90
 if 'p_ubukin' not in st.session_state: st.session_state.p_ubukin = False
 if 'p_rbuy' not in st.session_state: st.session_state.p_rbuy = 5
 
@@ -67,11 +67,12 @@ if page == "💰 計算機":
     cat_keys = config.METAL_CATEGORIES[cat]
     key = [k for k in cat_keys if config.OPTIONS_MAP[k] == disp][0]
     
-    # --- 入力エリア (keyとon_changeを追加して値を保持) ---
+    # --- 入力エリア ---
     c1, c2 = st.columns(2)
     with c1:
         weight = st.number_input("重量(g)", value=st.session_state.p_weight, step=0.1, format="%.1f", key="weight_key", on_change=update_state)
     with c2:
+        # 初期値 90
         rsell = st.number_input("割合(%)", value=st.session_state.p_rsell, step=1, key="rsell_key", on_change=update_state)
     
     ubukin = st.checkbox("買い歩あり", value=st.session_state.p_ubukin, key="ubukin_key", on_change=update_state)

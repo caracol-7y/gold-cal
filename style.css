@@ -11,22 +11,24 @@ html, body, [class*="css"] {
     display: none !important;
 }
 
+/* カード共通 */
 .ios-card {
     background-color: rgba(128, 128, 128, 0.08);
     border-radius: 22px;
-    padding: 15px;
+    padding: 8px 15px;
     border: 1px solid rgba(128, 128, 128, 0.1);
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
+/* 入力欄のフォントサイズ拡大 (+4px) */
 .stNumberInput input {
-    font-size: 18px !important;
+    font-size: 22px !important;
     font-weight: 600 !important;
 }
 
 .stNumberInput, .stCheckbox {
     background-color: rgba(128, 128, 128, 0.05);
-    padding: 12px 15px;
+    padding: 8px 15px;
     border-radius: 14px;
 }
 
@@ -34,7 +36,7 @@ html, body, [class*="css"] {
     border-radius: 20px;
     background-color: #007AFF !important;
     color: white !important;
-    padding: 15px;
+    padding: 12px;
     font-size: 20px;
     font-weight: 700;
     width: 100%;

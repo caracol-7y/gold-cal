@@ -1,60 +1,16 @@
-/* ==========================================
-   1. 全体レイアウト・フォント
-   ========================================== */
+/* style.css */
+
+/* 1. 全体フォント・基本設定 */
 html, body, [class*="css"] {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif !important;
 }
 
-/* メインコンテンツの幅と余白の適正化 */
 .main .block-container {
     max-width: 500px;
     padding-top: 2.5rem !important;
-    padding-bottom: 2rem !important;
 }
 
-/* 不要なツールバー（Deployボタン等）を隠す（サイドバーボタンは残す） */
-.stAppDeployButton, [data-testid="stToolbar"] {
-    display: none !important;
-}
-
-/* ==========================================
-   2. サイドバー（巨大メニューボタン）
-   ========================================== */
-[data-testid="stSidebar"] div[role="radiogroup"] {
-    gap: 12px;
-    padding-top: 10px;
-}
-
-[data-testid="stSidebar"] div[role="radiogroup"] label {
-    background-color: rgba(128, 128, 128, 0.1) !important;
-    border: 1px solid rgba(128, 128, 128, 0.15) !important;
-    border-radius: 14px !important;
-    padding: 20px 10px !important;
-    width: 100%;
-    transition: 0.2s ease;
-}
-
-/* 選択時のハイライト */
-[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] {
-    background-color: rgba(0, 122, 255, 0.15) !important;
-    border-color: #007AFF !important;
-}
-
-[data-testid="stSidebar"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
-    font-size: 19px !important;
-    font-weight: 700 !important;
-    text-align: center;
-    margin: 0;
-}
-
-/* ラジオボタンの丸を非表示 */
-[data-testid="stSidebar"] div[role="radiogroup"] label div[data-baseweb="radio"] {
-    display: none;
-}
-
-/* ==========================================
-   3. iOS風カード・パーツ
-   ========================================== */
+/* 2. iOS風カード (履歴・計算結果共通) */
 .ios-card {
     background-color: rgba(128, 128, 128, 0.08);
     border-radius: 18px;
@@ -63,69 +19,49 @@ html, body, [class*="css"] {
     margin-bottom: 10px;
 }
 
-/* 入力フィールドの背景を馴染ませる */
-.stNumberInput, .stCheckbox, .stSelectbox {
-    background-color: rgba(128, 128, 128, 0.05);
-    border-radius: 12px;
-}
+/* 3. ボタンの作り分け (ここが重要) */
 
-/* ==========================================
-   4. 金属別の文字色（履歴用）
-   ========================================== */
-.metal-gold { color: #FFD700 !important; }      /* 金：黄色 */
-.metal-platinum { color: #87CEEB !important; }  /* プラチナ：水色 */
-.metal-silver { color: #C0C0C0 !important; }    /* 銀：灰色 */
-
-/* パラジウム：システム標準の色を強制適用（ライトなら黒、ダークなら白） */
-.metal-palladium { 
-    color: var(--text-color) !important; 
-}
-
-/* 重量 (1.0g) の色：常に標準テキスト色かつ少し透過 */
-.history-weight {
-    color: var(--text-color) !important;
-    font-weight: 400;
-    font-size: 14px;
-    opacity: 0.7;
-}
-
-/* ==========================================
-   5. ボタン（保存・削除）
-   ========================================== */
-/* 保存ボタン（プライマリ） */
+/* 【A】保存ボタン (青色・巨大) */
 button[kind="primary"] {
     background-color: #007AFF !important;
     color: white !important;
     border-radius: 16px !important;
-    padding: 12px !important;
+    padding: 14px !important;
     font-size: 18px !important;
     font-weight: 700 !important;
     width: 100% !important;
     border: none !important;
-    margin-top: 10px !important;
 }
 
-/* 履歴の個別削除ボタン（×ボタン：セカンダリ） */
-.del-btn-container button {
+/* 【B】履歴の「×」ボタン (カード内・グレー) */
+.del-btn-area button {
     background-color: transparent !important;
     border: none !important;
     color: #8e8e93 !important;
-    font-size: 18px !important;
+    font-size: 20px !important;
+    font-weight: 300 !important;
     width: 30px !important;
     height: 30px !important;
     padding: 0 !important;
     margin: 0 !important;
+    line-height: 1 !important;
 }
-.del-btn-container button:hover {
+.del-btn-area button:hover {
     color: #ff4b4b !important;
-    background-color: rgba(255, 75, 75, 0.1) !important;
-    border-radius: 50% !important;
 }
 
-button[kind="secondary"]:not(.del-btn-container button) {
+/* 【C】すべての履歴を削除ボタン (赤枠・下部) */
+.clear-all-area button {
+    background-color: transparent !important;
+    color: #ff4b4b !important;
+    border: 1px solid rgba(255, 75, 75, 0.3) !important;
     border-radius: 12px !important;
     width: 100% !important;
-    margin-top: 10px !important;
-    color: #ff4b4b !important; /* 文字を赤く */
-    border: 1px solid rgba(255, 75, 75, 0.2) !important;
 }
+
+/* 4. 金属の色設定 */
+.metal-gold { color: #FFD700 !important; }
+.metal-platinum { color: #87CEEB !important; }
+.metal-silver { color: #C0C0C0 !important; }
+.metal-palladium { color: var(--text-color) !important; }
+.history-weight { color: var(--text-color) !important; opacity: 0.6; font-weight: 400; font-size: 14px; }

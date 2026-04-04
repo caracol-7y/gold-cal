@@ -23,16 +23,16 @@ def render_calc_results(theory, sell, rate, buy=None, buy_rate=None):
     html = '<div style="display: flex; flex-direction: row; gap: 6px; align-items: stretch; margin-bottom: 12px;">'
     
     html += f'<div class="ios-card" style="flex: 1; text-align: center; padding: 8px 2px; margin: 0; min-width: 0;">
-        <div style="font-size: 14px; color: gray; margin-bottom: 2px;">最大(100%)</div>
+            <div style="font-size: 14px; color: gray; margin-bottom: 2px;">最大(100%)</div>
             <div style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px;">¥{theory:,.0f}</div></div>'
     
     html += f'<div class="ios-card" style="flex: 1; border: 2px solid #ff4b4b; background-color: rgba(255, 75, 75, 0.05); text-align: center; padding: 8px 2px; margin: 0; min-width: 0;">
-        <div style="font-size: 14px; color: #ff4b4b; margin-bottom: 2px;">割合({rate}%)</div>
+            <div style="font-size: 14px; color: #ff4b4b; margin-bottom: 2px;">割合({rate}%)</div>
             <div style="font-size: 20px; font-weight: 800; color: #ff4b4b; letter-spacing: -0.5px;">¥{sell:,.0f}</div></div>'
     
     if buy is not None:
         html += f'<div class="ios-card" style="flex: 1; border: 2px solid #007AFF; background-color: rgba(0, 122, 255, 0.05); text-align: center; padding: 8px 2px; margin: 0; min-width: 0;">
-            <div style="font-size: 14px; color: #007AFF; margin-bottom: 2px;">歩金({buy_rate})</div>
+                <div style="font-size: 14px; color: #007AFF; margin-bottom: 2px;">歩金({buy_rate})</div>
                 <div style="font-size: 20px; font-weight: 800; color: #007AFF; letter-spacing: -0.5px;">¥{buy:,.0f}</div></div>'
         
     html += '</div>'

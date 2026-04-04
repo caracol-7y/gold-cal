@@ -17,9 +17,11 @@ if 'memo_list' not in st.session_state: st.session_state.memo_list = []
 if 'p_cat' not in st.session_state: st.session_state.p_cat = "Gold"
 if 'p_display' not in st.session_state: st.session_state.p_display = "K18"
 
+# 状態同期関数を安全に修正
 def sync():
     for k in ["w_v", "r_s", "b_o", "r_b"]:
-        if f"p_{k}" in st.session_state: st.session_state[f"p_{k}"] = st.session_state[k]
+        if k in st.session_state:
+            st.session_state[f"p_{k}"] = st.session_state[k]
 
 def cat_change():
     sync()
@@ -56,13 +58,12 @@ if page == "💰 計算機":
         key="cat_w", 
         on_change=cat_change
     )
-    # 選択が空になった場合のフォールバック
     if not cat: cat = st.session_state.p_cat
     
     # 品位の選択肢を取得
     opts = [config.OPTIONS_MAP[k] for k in config.METAL_CATEGORIES[cat]]
     
-    # 現在の選択が新しいリストにあるか確認し、なければデフォルト(0番目)
+    # 現在の選択が新しいリストにあるか確認
     try:
         d_idx = opts.index(st.session_state.p_display)
         default_val = st.session_state.p_display
@@ -85,13 +86,13 @@ if page == "💰 計算機":
     key = [k for k in cat_keys if config.OPTIONS_MAP[k] == disp][0]
     
     # --- 入力エリア ---
-# お手元の c1, c2 に合わせた書き方です
     c1, c2 = st.columns(2)
     with c1:
-        weight = st.number_input("重量(g)", value=1.0, step=0.1, format="%.1f")
+        # key="w_v" を追加して状態保持を回復
+        weight = st.number_input("重量(g)", value=st.session_state.get('p_w_v', 1.0), step=0.1, format="%.1f", key="w_v", on_change=sync)
     with c2:
-        # ここが 'rate' になっているとエラーになります。必ず 'rsell' にしてください。
-        rsell = st.number_input("割合(%)", value=100, step=1)
+        # key="r_s" を追加し、valueをfloat(100.0)にしてエラー防止
+        rsell = st.number_input("割合(%)", value=st.session_state.get('p_r_s', 100.0), step=1.0, format="%.0f", key="r_s", on_change=sync)
     
     ubukin = st.checkbox("買い歩あり", value=st.session_state.get('p_b_o', False), key="b_o", on_change=sync)
     
@@ -114,10 +115,10 @@ if page == "💰 計算機":
         ui_parts.render_market_info(disp, weight, m_price)
         
         if weight > 0:
-            # 計算実行 (rsell を渡す)
+            # 計算実行
             th, sl, by = calculate_prices(m_price, weight, rsell, ubukin, rbuy)
             
-            # 結果カード表示 (th, sl, rsell, buy, rate_label の順番で渡す)
+            # 結果カード表示
             ui_parts.render_calc_results(th, sl, rsell, by if ubukin else None, f"{rbuy}%")
             
             # 保存ボタン

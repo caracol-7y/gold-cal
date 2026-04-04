@@ -64,4 +64,58 @@ div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
     border: none !important;
 }
 
-/* 選択されていないボタン
+/* 選択されていないボタン */
+div[data-testid="stSegmentedControl"] button[aria-selected="false"] {
+    background-color: transparent !important;
+    color: #8e8e93 !important;
+    border: none !important;
+}
+
+/* =========================================
+   4. iOS風カード・入力パーツ
+   ========================================= */
+.ios-card {
+    background-color: rgba(128, 128, 128, 0.08);
+    border-radius: 20px;
+    padding: 15px;
+    border: 1px solid rgba(128, 128, 128, 0.1);
+    margin-bottom: 12px;
+}
+
+.stNumberInput, .stCheckbox {
+    background-color: rgba(128, 128, 128, 0.05);
+    padding: 10px 15px;
+    border-radius: 12px;
+}
+
+/* 保存ボタン (青色) */
+.stButton>button {
+    border-radius: 18px;
+    background-color: #007AFF;
+    color: white;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    width: 100%;
+    display: block;
+    border: none;
+}
+
+/* =========================================
+   5. 金属カラー・テキスト視認性
+   ========================================= */
+.metal-gold { color: #FFD700 !important; }
+.metal-platinum { color: #87CEEB !important; }
+.metal-silver { color: #C0C0C0 !important; }
+
+/* パラジウムと重量：モードに合わせて白黒ハッキリ */
+.metal-palladium, .history-weight {
+    color: var(--text-color) !important;
+    opacity: 1.0 !important; /* 透かしを完全に排除 */
+    font-weight: 700 !important;
+}
+
+.history-weight {
+    font-size: 14px;
+    font-weight: 400 !important;
+}

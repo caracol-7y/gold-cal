@@ -65,38 +65,36 @@ html, body, [class*="css"] {
     border: none;
 }
 
-/* style.css の金属名セクションを以下に書き換え */
+/* 2. 金属ごとの色 */
+.metal-gold { color: #FFD700 !important; }
+.metal-platinum { color: #87CEEB !important; }
+.metal-silver { color: #C0C0C0 !important; }
+/* パラジウムはシステムの色（白/黒）に従う */
+.metal-palladium { color: var(--text-color) !important; }
 
-.metal-gold { color: #FFD700 !important; }     /* 金：常に黄色 */
-.metal-platinum { color: #87CEEB !important; } /* プラチナ：常に水色 */
-.metal-silver { color: #C0C0C0 !important; }   /* 銀：常に灰色 */
-
-/* ★パラジウム：システム標準のテキスト色（白/黒）を強制適用 */
-.metal-palladium { 
-    color: var(--text-color) !important; 
-}
-
-/* 重量 (1.0g) の設定 */
+/* 3. 重量（1.0g）の色 */
 .history-weight {
     color: var(--text-color) !important;
     font-weight: 400;
-    font-size: 15px;
-    opacity: 0.8;
+    font-size: 14px;
+    opacity: 0.6;
 }
 
 
-/* 履歴の×ボタンを極限までシンプルに */
+/* 1. 履歴の削除ボタン（×）をシンプルにする */
 .stButton > button[kind="secondary"] {
     background-color: transparent !important;
     border: none !important;
-    color: #8e8e93 !important; /* 目立たないグレー */
-    font-size: 18px !important;
-    font-weight: 300 !important;
+    color: #8e8e93 !important;
+    font-size: 16px !important;
     padding: 0 !important;
     margin: 0 !important;
-    line-height: 1 !important;
+    height: auto !important;
     width: 24px !important;
-    height: 24px !important;
+}
+.stButton > button[kind="secondary"]:hover {
+    color: #ff4b4b !important;
+    background-color: rgba(255, 75, 75, 0.1) !important;
 }
 
 /* ホバーした時だけ赤くする */

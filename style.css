@@ -11,7 +11,6 @@ html, body, [class*="css"] {
     display: none !important;
 }
 
-/* iOS風カード */
 .ios-card {
     background-color: rgba(128, 128, 128, 0.08);
     border-radius: 20px;
@@ -37,7 +36,6 @@ html, body, [class*="css"] {
     border: none;
 }
 
-/* セグメントコントロール */
 div[data-testid="stSegmentedControl"] {
     background-color: rgba(128, 128, 128, 0.1) !important;
     border-radius: 12px !important;
@@ -49,13 +47,6 @@ div[data-testid="stSegmentedControl"] button[aria-selected="true"] {
     color: white !important;
 }
 
-/* 履歴用の継承クラス */
-.history-weight {
-    font-size: inherit !important;
-    font-weight: 700 !important;
-}
-
-/* サイドバーボタン */
 [data-testid="stSidebar"] div[role="radiogroup"] {
     gap: 15px;
     padding-top: 20px;

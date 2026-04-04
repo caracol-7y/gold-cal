@@ -86,7 +86,6 @@ elif page == "📋 最新相場":
     
     # ★ ここに更新日時を表示
     st.caption(f"ネットジャパン更新日時: {utime}")
-    st.markdown("---")
     
     if prices:
         for l, ks in config.METAL_CATEGORIES.items():

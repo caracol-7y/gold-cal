@@ -83,3 +83,27 @@ html, body, [class*="css"] {
     font-size: 15px;
     opacity: 0.8;
 }
+
+/* style.css の最後に追加 */
+
+/* 個別削除ボタンのスタイル調整 */
+div[data-testid="stButton"] > button[kind="secondary"] {
+    background-color: transparent !important;
+    color: #ff4b4b !important; /* 警告の赤色 */
+    border: none !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    padding: 0px 5px !important;
+    margin-top: -10px !important;
+    margin-bottom: 20px !important;
+    text-decoration: underline; /* リンクっぽく見せる */
+    width: auto !important;
+    display: block;
+    margin-left: auto; /* 右寄せ */
+}
+
+/* マウスを乗せた時 */
+div[data-testid="stButton"] > button[kind="secondary"]:hover {
+    color: #ff0000 !important;
+    background-color: rgba(255, 75, 75, 0.05) !important;
+}

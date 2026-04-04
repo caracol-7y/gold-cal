@@ -83,10 +83,7 @@ elif page == "📝 履歴":
 
 elif page == "📋 最新相場":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>最新相場</h1>", unsafe_allow_html=True)
-    
-    # ★ ここに更新日時を表示
-    st.caption(f"ネットジャパン更新日時: {utime}")
-    
-    if prices:
+    st.caption(f"更新日時: {utime}")
+        if prices:
         for l, ks in config.METAL_CATEGORIES.items():
             ui_parts.render_price_list(l, ks, prices, config.OPTIONS_MAP)

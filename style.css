@@ -53,7 +53,12 @@ html, body, [class*="css"] {
 .metal-platinum { color: #87CEEB !important; }
 .metal-silver { color: #C0C0C0 !important; }
 .metal-palladium { color: var(--text-color) !important; }
-.history-weight { color: var(--text-color) !important; opacity: 0.6; font-size: 14px; font-weight: 400; }
+.history-weight { 
+    color: var(--text-color) !important; 
+    opacity: 1.0 !important; /* 0.6 から 1.0 に変更してハッキリさせる */
+    font-size: 14px; 
+    font-weight: 400; 
+}
 
 /* 入力パーツのデザイン */
 .stNumberInput, .stCheckbox {

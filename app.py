@@ -23,7 +23,6 @@ local_storage = LocalStorage()
 # ==========================================
 # 💾 ローカルストレージからのデータ復元・初期化
 # ==========================================
-# ブラウザを閉じても保持したい初期値を設定
 defaults = {
     'memo_list': [],
     'cat': "Gold",
@@ -36,15 +35,54 @@ defaults = {
 
 for key, val in defaults.items():
     if key not in st.session_state:
-        # まずブラウザのストレージから過去の保存値を取得
         saved_val = local_storage.getItem(f"gold_cal_{key}")
         if saved_val is not None:
             st.session_state[key] = saved_val
         else:
             st.session_state[key] = val
 
-# サイドバーによるページ切り替え（3メニュー）
-page = st.sidebar.radio("MENU", ["💰 計算機", "📝 履歴", "📋 最新相場"], label_visibility="collapsed")
+# ==========================================
+# 📱 サイドバーを自動で閉じるためのJavaScript制御
+# ==========================================
+if 'trigger_close' not in st.session_state:
+    st.session_state.trigger_close = False
+
+# メニューが切り替わったときに呼ばれる関数
+def on_menu_change():
+    # ページが切り替わったら「サイドバー閉じるトリガー」をONにする
+    st.session_state.trigger_close = True
+
+# サイドバーによるページ切り替え（on_change を追加）
+page = st.sidebar.radio(
+    "MENU", 
+    ["💰 計算機", "📝 履歴", "📋 最新相場"], 
+    label_visibility="collapsed",
+    on_change=on_menu_change
+)
+
+# トリガーがONの場合、JavaScriptを実行してサイドバーを閉じる
+if st.session_state.trigger_close:
+    st.components.v1.html(
+        """
+        <script>
+            // Streamlitの親ウィンドウのドキュメントからサイドバーの「×」ボタンを探す
+            const parentDoc = window.parent.document;
+            // 画面幅が狭い時（スマホ等）に出現する、サイドバーを閉じるボタンのdata-testidを取得
+            const closeButton = parentDoc.querySelector('button[data-testid="stSidebarCollapseButton"]');
+            
+            // ボタンが存在し、かつサイドバーが開いている状態であればクリックする
+            // ※Streamlitの構造上、すでに閉じている時はボタン自体が消えるか別の状態になります
+            if (closeButton) {
+                closeButton.click();
+            }
+        </script>
+        """,
+        height=0,
+        width=0
+    )
+    # 実行したらトリガーをリセット
+    st.session_state.trigger_close = False
+
 
 # 相場データの読み込み（キャッシュ化：120秒）
 @st.cache_data(ttl=120)
@@ -60,14 +98,11 @@ if page == "💰 計算機":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>地金計算機</h1>", unsafe_allow_html=True)
     st.markdown(f'<div style="text-align: right; color: gray; font-size: 0.8rem; margin-bottom: 10px;">更新日時: {update_time}</div>', unsafe_allow_html=True)
     
-    # 状態が変更されたらローカルストレージへ即座に保存するヘルパー関数
     def save_input(key):
         local_storage.setItem(f"gold_cal_{key}", st.session_state[key])
 
-    # 金属カテゴリ選択
     cat = st.segmented_control("金属", options=list(config.METAL_CATEGORIES.keys()), key="cat", on_change=save_input, args=("cat",))
     
-    # カテゴリ切替時の品位初期値制御
     available_options = config.METAL_CATEGORIES.get(cat, [])
     if available_options:
         current_disp = st.session_state.display
@@ -75,11 +110,9 @@ if page == "💰 計算機":
             st.session_state.display = config.OPTIONS_MAP.get(available_options[0], available_options[0])
             save_input("display")
             
-    # 品位の選択
     disp_options = [config.OPTIONS_MAP.get(k, k) for k in available_options]
     disp = st.segmented_control("品位", options=disp_options, key="display", on_change=save_input, args=("display",))
     
-    # 選択された内部キーを特定
     selected_key = None
     for k, v in config.OPTIONS_MAP.items():
         if v == disp and k in available_options:
@@ -90,18 +123,15 @@ if page == "💰 計算機":
         
     m_price = prices.get(selected_key, 0)
     
-    # 入力フォームエリア
     c1, c2 = st.columns(2)
     with c1:
         weight = st.number_input("重量(g)", min_value=0.0, step=0.1, format="%.1f", key="weight", on_change=save_input, args=("weight",))
     with c2:
         rsell = st.number_input("割合(%)", min_value=0, max_value=100, step=1, key="rsell", on_change=save_input, args=("rsell",))
         
-    # 買い歩設定
     ubukin = st.checkbox("買い歩あり", key="ubukin", on_change=save_input, args=("ubukin",))
     rbuy = st.number_input("歩金 (%)", min_value=0, max_value=100, step=1, key="rbuy", on_change=save_input, args=("rbuy",)) if ubukin else 0
     
-    # 結果の表示と保存
     if m_price > 0:
         ui_parts.render_market_info(disp, weight, m_price)
         if weight > 0:
@@ -122,7 +152,6 @@ if page == "💰 計算機":
                     "buy_rate": f"{rbuy}%", 
                     "buy_total": saved_buy_total
                 })
-                # 履歴一覧をローカルストレージへ保存
                 local_storage.setItem("gold_cal_memo_list", st.session_state.memo_list)
                 st.toast("履歴に保存しました")
 
@@ -138,7 +167,6 @@ elif page == "📝 履歴":
             ui_parts.render_history_card(m)
         if st.button("🗑️ すべての履歴を削除"):
             st.session_state.memo_list = []
-            # ストレージ側も空にする
             local_storage.setItem("gold_cal_memo_list", [])
             st.rerun()
 

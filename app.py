@@ -140,26 +140,27 @@ if page == "💰 計算機":
     
     if m_price > 0:
         ui_parts.render_market_info(disp, weight, m_price)
-        if weight > 0:
-            th, sl, by = calculate_prices(m_price, weight, rsell, ubukin, rbuy)
-            ui_parts.render_calc_results(th, sl, rsell, by if ubukin else None, f"{rbuy}%")
+        
+        # 重量（weight）が 0 以上のときは常に計算とボタン描画を行うように変更
+        th, sl, by = calculate_prices(m_price, weight, rsell, ubukin, rbuy)
+        ui_parts.render_calc_results(th, sl, rsell, by if ubukin else None, f"{rbuy}%")
+        
+        if st.button("💾 この結果を保存"):
+            saved_buy_total = f"¥{by:,.0f}" if ubukin else "-"
             
-            if st.button("💾 この結果を保存"):
-                saved_buy_total = f"¥{by:,.0f}" if ubukin else "-"
-                
-                st.session_state.memo_list.append({
-                    "datetime": datetime.now().strftime("%m/%d %H:%M"),
-                    "metal": cat, 
-                    "item": disp, 
-                    "weight": f"{weight:.1f}g",
-                    "theory": f"¥{th:,.0f}", 
-                    "rate": f"{rsell}%", 
-                    "sell_total": f"¥{sl:,.0f}",
-                    "buy_rate": f"{rbuy}%", 
-                    "buy_total": saved_buy_total
-                })
-                local_storage.setItem("gold_cal_memo_list", st.session_state.memo_list, key=f"set_memo_{time.time_ns()}")
-                st.toast("履歴に保存しました")
+            st.session_state.memo_list.append({
+                "datetime": datetime.now().strftime("%m/%d %H:%M"),
+                "metal": cat, 
+                "item": disp, 
+                "weight": f"{weight:.1f}g",
+                "theory": f"¥{th:,.0f}", 
+                "rate": f"{rsell}%", 
+                "sell_total": f"¥{sl:,.0f}",
+                "buy_rate": f"{rbuy}%", 
+                "buy_total": saved_buy_total
+            })
+            local_storage.setItem("gold_cal_memo_list", st.session_state.memo_list, key=f"set_memo_{time.time_ns()}")
+            st.toast("履歴に保存しました")
 
 # ==========================================
 # 📝 2. 履歴ページ

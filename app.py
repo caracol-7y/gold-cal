@@ -152,7 +152,10 @@ if page == "💰 計算機":
                     "buy_rate": f"{rbuy}%", 
                     "buy_total": saved_buy_total
                 })
-                local_storage.setItem("gold_cal_memo_list", st.session_state.memo_list)
+# 修正前: local_storage.setItem("gold_cal_memo_list", st.session_state.memo_list)
+                # 修正後:
+                import time
+                local_storage.setItem("gold_cal_memo_list", st.session_state.memo_list, key=f"set_memo_{time.time_ns()}")
                 st.toast("履歴に保存しました")
 
 # ==========================================
@@ -167,7 +170,8 @@ elif page == "📝 履歴":
             ui_parts.render_history_card(m)
         if st.button("🗑️ すべての履歴を削除"):
             st.session_state.memo_list = []
-            local_storage.setItem("gold_cal_memo_list", [])
+            import time
+            local_storage.setItem("gold_cal_memo_list", [], key=f"clear_memo_{time.time_ns()}")
             st.rerun()
 
 # ==========================================

@@ -15,7 +15,6 @@ except:
     pass
 
 # セッション状態の初期化
-# ★改善②: keyに指定する変数名を直接初期化します（頭の 'p_' を削除）
 if 'memo_list' not in st.session_state: st.session_state.memo_list = []
 if 'cat' not in st.session_state: st.session_state.cat = "Gold"
 if 'display' not in st.session_state: st.session_state.display = "K18"
@@ -39,20 +38,17 @@ if page == "💰 計算ツール":
     st.markdown("<h1 style='text-align: center; font-weight: 800; margin-top: 0;'>地金計算 Pro</h1>", unsafe_allow_html=True)
 
     # 1. 金属カテゴリ選択
-    # ★改善②: key="cat" を指定することで、st.session_state.cat に自動同期されます
     cat = st.segmented_control("貴金属", options=list(config.METAL_CATEGORIES.keys()), key="cat")
 
     # カテゴリが切り替わった場合の品位初期値の制御
     available_options = config.METAL_CATEGORIES.get(cat, [])
     if available_options:
         current_disp = st.session_state.display
-        # 現在の選択肢が新しいカテゴリに含まれていない場合のみ初期化
         if current_disp not in [config.OPTIONS_MAP.get(k, k) for k in available_options]:
             st.session_state.display = config.OPTIONS_MAP.get(available_options[0], available_options[0])
 
     # 2. 品位の選択
     disp_options = [config.OPTIONS_MAP.get(k, k) for k in available_options]
-    # ★改善②: key="display" を指定
     disp = st.segmented_control("品位", options=disp_options, key="display")
 
     # 選択された内部キーを特定
@@ -69,20 +65,16 @@ if page == "💰 計算ツール":
     # 入力フォームエリア
     col1, col2 = st.columns(2)
     with col1:
-        # ★改善②: key="weight" を指定。update_state関数は不要になります
         weight = st.number_input("重量(g)", min_value=0.0, step=0.1, format="%.1f", key="weight")
     with col2:
-        # ★改善②: key="rsell" を指定
         rsell = st.number_input("買取割合(%)", min_value=0, max_value=100, step=1, key="rsell")
 
     # 買い歩設定
     col_chk, col_num = st.columns([1, 1])
     with col_chk:
         st.markdown("<div style='height: 25px;'></div>", unsafe_allow_html=True)
-        # ★改善②: key="ubukin" を指定
         ubukin = st.checkbox("買い歩（歩金）を適用", key="ubukin")
     with col_num:
-        # ★改善②: key="rbuy" を指定
         rbuy = st.number_input("買い歩割合(%)", min_value=0, max_value=100, step=1, key="rbuy")
 
     # 最新相場カードの表示
@@ -93,15 +85,11 @@ if page == "💰 計算ツール":
 
     # 計算と結果表示
     if m_price > 0 and weight > 0:
-        # 計算を実行して値を確定させる
         th, sl, by = calculate_prices(m_price, weight, rsell, ubukin, rbuy)
         ui_parts.render_calc_results(th, sl, rsell, by if ubukin else None, f"{rbuy}%")
         
         if st.button("💾 この結果を保存"):
-            # ★改善③: 保存時の ubukin フラグではなく、実際に計算された「by」と「sl」の関係、
-            # または計算時に適用した確定データを使って履歴を作ります
             saved_buy_total = f"¥{by:,.0f}" if ubukin else "-"
-            
             st.session_state.memo_list.append({
                 "datetime": datetime.now().strftime("%m/%d %H:%M"),
                 "metal": cat, 
@@ -115,6 +103,15 @@ if page == "💰 計算ツール":
             })
             st.toast("履歴に保存しました")
 
+    # ★復活：最新相場一覧の表示エリア
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("<hr style='border-top: 2px solid rgba(128,128,128,0.2);'>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; font-weight: 700; margin-bottom: 20px;'>📉 本日の最新相場一覧</h2>", unsafe_allow_html=True)
+    
+    # 4つのカテゴリそれぞれの相場リストを一括表示
+    for label, keys in config.METAL_CATEGORIES.items():
+        ui_parts.render_price_list(label, keys, prices, config.OPTIONS_MAP)
+
 elif page == "📝 履歴":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>計算履歴</h1>", unsafe_allow_html=True)
     if not st.session_state.memo_list:
@@ -125,10 +122,3 @@ elif page == "📝 履歴":
         if st.button("🗑️ すべての履歴を削除"):
             st.session_state.memo_list = []
             st.rerun()
-
-elif page == "📋 最新相場":
-    st.markdown("<h1 style='text-align: center; font-weight: 800;'>最新相場</h1>", unsafe_allow_html=True)
-    st.markdown(f'<div style="text-align: right; color: gray; font-size: 0.8rem; margin-bottom: 10px;">更新日時: {utime}</div>', unsafe_allow_html=True)
-    if prices:
-        for l, ks in config.METAL_CATEGORIES.items():
-            ui_parts.render_price_list(l, ks, prices, config.OPTIONS_MAP)

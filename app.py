@@ -96,8 +96,11 @@ if page == "💰 計算機":
     st.markdown(f'<div style="text-align: right; color: gray; font-size: 0.8rem; margin-bottom: 10px;">更新日時: {update_time}</div>', unsafe_allow_html=True)
     
     def save_input(key):
-        local_storage.setItem(f"gold_cal_{key}", st.session_state[key])
-
+        import time
+        # 実行された瞬間のタイムスタンプをキーの末尾に付与して重複を回避する
+        unique_key = f"set_{key}_{time.time_ns()}"
+        local_storage.setItem(f"gold_cal_{key}", st.session_state[key], key=unique_key)
+    
     cat = st.segmented_control("金属", options=list(config.METAL_CATEGORIES.keys()), key="cat", on_change=save_input, args=("cat",))
     
     available_options = config.METAL_CATEGORIES.get(cat, [])

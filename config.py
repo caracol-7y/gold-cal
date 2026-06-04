@@ -19,8 +19,6 @@ METAL_CATEGORIES = {
 # 画面に表示する名前
 # config.py
 
-# ... 他の設定 ...
-
 # 表示名マップを書き換え
 OPTIONS_MAP = {
     "Gold_Ingot": "Bar",

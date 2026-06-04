@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime
+import time  # ★timeを一括インポートに移動
 import ui_parts
 import config
 
@@ -76,7 +77,6 @@ if st.session_state.trigger_close:
 # 相場データの読み込み関数（キャッシュ化：120秒）
 @st.cache_data(ttl=120)
 def load_data():
-    # 呼び出されたタイミングで scraper と calculator を読み込む（起動速度対策）
     from scraper import get_all_prices_comprehensive
     return get_all_prices_comprehensive()
 
@@ -85,22 +85,27 @@ def load_data():
 # 💰 1. 計算機ページ
 # ==========================================
 if page == "💰 計算機":
-    # ★改善②: データの取得を待たずに、まずタイトルを最優先で描画
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>地金計算機</h1>", unsafe_allow_html=True)
     
-    # UIが表示された後に、裏でデータをロード（ロード中はインジケーターを表示）
     with st.spinner("最新の相場データを取得中..."):
         from calculator import calculate_prices
         prices, update_time = load_data()
         
     st.markdown(f'<div style="text-align: right; color: gray; font-size: 0.8rem; margin-bottom: 10px;">更新日時: {update_time}</div>', unsafe_allow_html=True)
     
+    # 汎用的な保存関数
     def save_input(key):
-        import time
-        # 実行された瞬間のタイムスタンプをキーの末尾に付与して重複を回避する
         unique_key = f"set_{key}_{time.time_ns()}"
         local_storage.setItem(f"gold_cal_{key}", st.session_state[key], key=unique_key)
-    
+        
+    # ★改善①: 買い歩チェックボックスが変更された時の専用処理
+    def on_ubukin_change():
+        save_input("ubukin")
+        # もしチェックが外されたら、歩金を0%にしてストレージも強制上書きする
+        if not st.session_state.ubukin:
+            st.session_state.rbuy = 0
+            save_input("rbuy")
+
     cat = st.segmented_control("金属", options=list(config.METAL_CATEGORIES.keys()), key="cat", on_change=save_input, args=("cat",))
     
     available_options = config.METAL_CATEGORIES.get(cat, [])
@@ -129,7 +134,8 @@ if page == "💰 計算機":
     with c2:
         rsell = st.number_input("割合(%)", min_value=0, max_value=100, step=1, key="rsell", on_change=save_input, args=("rsell",))
         
-    ubukin = st.checkbox("買い歩あり", key="ubukin", on_change=save_input, args=("ubukin",))
+    # コールバックを専用関数に変更
+    ubukin = st.checkbox("買い歩あり", key="ubukin", on_change=on_ubukin_change)
     rbuy = st.number_input("歩金 (%)", min_value=0, max_value=100, step=1, key="rbuy", on_change=save_input, args=("rbuy",)) if ubukin else 0
     
     if m_price > 0:
@@ -152,9 +158,6 @@ if page == "💰 計算機":
                     "buy_rate": f"{rbuy}%", 
                     "buy_total": saved_buy_total
                 })
-# 修正前: local_storage.setItem("gold_cal_memo_list", st.session_state.memo_list)
-                # 修正後:
-                import time
                 local_storage.setItem("gold_cal_memo_list", st.session_state.memo_list, key=f"set_memo_{time.time_ns()}")
                 st.toast("履歴に保存しました")
 
@@ -170,7 +173,6 @@ elif page == "📝 履歴":
             ui_parts.render_history_card(m)
         if st.button("🗑️ すべての履歴を削除"):
             st.session_state.memo_list = []
-            import time
             local_storage.setItem("gold_cal_memo_list", [], key=f"clear_memo_{time.time_ns()}")
             st.rerun()
 

@@ -1,9 +1,13 @@
-import pandas as pd
-import requests  # ← これが抜けていたのを修正
+import requests
 import io
+# 冒頭の import pandas as pd を削除
 
 def get_all_prices_comprehensive():
+    # 使う直前（関数が呼ばれた時）にはじめてインポートする
+    import pandas as pd 
+    
     URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTR6Kw8YVw_hFXgzzSxFrYRZsTjQdsHS5Wg1J6sHF8xeGLY7gOAbPTuPBwvDR7WGHFLBuMDDBQe81-V/pub?gid=435870077&single=true&output=csv"
+    # ...以下略
     
     try:
         response = requests.get(URL)

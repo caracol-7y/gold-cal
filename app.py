@@ -1,7 +1,5 @@
 import streamlit as st
 from datetime import datetime
-from scraper import get_all_prices_comprehensive
-from calculator import calculate_prices
 import ui_parts
 import config
 
@@ -47,12 +45,10 @@ for key, val in defaults.items():
 if 'trigger_close' not in st.session_state:
     st.session_state.trigger_close = False
 
-# メニューが切り替わったときに呼ばれる関数
 def on_menu_change():
-    # ページが切り替わったら「サイドバー閉じるトリガー」をONにする
     st.session_state.trigger_close = True
 
-# サイドバーによるページ切り替え（on_change を追加）
+# サイドバーによるページ切り替え
 page = st.sidebar.radio(
     "MENU", 
     ["💰 計算機", "📝 履歴", "📋 最新相場"], 
@@ -60,18 +56,12 @@ page = st.sidebar.radio(
     on_change=on_menu_change
 )
 
-# トリガーがONの場合、JavaScriptを実行してサイドバーを閉じる
 if st.session_state.trigger_close:
     st.components.v1.html(
         """
         <script>
-            // Streamlitの親ウィンドウのドキュメントからサイドバーの「×」ボタンを探す
             const parentDoc = window.parent.document;
-            // 画面幅が狭い時（スマホ等）に出現する、サイドバーを閉じるボタンのdata-testidを取得
             const closeButton = parentDoc.querySelector('button[data-testid="stSidebarCollapseButton"]');
-            
-            // ボタンが存在し、かつサイドバーが開いている状態であればクリックする
-            // ※Streamlitの構造上、すでに閉じている時はボタン自体が消えるか別の状態になります
             if (closeButton) {
                 closeButton.click();
             }
@@ -80,22 +70,29 @@ if st.session_state.trigger_close:
         height=0,
         width=0
     )
-    # 実行したらトリガーをリセット
     st.session_state.trigger_close = False
 
 
-# 相場データの読み込み（キャッシュ化：120秒）
+# 相場データの読み込み関数（キャッシュ化：120秒）
 @st.cache_data(ttl=120)
 def load_data():
+    # 呼び出されたタイミングで scraper と calculator を読み込む（起動速度対策）
+    from scraper import get_all_prices_comprehensive
     return get_all_prices_comprehensive()
 
-prices, update_time = load_data()
 
 # ==========================================
 # 💰 1. 計算機ページ
 # ==========================================
 if page == "💰 計算機":
+    # ★改善②: データの取得を待たずに、まずタイトルを最優先で描画
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>地金計算機</h1>", unsafe_allow_html=True)
+    
+    # UIが表示された後に、裏でデータをロード（ロード中はインジケーターを表示）
+    with st.spinner("最新の相場データを取得中..."):
+        from calculator import calculate_prices
+        prices, update_time = load_data()
+        
     st.markdown(f'<div style="text-align: right; color: gray; font-size: 0.8rem; margin-bottom: 10px;">更新日時: {update_time}</div>', unsafe_allow_html=True)
     
     def save_input(key):
@@ -121,7 +118,7 @@ if page == "💰 計算機":
     if not selected_key and available_options:
         selected_key = available_options[0]
         
-    m_price = prices.get(selected_key, 0)
+    m_price = prices.get(selected_key, 0) if prices else 0
     
     c1, c2 = st.columns(2)
     with c1:
@@ -175,6 +172,10 @@ elif page == "📝 履歴":
 # ==========================================
 elif page == "📋 最新相場":
     st.markdown("<h1 style='text-align: center; font-weight: 800;'>最新相場</h1>", unsafe_allow_html=True)
+    
+    with st.spinner("最新の相場データを取得中..."):
+        prices, update_time = load_data()
+        
     st.markdown(f'<div style="text-align: right; color: gray; font-size: 0.8rem; margin-bottom: 10px;">更新日時: {update_time}</div>', unsafe_allow_html=True)
     if prices:
         for label, keys in config.METAL_CATEGORIES.items():
